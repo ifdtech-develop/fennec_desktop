@@ -14,6 +14,9 @@ class _MainPageState extends State<MainPage> {
   bool _isTeamVisible = false;
   bool _isSquadVisible = false;
   bool _isChatVisible = false;
+  String backgroundcolorTeams = '0xFFFFFFFF';
+  String backgroundcolorSquad = '0xFFFFFFFF';
+  final List<bool> _selected = List.generate(3, (i) => false);
 
   @override
   Widget build(BuildContext context) {
@@ -23,11 +26,11 @@ class _MainPageState extends State<MainPage> {
         sidebarNavigation(),
         Visibility(
           visible: _isTeamVisible,
-          child: const TeamScreen(),
+          child: TeamScreen(backgroundColor: backgroundcolorTeams),
         ),
         Visibility(
           visible: _isSquadVisible,
-          child: const SquadScreen(),
+          child: SquadScreen(backgroundColor: backgroundcolorSquad),
         ),
         Visibility(
           visible: _isChatVisible,
@@ -52,11 +55,35 @@ class _MainPageState extends State<MainPage> {
     return InkWell(
       onTap: () {
         setState(() {
-          id == 0
-              ? _isTeamVisible = !_isTeamVisible
-              : id == 1
-                  ? _isSquadVisible = !_isSquadVisible
-                  : _isChatVisible = !_isChatVisible;
+          if (id == 0) {
+            _isTeamVisible = !_isTeamVisible;
+            _selected[0] = !_selected[0];
+          } else if (id == 1) {
+            _isSquadVisible = !_isSquadVisible;
+            _selected[1] = !_selected[1];
+          } else {
+            _isChatVisible = !_isChatVisible;
+            _selected[2] = !_selected[2];
+          }
+
+          //mudando a cor do background do container teams de acordo com o widget selecionado
+          if (_selected[0]) {
+            if (_selected[1]) {
+              backgroundcolorTeams = '0xFFF3F2F3';
+            } else if (!_selected[1] && _selected[2]) {
+              backgroundcolorTeams = '0xFF5CE1E6';
+            } else if (!_selected[1] && !_selected[2]) {
+              backgroundcolorTeams = '0xFFFFFFFF';
+            }
+          }
+          //mudando a cor do background do container squad de acordo se widget chat selecionado ou não
+          if (_selected[1]) {
+            if (_selected[2]) {
+              backgroundcolorSquad = '0xFF5CE1E6';
+            } else if (!_selected[2]) {
+              backgroundcolorSquad = '0xFFFFFFFF';
+            }
+          }
         });
       },
       child: Card(

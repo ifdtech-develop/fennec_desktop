@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class TeamScreen extends StatefulWidget {
-  const TeamScreen({Key? key}) : super(key: key);
+  final String backgroundColor;
+  const TeamScreen({Key? key, required this.backgroundColor}) : super(key: key);
 
   @override
   _TeamScreenState createState() => _TeamScreenState();
@@ -12,37 +13,20 @@ class _TeamScreenState extends State<TeamScreen> {
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.only(
-            topRight: Radius.circular(100.0),
-            bottomRight: Radius.circular(100.0),
-          ),
-          color: Color(0xFFCCCCCC),
-        ),
         height: MediaQuery.of(context).size.height,
-        // child: const Text('Team'),
+        //background do container teams que deve mudar de acordo com o widget selecionado
+        color: Color(int.parse(widget.backgroundColor)),
         child: Container(
-          padding: const EdgeInsets.all(8.0),
-          height: 500.0,
-          width: 500.0,
-          // alignment: FractionalOffset.center,
-          child: Stack(
-            //alignment:Alignment(x, y)
-            children: const [
-              Icon(Icons.monetization_on,
-                  size: 36.0, color: Color.fromRGBO(218, 165, 32, 1.0)),
-              Positioned(
-                left: 20.0,
-                child: Icon(Icons.monetization_on,
-                    size: 36.0, color: Color.fromRGBO(218, 165, 32, 1.0)),
-              ),
-              Positioned(
-                left: 40.0,
-                child: Icon(Icons.monetization_on,
-                    size: 36.0, color: Color.fromRGBO(218, 165, 32, 1.0)),
-              )
-            ],
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.only(
+              topRight: Radius.circular(100.0),
+              bottomRight: Radius.circular(100.0),
+            ),
+            color: Color(0xFFCCCCCC),
           ),
+          height: MediaQuery.of(context).size.height,
+          // child: const Text('Team'),
+          child: const Text('Team'),
         ),
       ),
     );
