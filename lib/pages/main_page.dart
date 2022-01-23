@@ -96,10 +96,36 @@ class _MainPageState extends State<MainPage> {
         child: Padding(
           // padding: const EdgeInsets.fromLTRB(15.0, 8.0, 15.0, 8.0),
           padding: const EdgeInsets.all(10.0),
-          child: Icon(
-            icon,
-            size: 50.0,
-          ),
+          child: _selected[id]
+              ? ShaderMask(
+                  blendMode: BlendMode.srcIn,
+                  shaderCallback: (bounds) => const LinearGradient(
+                    begin: Alignment.bottomRight,
+                    end: Alignment.topLeft,
+                    colors: [
+                      Color(0xFFFB00B8),
+                      Color(0xFFFB2588),
+                      Color(0xFFFB3079),
+                      Color(0xFFFB4B56),
+                      Color(0xFFFB5945),
+                      Color(0xFFFB6831),
+                      Color(0xFFFB6E29),
+                      Color(0xFFFB8C03),
+                      Color(0xFFFB8D01),
+                      Color(0xFFFB8E00),
+                    ],
+                  ).createShader(
+                    Rect.fromLTWH(0, 0, bounds.width, bounds.height),
+                  ),
+                  child: Icon(
+                    icon,
+                    size: 50.0,
+                  ),
+                )
+              : Icon(
+                  icon,
+                  size: 50.0,
+                ),
         ),
       ),
     );
