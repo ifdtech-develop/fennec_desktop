@@ -37,36 +37,15 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         titleSpacing: 50.0,
-        title: ShaderMask(
-          shaderCallback: (rect) {
-            return const LinearGradient(
-              begin: Alignment.bottomRight,
-              end: Alignment.topLeft,
-              colors: [
-                Color(0xFFFB00B8),
-                Color(0xFFFB2588),
-                Color(0xFFFB3079),
-                Color(0xFFFB4B56),
-                Color(0xFFFB5945),
-                Color(0xFFFB6831),
-                Color(0xFFFB6E29),
-                Color(0xFFFB8C03),
-                Color(0xFFFB8D01),
-                Color(0xFFFB8E00),
-              ],
-            ).createShader(rect);
-          },
-          child: SvgPicture.asset(
-            'assets/images/logo.svg',
-            fit: BoxFit.contain,
-            color: Colors.white,
-          ),
+        title: Image.asset(
+          'assets/images/logo.png',
+          fit: BoxFit.contain,
         ),
         toolbarHeight: 80,
         elevation: 0,
       ),
       backgroundColor: Colors.white,
-      body: MainPage(),
+      body: const MainPage(),
     );
   }
 }
