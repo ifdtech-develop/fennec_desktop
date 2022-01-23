@@ -29,8 +29,22 @@ class _MainPageState extends State<MainPage> {
           backgroundColor: backgroundcolorMenu,
           //por aqui, fico sabendo que houve uma ação no widget filho
           onCountSelected: () {
-            //estou alocando um valor booleano na posicao 3 do array
-            _selected[3] = !_selected[3];
+            setState(() {
+              //estou alocando um valor booleano na posicao 3 do array
+              _selected[3] = !_selected[3];
+              //mudando a cor do background do container do menu acordo com o widget selecionado
+              if (_selected[3]) {
+                if (_selected[0]) {
+                  backgroundcolorMenu = '0xFFCCCCCC';
+                } else if (!_selected[0] && _selected[1]) {
+                  backgroundcolorMenu = '0xFFF3F2F3';
+                } else if (!_selected[0] && !_selected[1] && _selected[2]) {
+                  backgroundcolorMenu = '0xFF5CE1E6';
+                } else if (!_selected[0] && !_selected[1] && !_selected[2]) {
+                  backgroundcolorMenu = '0xFFFFFFFF';
+                }
+              }
+            });
           },
         ),
         Visibility(
