@@ -1,4 +1,5 @@
 import 'package:fennec_desktop/pages/chat/chat_screen.dart';
+import 'package:fennec_desktop/pages/menu/menu_screen.dart';
 import 'package:fennec_desktop/pages/squad/squad_screen.dart';
 import 'package:fennec_desktop/pages/team/team_screen.dart';
 import 'package:flutter/material.dart';
@@ -14,16 +15,24 @@ class _MainPageState extends State<MainPage> {
   bool _isTeamVisible = false;
   bool _isSquadVisible = false;
   bool _isChatVisible = false;
+  String backgroundcolorMenu = '0xFFFFFFFF';
   String backgroundcolorTeams = '0xFFFFFFFF';
   String backgroundcolorSquad = '0xFFFFFFFF';
-  final List<bool> _selected = List.generate(3, (i) => false);
+  final List<bool> _selected = List.generate(4, (i) => false);
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        sidebarNavigation(),
+        MenuScreen(
+          backgroundColor: backgroundcolorMenu,
+          //por aqui, fico sabendo que houve uma ação no widget filho
+          onCountSelected: () {
+            //estou alocando um valor booleano na posicao 3 do array
+            _selected[3] = !_selected[3];
+          },
+        ),
         Visibility(
           visible: _isTeamVisible,
           child: TeamScreen(backgroundColor: backgroundcolorTeams),
@@ -57,12 +66,15 @@ class _MainPageState extends State<MainPage> {
         setState(() {
           if (id == 0) {
             _isTeamVisible = !_isTeamVisible;
+            //estou alocando um valor booleano na posicao 0 do array
             _selected[0] = !_selected[0];
           } else if (id == 1) {
             _isSquadVisible = !_isSquadVisible;
+            //estou alocando um valor booleano na posicao 1 do array
             _selected[1] = !_selected[1];
           } else {
             _isChatVisible = !_isChatVisible;
+            //estou alocando um valor booleano na posicao 2 do array
             _selected[2] = !_selected[2];
           }
 
@@ -82,6 +94,18 @@ class _MainPageState extends State<MainPage> {
               backgroundcolorSquad = '0xFF5CE1E6';
             } else if (!_selected[2]) {
               backgroundcolorSquad = '0xFFFFFFFF';
+            }
+          }
+          //mudando a cor do background do container do menu acordo com o widget selecionado
+          if (_selected[3]) {
+            if (_selected[0]) {
+              backgroundcolorMenu = '0xFFCCCCCC';
+            } else if (!_selected[0] && _selected[1]) {
+              backgroundcolorMenu = '0xFFF3F2F3';
+            } else if (!_selected[0] && !_selected[1] && _selected[2]) {
+              backgroundcolorMenu = '0xFF5CE1E6';
+            } else if (!_selected[0] && !_selected[1] && !_selected[2]) {
+              backgroundcolorMenu = '0xFFFFFFFF';
             }
           }
         });
@@ -127,88 +151,6 @@ class _MainPageState extends State<MainPage> {
                   size: 50.0,
                 ),
         ),
-      ),
-    );
-  }
-
-  Container sidebarNavigation() {
-    const TextStyle listStyle = TextStyle(fontSize: 16.0, color: Colors.white);
-
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.08,
-      decoration: BoxDecoration(
-        // color: Color(0xFFF5F5F5),
-        gradient: LinearGradient(
-          begin: Alignment.bottomRight,
-          end: Alignment.topLeft,
-          // stops: [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
-          colors: [
-            const Color(0xFFFB00B8).withOpacity(0.8),
-            const Color(0xFFFB2588).withOpacity(0.8),
-            const Color(0xFFFB3079).withOpacity(0.8),
-            const Color(0xFFFB4B56).withOpacity(0.8),
-            const Color(0xFFFB5945).withOpacity(0.8),
-            const Color(0xFFFB6831).withOpacity(0.8),
-            const Color(0xFFFB6E29).withOpacity(0.8),
-            const Color(0xFFFB8C03).withOpacity(0.8),
-            const Color(0xFFFB8D01).withOpacity(0.8),
-            const Color(0xFFFB8E00).withOpacity(0.8),
-          ],
-        ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Column(
-            children: const [
-              // Image.asset('assets/images/profile.png'),
-              Icon(Icons.person, size: 40.0, color: Colors.white),
-              Text('Perfil', style: listStyle)
-            ],
-          ),
-          Column(
-            children: const [
-              // Image.asset('assets/images/teams.png'),
-              Icon(Icons.groups, size: 40.0, color: Colors.white),
-              Text('Time', style: listStyle)
-            ],
-          ),
-          Column(
-            children: const [
-              // Image.asset('assets/images/workspace.png'),
-              Icon(Icons.workspaces, size: 40.0, color: Colors.white),
-              Text('Workspace', style: listStyle)
-            ],
-          ),
-          Column(
-            children: const [
-              // Image.asset('assets/images/feed.png'),
-              Icon(Icons.feed, size: 40.0, color: Colors.white),
-              Text('Feed', style: listStyle)
-            ],
-          ),
-          Column(
-            children: const [
-              // Image.asset('assets/images/ead.png'),
-              Icon(Icons.computer, size: 40.0, color: Colors.white),
-              Text('EAD', style: listStyle)
-            ],
-          ),
-          Column(
-            children: const [
-              // Image.asset('assets/images/certificates.png'),
-              Icon(Icons.star, size: 40.0, color: Colors.white),
-              Text('Certificados', style: listStyle)
-            ],
-          ),
-          Column(
-            children: const [
-              // Image.asset('assets/images/logout.png'),
-              Icon(Icons.logout, size: 40.0, color: Colors.white),
-              Text('Sair', style: listStyle)
-            ],
-          ),
-        ],
       ),
     );
   }
