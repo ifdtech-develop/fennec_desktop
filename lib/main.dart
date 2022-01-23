@@ -1,6 +1,5 @@
 import 'package:fennec_desktop/pages/main_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 void main() {
   runApp(const MyApp());
