@@ -1,3 +1,4 @@
+import 'package:fennec_desktop/models/sidebar_buttons.dart';
 import 'package:flutter/material.dart';
 
 class MenuScreen extends StatefulWidget {
@@ -19,6 +20,8 @@ class MenuScreen extends StatefulWidget {
 class _MenuScreenState extends State<MenuScreen> {
   TextStyle listStyle = const TextStyle(fontSize: 16.0, color: Colors.white);
   bool _isMenuVisible = false;
+  late int widgetIndex = 0;
+
   final List<Color> gradientColors = [
     const Color(0xFFFB00B8).withOpacity(0.8),
     const Color(0xFFFB2588).withOpacity(0.8),
@@ -68,7 +71,9 @@ class _MenuScreenState extends State<MenuScreen> {
                 ),
                 child: sidebarNavigation(),
               ),
-              const Text('Menu'),
+              Container(
+                child: sidebarButtons[widgetIndex].content,
+              )
             ],
           ),
         ),
@@ -90,69 +95,42 @@ class _MenuScreenState extends State<MenuScreen> {
     );
   }
 
-  Column sidebarNavigation() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        InkWell(
-          onTap: () {
-            setState(() {
-              _isMenuVisible = !_isMenuVisible;
-              //ao clicar, aviso ao parent widget que houve uma ação
-              widget.onCountSelected();
-            });
-          },
-          child: Column(
-            children: [
-              // Image.asset('assets/images/profile.png'),
-              const Icon(Icons.person, size: 40.0, color: Colors.white),
-              Text('Perfil', style: listStyle)
-            ],
-          ),
-        ),
-        Column(
-          children: [
-            // Image.asset('assets/images/teams.png'),
-            const Icon(Icons.groups, size: 40.0, color: Colors.white),
-            Text('Time', style: listStyle)
-          ],
-        ),
-        Column(
-          children: [
-            // Image.asset('assets/images/workspace.png'),
-            const Icon(Icons.workspaces, size: 40.0, color: Colors.white),
-            Text('Workspace', style: listStyle)
-          ],
-        ),
-        Column(
-          children: [
-            // Image.asset('assets/images/feed.png'),
-            const Icon(Icons.feed, size: 40.0, color: Colors.white),
-            Text('Feed', style: listStyle)
-          ],
-        ),
-        Column(
-          children: [
-            // Image.asset('assets/images/ead.png'),
-            const Icon(Icons.computer, size: 40.0, color: Colors.white),
-            Text('EAD', style: listStyle)
-          ],
-        ),
-        Column(
-          children: [
-            // Image.asset('assets/images/certificates.png'),
-            const Icon(Icons.star, size: 40.0, color: Colors.white),
-            Text('Certificados', style: listStyle)
-          ],
-        ),
-        Column(
-          children: [
-            // Image.asset('assets/images/logout.png'),
-            const Icon(Icons.logout, size: 40.0, color: Colors.white),
-            Text('Sair', style: listStyle)
-          ],
-        ),
-      ],
+  Widget sidebarNavigation() {
+    return Center(
+      child: ListView.builder(
+        itemCount: sidebarButtons.length,
+        itemBuilder: (BuildContext context, int index) {
+          return InkWell(
+            onTap: () {
+              setState(() {
+                //a aba do menu só fecha se for o  mesmo botão clicado duas vezes,
+                //se for outro botão do menu, ele somente muda o conteúdo
+                if (widgetIndex == index) {
+                  widgetIndex = index;
+                  _isMenuVisible = !_isMenuVisible;
+                  //ao clicar, aviso ao parent widget que houve uma ação
+                  widget.onCountSelected();
+                } else {
+                  widgetIndex = index;
+                }
+              });
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(top: 16.0, bottom: 10.0),
+              child: Column(
+                children: [
+                  Icon(
+                    sidebarButtons[index].icon,
+                    size: 40.0,
+                    color: Colors.white,
+                  ),
+                  Text(sidebarButtons[index].title, style: listStyle)
+                ],
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }
