@@ -10,8 +10,6 @@ class WorkspaceScreen extends StatefulWidget {
 class _WorkspaceScreenState extends State<WorkspaceScreen> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text('Workspace'),
-    );
+    return const Text('Workspace');
   }
 }

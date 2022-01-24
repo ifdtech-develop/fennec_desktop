@@ -10,8 +10,6 @@ class EadScreen extends StatefulWidget {
 class _EadScreenState extends State<EadScreen> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text('EAD'),
-    );
+    return const Text('EAD');
   }
 }

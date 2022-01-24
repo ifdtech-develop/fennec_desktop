@@ -10,8 +10,6 @@ class TeamMenuScreen extends StatefulWidget {
 class _TeamMenuScreenState extends State<TeamMenuScreen> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text('Team'),
-    );
+    return const Text('Team');
   }
 }
