@@ -59,16 +59,19 @@ class _MainPageState extends State<MainPage> {
           visible: _isChatVisible,
           child: const ChatScreen(),
         ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            mainButtons(Icons.groups, 0),
-            Padding(
-              padding: const EdgeInsets.only(top: 30.0, bottom: 30.0),
-              child: mainButtons(Icons.format_list_bulleted, 1),
-            ),
-            mainButtons(Icons.chat, 2),
-          ],
+        Padding(
+          padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              mainButtons(Icons.groups, 0),
+              Padding(
+                padding: const EdgeInsets.only(top: 30.0, bottom: 30.0),
+                child: mainButtons(Icons.format_list_bulleted, 1),
+              ),
+              mainButtons(Icons.chat, 2),
+            ],
+          ),
         ),
       ],
     );
