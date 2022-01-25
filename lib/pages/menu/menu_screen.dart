@@ -83,19 +83,23 @@ class _MenuScreenState extends State<MenuScreen> {
 
   Container menuOnly(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width * 0.08,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          topRight: Radius.circular(70.0),
-          bottomRight: Radius.circular(70.0),
+      //background do container teams que deve mudar de acordo com o widget selecionado
+      color: Color(int.parse(widget.backgroundColor)),
+      child: Container(
+        width: MediaQuery.of(context).size.width * 0.08,
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.only(
+            topRight: Radius.circular(70.0),
+            bottomRight: Radius.circular(70.0),
+          ),
+          gradient: LinearGradient(
+            begin: Alignment.bottomRight,
+            end: Alignment.topLeft,
+            colors: gradientColors,
+          ),
         ),
-        gradient: LinearGradient(
-          begin: Alignment.bottomRight,
-          end: Alignment.topLeft,
-          colors: gradientColors,
-        ),
+        child: sidebarNavigation(),
       ),
-      child: sidebarNavigation(),
     );
   }
 

@@ -111,6 +111,7 @@ class _MainPageState extends State<MainPage> {
             }
           }
           //mudando a cor do background do container do menu acordo com o widget selecionado
+          //quando expandido
           if (_selected[3]) {
             if (_selected[0]) {
               backgroundcolorMenu = '0xFFCCCCCC';
@@ -121,6 +122,18 @@ class _MainPageState extends State<MainPage> {
             } else if (!_selected[0] && !_selected[1] && !_selected[2]) {
               backgroundcolorMenu = '0xFFFFFFFF';
             }
+          }
+
+          //mudando a cor do background do container do menu acordo com o widget selecionado
+          //quando nao expandido
+          if (_selected[0]) {
+            backgroundcolorMenu = '0xFFCCCCCC';
+          } else if (!_selected[0] && _selected[1]) {
+            backgroundcolorMenu = '0xFFF3F2F3';
+          } else if (!_selected[0] && !_selected[1] && _selected[2]) {
+            backgroundcolorMenu = '0xFF5CE1E6';
+          } else {
+            backgroundcolorMenu = '0xFFFFFFFF';
           }
         });
       },
