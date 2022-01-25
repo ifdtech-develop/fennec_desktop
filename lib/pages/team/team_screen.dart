@@ -36,10 +36,89 @@ class _TeamScreenState extends State<TeamScreen> {
             color: Color(0xFFCCCCCC),
           ),
           height: MediaQuery.of(context).size.height,
-          // child: const Text('Team'),
-          child: const Text('Team'),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              Text('Time'),
+              Padding(
+                padding: EdgeInsets.only(left: 12.0, right: 12.0),
+                child: PostInput(),
+              )
+            ],
+          ),
         ),
       ),
+    );
+  }
+}
+
+class PostInput extends StatelessWidget {
+  const PostInput({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          children: const [
+            Text('Tem algo a dizer?'),
+          ],
+        ),
+        Container(
+          width: 500.0,
+          padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+          child: TextField(
+            decoration: InputDecoration(
+              contentPadding: const EdgeInsets.all(25.0),
+              // cor da borda
+              enabledBorder: OutlineInputBorder(
+                borderSide: const BorderSide(
+                  color: Color(0xFF707070),
+                ),
+                borderRadius: BorderRadius.circular(50.0),
+              ),
+              // Border quando usuario clica no input
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(50),
+              ),
+              hintText:
+                  'Compartilhe o que está pensando...', // pass the hint text parameter here
+              // hintStyle: TextStyle(color: tcolor),
+            ),
+            keyboardType: TextInputType.multiline,
+            maxLines: null,
+          ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            ElevatedButton(
+              onPressed: () {},
+              child: const Text(
+                'Postar',
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 18.0,
+                  horizontal: 30.0,
+                ),
+                shadowColor: Colors.grey,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50.0),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
