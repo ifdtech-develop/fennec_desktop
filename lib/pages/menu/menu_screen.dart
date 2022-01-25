@@ -106,6 +106,7 @@ class _MenuScreenState extends State<MenuScreen> {
   Widget sidebarNavigation() {
     return Center(
       child: ListView.builder(
+        padding: const EdgeInsets.only(top: 10.0, bottom: 0.0),
         itemCount: sidebarButtons.length,
         itemBuilder: (BuildContext context, int index) {
           return InkWell(
@@ -124,7 +125,7 @@ class _MenuScreenState extends State<MenuScreen> {
               });
             },
             child: Padding(
-              padding: const EdgeInsets.only(top: 16.0, bottom: 10.0),
+              padding: const EdgeInsets.only(top: 15.0),
               child: Column(
                 children: [
                   Icon(
