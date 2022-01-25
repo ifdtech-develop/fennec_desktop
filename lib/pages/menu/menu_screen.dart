@@ -40,42 +40,41 @@ class _MenuScreenState extends State<MenuScreen> {
     return _isMenuVisible ? expandedMenu(context) : menuOnly(context);
   }
 
-  Expanded expandedMenu(BuildContext context) {
-    return Expanded(
+  Widget expandedMenu(BuildContext context) {
+    return Container(
+      //background do container teams que deve mudar de acordo com o widget selecionado
+      color: Color(int.parse(widget.backgroundColor)),
       child: Container(
-        //background do container teams que deve mudar de acordo com o widget selecionado
-        color: Color(int.parse(widget.backgroundColor)),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(
-              topRight: Radius.circular(100.0),
-              bottomRight: Radius.circular(100.0),
-            ),
-            gradient: LinearGradient(
-              begin: Alignment.bottomRight,
-              end: Alignment.topLeft,
-              colors: gradientColors,
-            ),
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.only(
+            topRight: Radius.circular(100.0),
+            bottomRight: Radius.circular(100.0),
           ),
-          height: MediaQuery.of(context).size.height,
-          child: Row(
-            children: [
-              Container(
-                width: MediaQuery.of(context).size.width * 0.08,
-                decoration: const BoxDecoration(
-                  border: Border(
-                    right: BorderSide(
-                      color: Colors.white,
-                    ),
+          gradient: LinearGradient(
+            begin: Alignment.bottomRight,
+            end: Alignment.topLeft,
+            colors: gradientColors,
+          ),
+        ),
+        height: MediaQuery.of(context).size.height,
+        child: Row(
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width * 0.08,
+              decoration: const BoxDecoration(
+                border: Border(
+                  right: BorderSide(
+                    color: Colors.white,
                   ),
                 ),
-                child: sidebarNavigation(),
               ),
-              Container(
-                child: sidebarButtons[widgetIndex].content,
-              )
-            ],
-          ),
+              child: sidebarNavigation(),
+            ),
+            SizedBox(
+              width: 400.0,
+              child: sidebarButtons[widgetIndex].content,
+            )
+          ],
         ),
       ),
     );
@@ -128,10 +127,21 @@ class _MenuScreenState extends State<MenuScreen> {
               padding: const EdgeInsets.only(top: 15.0),
               child: Column(
                 children: [
-                  Icon(
-                    sidebarButtons[index].icon,
-                    size: 40.0,
-                    color: Colors.white,
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.white, width: 2),
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(5.0),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Icon(
+                        sidebarButtons[index].icon,
+                        size: 28.0,
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                   Text(sidebarButtons[index].title, style: listStyle)
                 ],
