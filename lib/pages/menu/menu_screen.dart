@@ -5,12 +5,14 @@ class MenuScreen extends StatefulWidget {
   final String backgroundColor;
   //Por essa função, aviso ao component pai que chamar esse widget que aconteceu uma
   //ação nesse widget
-  final VoidCallback onCountSelected;
+  final VoidCallback onProfileSelected;
+  final VoidCallback onTeamSelected;
 
   const MenuScreen({
     Key? key,
     required this.backgroundColor,
-    required this.onCountSelected,
+    required this.onProfileSelected,
+    required this.onTeamSelected,
   }) : super(key: key);
 
   @override
@@ -111,15 +113,15 @@ class _MenuScreenState extends State<MenuScreen> {
           return InkWell(
             onTap: () {
               setState(() {
-                //a aba do menu só fecha se for o  mesmo botão clicado duas vezes,
-                //se for outro botão do menu, ele somente muda o conteúdo
-                if (widgetIndex == index) {
-                  widgetIndex = index;
+                widgetIndex = index;
+
+                if (widgetIndex == 0) {
                   _isMenuVisible = !_isMenuVisible;
                   //ao clicar, aviso ao parent widget que houve uma ação
-                  widget.onCountSelected();
-                } else {
-                  widgetIndex = index;
+                  widget.onProfileSelected();
+                }
+                if (widgetIndex == 1) {
+                  widget.onTeamSelected();
                 }
               });
             },

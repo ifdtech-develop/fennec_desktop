@@ -27,8 +27,8 @@ class _MainPageState extends State<MainPage> {
       children: [
         MenuScreen(
           backgroundColor: backgroundcolorMenu,
-          //por aqui, fico sabendo que houve uma ação no widget filho
-          onCountSelected: () {
+          //por aqui, fico sabendo que houve uma ação no botao perfil
+          onProfileSelected: () {
             setState(() {
               //estou alocando um valor booleano na posicao 3 do array
               _selected[3] = !_selected[3];
@@ -43,6 +43,29 @@ class _MainPageState extends State<MainPage> {
                 } else if (!_selected[0] && !_selected[1] && !_selected[2]) {
                   backgroundcolorMenu = '0xFFFFFFFF';
                 }
+              }
+            });
+          },
+          onTeamSelected: () {
+            setState(() {
+              //estou alocando um valor booleano na posicao 0 do array
+              _selected[0] = true;
+              _isTeamVisible = true;
+
+              //estou alocando um valor booleano na posicao 1 do array
+              _selected[1] = true;
+              _isSquadVisible = true;
+
+              //estou alocando um valor booleano na posicao 2 do array
+              _selected[2] = true;
+              _isChatVisible = true;
+
+              if (_selected[0] && _selected[1] && _selected[2]) {
+                backgroundcolorMenu = '0xFFCCCCCC';
+                backgroundcolorTeams = '0xFFF3F2F3';
+                backgroundcolorSquad = '0xFF5CE1E6';
+              } else {
+                backgroundcolorMenu = '0xFFFFFFFF';
               }
             });
           },
