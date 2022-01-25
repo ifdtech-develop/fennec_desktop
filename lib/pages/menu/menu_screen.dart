@@ -85,6 +85,10 @@ class _MenuScreenState extends State<MenuScreen> {
     return Container(
       width: MediaQuery.of(context).size.width * 0.08,
       decoration: BoxDecoration(
+        borderRadius: const BorderRadius.only(
+          topRight: Radius.circular(70.0),
+          bottomRight: Radius.circular(70.0),
+        ),
         gradient: LinearGradient(
           begin: Alignment.bottomRight,
           end: Alignment.topLeft,
