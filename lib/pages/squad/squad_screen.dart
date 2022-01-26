@@ -221,25 +221,45 @@ class PostInput extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              ElevatedButton(
-                onPressed: () {},
-                child: const Text(
-                  'Postar',
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
+              Container(
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color(0xFFFB00B8),
+                      Color(0xFFFB2588),
+                      Color(0xFFFB3079),
+                      Color(0xFFFB4B56),
+                      Color(0xFFFB5945),
+                      Color(0xFFFB6831),
+                      Color(0xFFFB6E29),
+                      Color(0xFFFB8C03),
+                      Color(0xFFFB8D01),
+                      Color(0xFFFB8E00),
+                    ],
                   ),
+                  borderRadius: BorderRadius.circular(50.0),
                 ),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 18.0,
-                    horizontal: 30.0,
+                child: ElevatedButton(
+                  onPressed: () {},
+                  child: const Text(
+                    'Postar',
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
                   ),
-                  // shadowColor: Colors.grey,
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(50.0),
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 18.0,
+                      horizontal: 30.0,
+                    ),
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50.0),
+                    ),
                   ),
                 ),
               ),
