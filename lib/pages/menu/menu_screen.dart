@@ -1,4 +1,4 @@
-import 'package:fennec_desktop/models/sidebar_buttons.dart';
+import 'package:fennec_desktop/pages/menu/profile/profile_screen.dart';
 import 'package:flutter/material.dart';
 
 class MenuScreen extends StatefulWidget {
@@ -20,7 +20,6 @@ class MenuScreen extends StatefulWidget {
 }
 
 class _MenuScreenState extends State<MenuScreen> {
-  TextStyle listStyle = const TextStyle(fontSize: 16.0, color: Colors.white);
   bool _isMenuVisible = false;
   late int widgetIndex = 0;
 
@@ -62,7 +61,7 @@ class _MenuScreenState extends State<MenuScreen> {
         child: Row(
           children: [
             Container(
-              width: MediaQuery.of(context).size.width * 0.08,
+              width: 100.0,
               decoration: const BoxDecoration(
                 border: Border(
                   right: BorderSide(
@@ -72,9 +71,9 @@ class _MenuScreenState extends State<MenuScreen> {
               ),
               child: sidebarNavigation(),
             ),
-            SizedBox(
+            const SizedBox(
               width: 400.0,
-              child: sidebarButtons[widgetIndex].content,
+              child: ProfileScreen(),
             )
           ],
         ),
@@ -87,7 +86,7 @@ class _MenuScreenState extends State<MenuScreen> {
       //background do container teams que deve mudar de acordo com o widget selecionado
       color: Color(int.parse(widget.backgroundColor)),
       child: Container(
-        width: MediaQuery.of(context).size.width * 0.08,
+        width: 100.0,
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.only(
             topRight: Radius.circular(70.0),
@@ -105,52 +104,106 @@ class _MenuScreenState extends State<MenuScreen> {
   }
 
   Widget sidebarNavigation() {
-    return Center(
-      child: ListView.builder(
-        padding: const EdgeInsets.only(top: 10.0, bottom: 0.0),
-        itemCount: sidebarButtons.length,
-        itemBuilder: (BuildContext context, int index) {
-          return InkWell(
-            onTap: () {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 10.0),
+          child: SidebarButtons(
+            icon: Icons.person,
+            title: 'Perfil',
+            onSelect: () {
               setState(() {
-                widgetIndex = index;
-
-                if (widgetIndex == 0) {
-                  _isMenuVisible = !_isMenuVisible;
-                  //ao clicar, aviso ao parent widget que houve uma ação
-                  widget.onProfileSelected();
-                }
-                if (widgetIndex == 1) {
-                  widget.onTeamSelected();
-                }
+                _isMenuVisible = !_isMenuVisible;
+                //ao clicar, aviso ao parent widget que houve uma ação
+                widget.onProfileSelected();
               });
             },
-            child: Padding(
-              padding: const EdgeInsets.only(top: 15.0),
-              child: Column(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.white, width: 2),
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(5.0),
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Icon(
-                        sidebarButtons[index].icon,
-                        size: 28.0,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  Text(sidebarButtons[index].title, style: listStyle)
-                ],
+          ),
+        ),
+        SidebarButtons(
+          icon: Icons.groups,
+          title: 'Time',
+          onSelect: () {
+            setState(() {
+              widget.onTeamSelected();
+            });
+          },
+        ),
+        SidebarButtons(
+          icon: Icons.workspaces,
+          title: 'Workspace',
+          onSelect: () {},
+        ),
+        SidebarButtons(
+          icon: Icons.feed,
+          title: 'Feed',
+          onSelect: () {},
+        ),
+        SidebarButtons(
+          icon: Icons.computer,
+          title: 'EAD',
+          onSelect: () {},
+        ),
+        SidebarButtons(
+          icon: Icons.star,
+          title: 'Certificados',
+          onSelect: () {},
+        ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10.0),
+          child: SidebarButtons(
+            icon: Icons.logout,
+            title: 'Sair',
+            onSelect: () {},
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class SidebarButtons extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final VoidCallback onSelect;
+
+  const SidebarButtons({
+    Key? key,
+    required this.icon,
+    required this.title,
+    required this.onSelect,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        onSelect();
+      },
+      child: Column(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.white, width: 2),
+              borderRadius: const BorderRadius.all(
+                Radius.circular(5.0),
               ),
             ),
-          );
-        },
+            child: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Icon(
+                icon,
+                size: 28.0,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          Text(
+            title,
+            style: const TextStyle(fontSize: 16.0, color: Colors.white),
+          )
+        ],
       ),
     );
   }
