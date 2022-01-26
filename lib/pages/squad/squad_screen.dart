@@ -51,118 +51,119 @@ class _SquadScreenState extends State<SquadScreen> {
             ],
           ),
         ),
-        child: Container(
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.only(
-              topRight: Radius.circular(100.0),
-              bottomRight: Radius.circular(100.0),
-            ),
-            color: Color(0xFFF3F2F3),
+        child: ClipRRect(
+          borderRadius: const BorderRadius.only(
+            topRight: Radius.circular(100.0),
+            bottomRight: Radius.circular(100.0),
           ),
-          height: MediaQuery.of(context).size.height,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Squad',
-                style: TextStyle(
-                  color: Color(0xFF4D4D4D),
-                  fontSize: 35.0,
-                  fontWeight: FontWeight.bold,
+          child: Container(
+            //borda do container cortada e o texto some ao passar por ela
+            color: const Color(0xFFF3F2F3),
+            height: MediaQuery.of(context).size.height,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Squad',
+                  style: TextStyle(
+                    color: Color(0xFF4D4D4D),
+                    fontSize: 35.0,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              const Center(
-                child: PostInput(),
-              ),
-              const Padding(
-                padding: EdgeInsets.only(left: 15.0, right: 15.0),
-                child: Divider(
-                  color: Color(0xFFCCCCCC),
+                const Center(
+                  child: PostInput(),
                 ),
-              ),
-              Expanded(
-                child: ListView.separated(
-                  primary: false,
-                  shrinkWrap: true,
-                  padding: const EdgeInsets.all(15.0),
-                  itemCount: posts.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            SizedBox(
-                              width: 55.0,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(50.0),
-                                child: Image.network(posts[index]['photo']),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    posts[index]['name'],
-                                    style: const TextStyle(
-                                      color: Color(0xFF4D4D4D),
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    posts[index]['createdAt'],
-                                    style: const TextStyle(
-                                      color: Color(0xFF4D4D4D),
-                                      fontSize: 12.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 63.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                posts[index]['comment'],
-                                style: const TextStyle(
-                                  color: Color(0xFF4D4D4D),
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Container(
-                                width: 100.0,
-                                padding: const EdgeInsets.only(top: 20.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: const [
-                                    Icon(Icons.thumb_up_alt_outlined),
-                                    Icon(Icons.comment_outlined),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        )
-                      ],
-                    );
-                  },
-                  separatorBuilder: (BuildContext context, int index) =>
-                      const Divider(
+                const Padding(
+                  padding: EdgeInsets.only(left: 15.0, right: 15.0),
+                  child: Divider(
                     color: Color(0xFFCCCCCC),
                   ),
                 ),
-              ),
-            ],
+                Expanded(
+                  child: ListView.separated(
+                    primary: false,
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.all(15.0),
+                    itemCount: posts.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: 55.0,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(50.0),
+                                  child: Image.network(posts[index]['photo']),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      posts[index]['name'],
+                                      style: const TextStyle(
+                                        color: Color(0xFF4D4D4D),
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      posts[index]['createdAt'],
+                                      style: const TextStyle(
+                                        color: Color(0xFF4D4D4D),
+                                        fontSize: 12.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 63.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  posts[index]['comment'],
+                                  style: const TextStyle(
+                                    color: Color(0xFF4D4D4D),
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Container(
+                                  width: 100.0,
+                                  padding: const EdgeInsets.only(top: 20.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: const [
+                                      Icon(Icons.thumb_up_alt_outlined),
+                                      Icon(Icons.comment_outlined),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          )
+                        ],
+                      );
+                    },
+                    separatorBuilder: (BuildContext context, int index) =>
+                        const Divider(
+                      color: Color(0xFFCCCCCC),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
