@@ -43,40 +43,38 @@ class _MenuScreenState extends State<MenuScreen> {
 
   Widget expandedMenu(BuildContext context) {
     return Container(
-      //background do container teams que deve mudar de acordo com o widget selecionado
-      color: Color(int.parse(widget.backgroundColor)),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.only(
-            topRight: Radius.circular(100.0),
-            bottomRight: Radius.circular(100.0),
-          ),
-          gradient: LinearGradient(
-            begin: Alignment.bottomRight,
-            end: Alignment.topLeft,
-            colors: gradientColors,
-          ),
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.only(
+          topRight: Radius.circular(100.0),
+          bottomRight: Radius.circular(100.0),
         ),
-        height: MediaQuery.of(context).size.height,
-        child: Row(
-          children: [
-            Container(
-              width: 100.0,
-              decoration: const BoxDecoration(
-                border: Border(
-                  right: BorderSide(
-                    color: Colors.white,
-                  ),
+        gradient: LinearGradient(
+          begin: Alignment.bottomRight,
+          end: Alignment.topLeft,
+          colors: gradientColors,
+        ),
+      ),
+      height: MediaQuery.of(context).size.height,
+      width: 502.0,
+      child: Row(
+        children: [
+          Container(
+            width: 100.0,
+            decoration: const BoxDecoration(
+              border: Border(
+                right: BorderSide(
+                  color: Colors.white,
                 ),
               ),
-              child: sidebarNavigation(),
             ),
-            const SizedBox(
-              width: 400.0,
-              child: ProfileScreen(),
-            )
-          ],
-        ),
+            child: sidebarNavigation(),
+          ),
+          Container(
+            margin: const EdgeInsets.only(left: 70.0),
+            width: 250.0,
+            child: const ProfileScreen(),
+          )
+        ],
       ),
     );
   }
@@ -127,6 +125,10 @@ class _MenuScreenState extends State<MenuScreen> {
           onSelect: () {
             setState(() {
               widget.onTeamSelected();
+              //se o menu do perfil aberto, fechar ele
+              if (_isMenuVisible) {
+                _isMenuVisible = !_isMenuVisible;
+              }
             });
           },
         ),
