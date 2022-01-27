@@ -25,6 +25,7 @@ class _MainPageState extends State<MainPage> {
     // com stack os componentes irao ficar um em cima do outro
     return Stack(
       children: [
+        // TIME/SQUAD/CHAT
         //conteudo principal serás sobreposto
         Padding(
           padding: const EdgeInsets.only(left: 100.0, right: 60.0),
@@ -46,6 +47,7 @@ class _MainPageState extends State<MainPage> {
             ],
           ),
         ),
+        // MENU
         // sidebar ficara fixo e ao abrir o perfil, irá sobrepor o conteúdo principal
         Padding(
           padding: const EdgeInsets.only(right: 0.0),
@@ -107,8 +109,9 @@ class _MainPageState extends State<MainPage> {
             ),
           ),
         ),
+        // BOTOES ABRIR TELA TIME/SQUAD/CHAT
+        //fica em cima das telas principais do conteudo principal
         Positioned(
-          //fica em cima das telas principais do conteudo principal
           right: 20.0,
           bottom: 150.0,
           child: Padding(
