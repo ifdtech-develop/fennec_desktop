@@ -1,4 +1,5 @@
 import 'package:fennec_desktop/pages/chat/chat_screen.dart';
+import 'package:fennec_desktop/pages/main_feed/main_feed.dart';
 import 'package:fennec_desktop/pages/menu/menu_screen.dart';
 import 'package:fennec_desktop/pages/squad/squad_screen.dart';
 import 'package:fennec_desktop/pages/team/team_screen.dart';
@@ -15,7 +16,7 @@ class _MainPageState extends State<MainPage> {
   bool _isTeamVisible = false;
   bool _isSquadVisible = false;
   bool _isChatVisible = false;
-  String backgroundcolorMenu = '0xFFFFFFFF';
+  String backgroundcolorMenu = '0xFFFDF5E6';
   String backgroundcolorTeams = '0xFFFFFFFF';
   String backgroundcolorSquad = '0xFFFFFFFF';
   final List<bool> _selected = List.generate(4, (i) => false);
@@ -25,6 +26,10 @@ class _MainPageState extends State<MainPage> {
     // com stack os componentes irao ficar um em cima do outro
     return Stack(
       children: [
+        const Padding(
+          padding: EdgeInsets.only(left: 100.0, right: 60.0),
+          child: MainFeed(),
+        ),
         // TIME/SQUAD/CHAT
         //conteudo principal serás sobreposto
         Padding(
@@ -78,7 +83,7 @@ class _MainPageState extends State<MainPage> {
                     } else if (!_selected[0] &&
                         !_selected[1] &&
                         !_selected[2]) {
-                      backgroundcolorMenu = '0xFFFFFFFF';
+                      backgroundcolorMenu = '0xFFFDF5E6';
                     }
                   }
                 });
@@ -102,7 +107,7 @@ class _MainPageState extends State<MainPage> {
                     backgroundcolorTeams = '0xFFF3F2F3';
                     backgroundcolorSquad = '0xFF5CE1E6';
                   } else {
-                    backgroundcolorMenu = '0xFFFFFFFF';
+                    backgroundcolorMenu = '0xFFFDF5E6';
                   }
                 });
               },
@@ -193,7 +198,7 @@ class _MainPageState extends State<MainPage> {
           } else if (!_selected[0] && !_selected[1] && _selected[2]) {
             backgroundcolorMenu = '0xFF5CE1E6';
           } else {
-            backgroundcolorMenu = '0xFFFFFFFF';
+            backgroundcolorMenu = '0xFFFDF5E6';
           }
         });
       },
