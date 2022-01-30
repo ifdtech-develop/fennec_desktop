@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({Key? key}) : super(key: key);
+  final bool isChatOpened;
+
+  const ChatScreen({Key? key, required this.isChatOpened}) : super(key: key);
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  final List<String> entries = <String>['A', 'B', 'C'];
-  final List<int> colorCodes = <int>[600, 500, 100];
-
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -24,8 +23,7 @@ class _ChatScreenState extends State<ChatScreen> {
             stops: [0.5, 0.5],
             colors: [
               Color(0xFFFFFFFF),
-              // Color(0xFF5CE1E6),
-              Color(0xFFF3F2F3),
+              Color(0xFF5CE1E6),
             ],
           ),
         ),
@@ -36,7 +34,7 @@ class _ChatScreenState extends State<ChatScreen> {
             bottomRight: Radius.circular(100.0),
           ),
           child: Container(
-            color: const Color(0xFFF3F2F3),
+            color: const Color(0xFF5CE1E6),
             height: MediaQuery.of(context).size.height,
             child: Row(
               children: [
@@ -45,8 +43,8 @@ class _ChatScreenState extends State<ChatScreen> {
                   color: const Color(0xFF5CE1E6),
                   width: 300.0,
                   child: ListView.separated(
-                    padding: const EdgeInsets.all(8),
-                    itemCount: entries.length,
+                    padding: const EdgeInsets.all(15.0),
+                    itemCount: 3,
                     itemBuilder: (BuildContext context, int index) {
                       return ListTile(
                         leading: ClipRRect(
@@ -63,87 +61,92 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                 ),
                 // container chat
-                Expanded(
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(100.0),
-                        bottomRight: Radius.circular(100.0),
-                      ),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          height: 70.0,
-                          child: Card(
-                            margin: const EdgeInsets.all(0.0),
-                            color: const Color(0xFFE4E4E4),
-                            elevation: 5,
-                            child: Center(
-                              child: ListTile(
-                                leading: ClipRRect(
-                                  borderRadius: BorderRadius.circular(50.0),
-                                  child: Image.network(
-                                    'https://picsum.photos/id/1012/80/80',
-                                  ),
-                                ),
-                                title: const Text('Alexander Albuquerque'),
-                              ),
-                            ),
-                          ),
+                Visibility(
+                  visible: widget.isChatOpened,
+                  child: Expanded(
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(100.0),
+                          bottomRight: Radius.circular(100.0),
                         ),
-                        Container(),
-                        SizedBox(
-                          height: 70.0,
-                          child: Card(
-                            margin: const EdgeInsets.all(0.0),
-                            color: const Color(0xFFE4E4E4),
-                            child: Center(
-                              child: Row(
-                                children: [
-                                  const Padding(
-                                    padding: EdgeInsets.only(left: 15.0),
-                                    child: Icon(Icons.attach_file_outlined),
-                                  ),
-                                  const Padding(
-                                    padding: EdgeInsets.only(
-                                        left: 10.0, right: 15.0),
-                                    child: Icon(Icons.emoji_emotions_outlined),
-                                  ),
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                        right: 50.0,
-                                      ),
-                                      child: TextField(
-                                        decoration: InputDecoration(
-                                          contentPadding:
-                                              const EdgeInsets.all(10.0),
-                                          // cor da borda
-                                          enabledBorder: OutlineInputBorder(
-                                            borderSide: const BorderSide(
-                                              color: Color(0xFF707070),
-                                            ),
-                                            borderRadius:
-                                                BorderRadius.circular(50.0),
-                                          ),
-                                          // Border quando usuario clica no input
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(50),
-                                          ),
-                                        ),
-                                        keyboardType: TextInputType.multiline,
-                                      ),
+                        color: Color(0xFFF3F2F3),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            height: 70.0,
+                            child: Card(
+                              margin: const EdgeInsets.all(0.0),
+                              color: const Color(0xFFE4E4E4),
+                              elevation: 5,
+                              child: Center(
+                                child: ListTile(
+                                  leading: ClipRRect(
+                                    borderRadius: BorderRadius.circular(50.0),
+                                    child: Image.network(
+                                      'https://picsum.photos/id/1012/80/80',
                                     ),
                                   ),
-                                ],
+                                  title: const Text('Alexander Albuquerque'),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                          Container(),
+                          SizedBox(
+                            height: 70.0,
+                            child: Card(
+                              margin: const EdgeInsets.all(0.0),
+                              color: const Color(0xFFE4E4E4),
+                              child: Center(
+                                child: Row(
+                                  children: [
+                                    const Padding(
+                                      padding: EdgeInsets.only(left: 15.0),
+                                      child: Icon(Icons.attach_file_outlined),
+                                    ),
+                                    const Padding(
+                                      padding: EdgeInsets.only(
+                                          left: 10.0, right: 15.0),
+                                      child:
+                                          Icon(Icons.emoji_emotions_outlined),
+                                    ),
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                          right: 50.0,
+                                        ),
+                                        child: TextField(
+                                          decoration: InputDecoration(
+                                            contentPadding:
+                                                const EdgeInsets.all(10.0),
+                                            // cor da borda
+                                            enabledBorder: OutlineInputBorder(
+                                              borderSide: const BorderSide(
+                                                color: Color(0xFF707070),
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(50.0),
+                                            ),
+                                            // Border quando usuario clica no input
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(50),
+                                            ),
+                                          ),
+                                          keyboardType: TextInputType.multiline,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 )

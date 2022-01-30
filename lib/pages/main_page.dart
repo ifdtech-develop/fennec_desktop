@@ -19,6 +19,7 @@ class _MainPageState extends State<MainPage> {
   String backgroundcolorMenu = '0xFFFDF5E6';
   String backgroundcolorTeams = '0xFFFFFFFF';
   String backgroundcolorSquad = '0xFFFFFFFF';
+  bool chatIsOpen = false;
   final List<bool> _selected = List.generate(4, (i) => false);
 
   @override
@@ -47,7 +48,7 @@ class _MainPageState extends State<MainPage> {
               ),
               Visibility(
                 visible: _isChatVisible,
-                child: const ChatScreen(),
+                child: ChatScreen(isChatOpened: chatIsOpen),
               ),
             ],
           ),
@@ -152,6 +153,14 @@ class _MainPageState extends State<MainPage> {
             _isChatVisible = !_isChatVisible;
             //estou alocando um valor booleano na posicao 2 do array
             _selected[2] = !_selected[2];
+          }
+
+          // exibir o chat somente se tiver no maximo duas telas abertas
+          var count = _selected.where((element) => element == true);
+          if (count.length < 3) {
+            chatIsOpen = true;
+          } else {
+            chatIsOpen = false;
           }
 
           //mudando a cor do background do container teams de acordo com o widget selecionado
