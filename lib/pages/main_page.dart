@@ -110,6 +110,14 @@ class _MainPageState extends State<MainPage> {
                   } else {
                     backgroundcolorMenu = '0xFFFDF5E6';
                   }
+
+                  // exibir o chat somente se tiver no maximo duas telas abertas
+                  var count = _selected.where((element) => element == true);
+                  if (count.length < 3) {
+                    chatIsOpen = true;
+                  } else {
+                    chatIsOpen = false;
+                  }
                 });
               },
             ),
