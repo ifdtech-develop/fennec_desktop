@@ -119,20 +119,17 @@ class _MainPageState extends State<MainPage> {
         Positioned(
           right: 20.0,
           bottom: 150.0,
-          child: Padding(
-            padding: const EdgeInsets.only(left: 0.0, right: 0.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                mainButtons(Icons.groups, 0),
-                Padding(
-                  padding: const EdgeInsets.only(top: 30.0, bottom: 30.0),
-                  child: mainButtons(Icons.format_list_bulleted, 1),
-                ),
-                mainButtons(Icons.chat, 2),
-              ],
-            ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              mainButtons(Icons.groups, 0),
+              Padding(
+                padding: const EdgeInsets.only(top: 30.0, bottom: 30.0),
+                child: mainButtons(Icons.format_list_bulleted, 1),
+              ),
+              mainButtons(Icons.chat, 2),
+            ],
           ),
         ),
       ],
