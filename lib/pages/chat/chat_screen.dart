@@ -10,6 +10,28 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  int friendIndex = 0;
+  final List friends = [
+    {
+      'photo': 'https://picsum.photos/id/1012/80/80',
+      'name': 'Matheus Motta',
+      'statusColor': Colors.red,
+      'chat': 'Bom dia, tudo bem?',
+    },
+    {
+      'photo': 'https://picsum.photos/id/1027/80/80',
+      'name': 'Letícia Almeida',
+      'statusColor': Colors.green,
+      'chat': 'Vai sair hoje?',
+    },
+    {
+      'photo': 'https://picsum.photos/id/1005/80/80',
+      'name': 'David Silvas',
+      'statusColor': Colors.white,
+      'chat': 'Indo dormir, boa noite.',
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -44,16 +66,35 @@ class _ChatScreenState extends State<ChatScreen> {
                   width: 300.0,
                   child: ListView.separated(
                     padding: const EdgeInsets.all(15.0),
-                    itemCount: 3,
+                    itemCount: friends.length,
                     itemBuilder: (BuildContext context, int index) {
                       return ListTile(
-                        leading: ClipRRect(
-                          borderRadius: BorderRadius.circular(50.0),
-                          child: Image.network(
-                            'https://picsum.photos/id/1012/80/80',
-                          ),
+                        onTap: () {
+                          setState(() {
+                            friendIndex = index;
+                          });
+                        },
+                        leading: Stack(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(50.0),
+                              child: Image.network(friends[index]['photo']),
+                            ),
+                            Positioned(
+                              right: 0.0,
+                              top: 33.0,
+                              child: Container(
+                                width: 14.0,
+                                height: 14.0,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: friends[index]['statusColor'],
+                                ),
+                              ),
+                            )
+                          ],
                         ),
-                        title: const Text('Alexander Albuquerque'),
+                        title: Text(friends[index]['name']),
                       );
                     },
                     separatorBuilder: (BuildContext context, int index) =>
@@ -74,6 +115,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(
                             height: 70.0,
@@ -83,18 +125,58 @@ class _ChatScreenState extends State<ChatScreen> {
                               elevation: 5,
                               child: Center(
                                 child: ListTile(
-                                  leading: ClipRRect(
-                                    borderRadius: BorderRadius.circular(50.0),
-                                    child: Image.network(
-                                      'https://picsum.photos/id/1012/80/80',
-                                    ),
+                                  leading: Stack(
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(50.0),
+                                        child: Image.network(
+                                            friends[friendIndex]['photo']),
+                                      ),
+                                      Positioned(
+                                        right: 0.0,
+                                        top: 33.0,
+                                        child: Container(
+                                          width: 14.0,
+                                          height: 14.0,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            color: friends[friendIndex]
+                                                ['statusColor'],
+                                          ),
+                                        ),
+                                      )
+                                    ],
                                   ),
-                                  title: const Text('Alexander Albuquerque'),
+                                  title: Text(friends[friendIndex]['name']),
                                 ),
                               ),
                             ),
                           ),
-                          Container(),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            height: 410.0,
+                            child: Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: Colors.white,
+                                    ),
+                                    height: 50.0,
+                                    width: 200.0,
+                                    child: Center(
+                                      child: Text(friends[friendIndex]['chat']),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                           SizedBox(
                             height: 70.0,
                             child: Card(
