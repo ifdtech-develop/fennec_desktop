@@ -217,7 +217,7 @@ class _SquadScreenState extends State<SquadScreen> {
                               separatorBuilder:
                                   (BuildContext context, int index) =>
                                       const Divider(
-                                color: Color(0xFFF3F2F3),
+                                color: Color(0xFFCCCCCC),
                               ),
                             ),
                           );
