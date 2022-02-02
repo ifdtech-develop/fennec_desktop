@@ -13,14 +13,14 @@ class SquadFeedDao {
         });
 
     if (response.statusCode == 200) {
-      print('mandando resposta');
-      print(response.body);
+      // print('mandando resposta');
+      // print(response.body);
 
       return SquadFeed.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
     } else {
-      print('response.erro');
-      print(response.body);
-      throw Exception('Failed to load cliente');
+      // print('response.erro');
+      // print(response.body);
+      throw Exception('Failed to load squad feed');
     }
   }
 }

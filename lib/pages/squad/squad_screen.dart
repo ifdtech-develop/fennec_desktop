@@ -222,7 +222,6 @@ class _SquadScreenState extends State<SquadScreen> {
                             ),
                           );
                         } else if (snapshot.hasError) {
-                          print(snapshot.error);
                           return Text('${snapshot.error}');
                         }
                         break;

@@ -235,7 +235,6 @@ class _TeamScreenState extends State<TeamScreen> {
                             ),
                           );
                         } else if (snapshot.hasError) {
-                          print(snapshot.error);
                           return Text('${snapshot.error}');
                         }
                         break;
