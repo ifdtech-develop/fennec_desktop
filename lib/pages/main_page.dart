@@ -1,3 +1,5 @@
+import 'package:fennec_desktop/components/appbar.dart';
+import 'package:fennec_desktop/components/bottom_navigation_bar.dart';
 import 'package:fennec_desktop/pages/chat/chat_screen.dart';
 import 'package:fennec_desktop/pages/main_feed/main_feed_screen.dart';
 import 'package:fennec_desktop/pages/menu/menu_screen.dart';
@@ -24,124 +26,130 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    // com stack os componentes irao ficar um em cima do outro
-    return Stack(
-      children: [
-        const Padding(
-          padding: EdgeInsets.only(left: 100.0, right: 60.0),
-          child: MainFeedScreen(),
-        ),
-        // TIME/SQUAD/CHAT
-        //conteudo principal serás sobreposto
-        Padding(
-          padding: const EdgeInsets.only(left: 100.0, right: 60.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Visibility(
-                visible: _isTeamVisible,
-                child: TeamScreen(backgroundColor: backgroundcolorTeams),
-              ),
-              Visibility(
-                visible: _isSquadVisible,
-                child: SquadScreen(backgroundColor: backgroundcolorSquad),
-              ),
-              Visibility(
-                visible: _isChatVisible,
-                child: ChatScreen(isChatOpened: chatIsOpen),
-              ),
-            ],
+    return Scaffold(
+      appBar: const AppbarComponent(),
+      bottomNavigationBar: const BottomNavigationBarComponent(),
+      // com stack os componentes irao ficar um em cima do outro
+      body: Stack(
+        children: [
+          const Padding(
+            padding: EdgeInsets.only(left: 100.0, right: 60.0),
+            child: MainFeedScreen(),
           ),
-        ),
-        // MENU
-        // sidebar ficara fixo e ao abrir o perfil, irá sobrepor o conteúdo principal
-        Padding(
-          padding: const EdgeInsets.only(right: 0.0),
-          child: Container(
-            // container por traz do menu para que não apareça o conteúdo que o menu esta sobrepondo
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(100.0),
-                bottomRight: Radius.circular(100.0),
-              ),
+          // TIME/SQUAD/CHAT
+          //conteudo principal serás sobreposto
+          Padding(
+            padding: const EdgeInsets.only(left: 100.0, right: 60.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Visibility(
+                  visible: _isTeamVisible,
+                  child: TeamScreen(backgroundColor: backgroundcolorTeams),
+                ),
+                Visibility(
+                  visible: _isSquadVisible,
+                  child: SquadScreen(backgroundColor: backgroundcolorSquad),
+                ),
+                Visibility(
+                  visible: _isChatVisible,
+                  child: ChatScreen(isChatOpened: chatIsOpen),
+                ),
+              ],
             ),
-            child: MenuScreen(
-              backgroundColor: backgroundcolorMenu,
-              //por aqui, fico sabendo que houve uma ação no botao perfil
-              onProfileSelected: () {
-                setState(() {
-                  //estou alocando um valor booleano na posicao 3 do array
-                  _selected[3] = !_selected[3];
-                  //mudando a cor do background do container do menu acordo com o widget selecionado
-                  if (_selected[3]) {
-                    if (_selected[0]) {
+          ),
+          // MENU
+          // sidebar ficara fixo e ao abrir o perfil, irá sobrepor o conteúdo principal
+          Padding(
+            padding: const EdgeInsets.only(right: 0.0),
+            child: Container(
+              // container por traz do menu para que não apareça o conteúdo que o menu esta sobrepondo
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(100.0),
+                  bottomRight: Radius.circular(100.0),
+                ),
+              ),
+              child: MenuScreen(
+                backgroundColor: backgroundcolorMenu,
+                //por aqui, fico sabendo que houve uma ação no botao perfil
+                onProfileSelected: () {
+                  setState(() {
+                    //estou alocando um valor booleano na posicao 3 do array
+                    _selected[3] = !_selected[3];
+                    //mudando a cor do background do container do menu acordo com o widget selecionado
+                    if (_selected[3]) {
+                      if (_selected[0]) {
+                        backgroundcolorMenu = '0xFFCCCCCC';
+                      } else if (!_selected[0] && _selected[1]) {
+                        backgroundcolorMenu = '0xFFF3F2F3';
+                      } else if (!_selected[0] &&
+                          !_selected[1] &&
+                          _selected[2]) {
+                        backgroundcolorMenu = '0xFF5CE1E6';
+                      } else if (!_selected[0] &&
+                          !_selected[1] &&
+                          !_selected[2]) {
+                        backgroundcolorMenu = '0xFFFDF5E6';
+                      }
+                    }
+                  });
+                },
+                onTeamSelected: () {
+                  setState(() {
+                    //estou alocando um valor booleano na posicao 0 do array
+                    _selected[0] = true;
+                    _isTeamVisible = true;
+
+                    //estou alocando um valor booleano na posicao 1 do array
+                    _selected[1] = true;
+                    _isSquadVisible = true;
+
+                    //estou alocando um valor booleano na posicao 2 do array
+                    _selected[2] = true;
+                    _isChatVisible = true;
+
+                    if (_selected[0] && _selected[1] && _selected[2]) {
                       backgroundcolorMenu = '0xFFCCCCCC';
-                    } else if (!_selected[0] && _selected[1]) {
-                      backgroundcolorMenu = '0xFFF3F2F3';
-                    } else if (!_selected[0] && !_selected[1] && _selected[2]) {
-                      backgroundcolorMenu = '0xFF5CE1E6';
-                    } else if (!_selected[0] &&
-                        !_selected[1] &&
-                        !_selected[2]) {
+                      backgroundcolorTeams = '0xFFF3F2F3';
+                      backgroundcolorSquad = '0xFF5CE1E6';
+                    } else {
                       backgroundcolorMenu = '0xFFFDF5E6';
                     }
-                  }
-                });
-              },
-              onTeamSelected: () {
-                setState(() {
-                  //estou alocando um valor booleano na posicao 0 do array
-                  _selected[0] = true;
-                  _isTeamVisible = true;
 
-                  //estou alocando um valor booleano na posicao 1 do array
-                  _selected[1] = true;
-                  _isSquadVisible = true;
-
-                  //estou alocando um valor booleano na posicao 2 do array
-                  _selected[2] = true;
-                  _isChatVisible = true;
-
-                  if (_selected[0] && _selected[1] && _selected[2]) {
-                    backgroundcolorMenu = '0xFFCCCCCC';
-                    backgroundcolorTeams = '0xFFF3F2F3';
-                    backgroundcolorSquad = '0xFF5CE1E6';
-                  } else {
-                    backgroundcolorMenu = '0xFFFDF5E6';
-                  }
-
-                  // exibir o chat somente se tiver no maximo duas telas abertas
-                  var count = _selected.where((element) => element == true);
-                  if (count.length < 3) {
-                    chatIsOpen = true;
-                  } else {
-                    chatIsOpen = false;
-                  }
-                });
-              },
+                    // exibir o chat somente se tiver no maximo duas telas abertas
+                    var count = _selected.where((element) => element == true);
+                    if (count.length < 3) {
+                      chatIsOpen = true;
+                    } else {
+                      chatIsOpen = false;
+                    }
+                  });
+                },
+              ),
             ),
           ),
-        ),
-        // BOTOES ABRIR TELA TIME/SQUAD/CHAT
-        //fica em cima das telas principais do conteudo principal
-        Positioned(
-          right: 20.0,
-          bottom: 150.0,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              mainButtons(Icons.groups, 0),
-              Padding(
-                padding: const EdgeInsets.only(top: 30.0, bottom: 30.0),
-                child: mainButtons(Icons.format_list_bulleted, 1),
-              ),
-              mainButtons(Icons.chat, 2),
-            ],
+          // BOTOES ABRIR TELA TIME/SQUAD/CHAT
+          //fica em cima das telas principais do conteudo principal
+          Positioned(
+            right: 20.0,
+            bottom: 150.0,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                mainButtons(Icons.groups, 0),
+                Padding(
+                  padding: const EdgeInsets.only(top: 30.0, bottom: 30.0),
+                  child: mainButtons(Icons.format_list_bulleted, 1),
+                ),
+                mainButtons(Icons.chat, 2),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
