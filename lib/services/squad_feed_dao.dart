@@ -46,8 +46,8 @@ class SquadFeedDao {
     );
 
     if (response.statusCode == 200) {
-      print('response.body');
-      print(response.body);
+      // print('response.body');
+      // print(response.body);
       return PostContent.fromJson(jsonDecode(response.body));
     } else {
       print('error');
