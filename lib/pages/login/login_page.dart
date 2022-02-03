@@ -75,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
                                   .login(_telefoneController.text,
                                       _senhaController.text)
                                   .then((value) {
-                                _setToken(value.token);
+                                _setToken(value.token, value.nome, value.tell);
                               }).catchError((onError) {
                                 print(onError);
                               });
@@ -114,9 +114,11 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  _setToken(token) async {
+  _setToken(token, name, phone) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('token', token);
+    prefs.setString('name', name);
+    prefs.setString('phone', phone);
     Navigator.of(context).pushNamed('/mainPage');
   }
 }

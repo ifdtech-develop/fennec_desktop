@@ -157,7 +157,9 @@ class _MenuScreenState extends State<MenuScreen> {
           child: SidebarButtons(
             icon: Icons.logout,
             title: 'Sair',
-            onSelect: () {},
+            onSelect: () {
+              Navigator.of(context).pushNamed('/loginPage');
+            },
           ),
         ),
       ],
