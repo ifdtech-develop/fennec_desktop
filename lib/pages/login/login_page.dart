@@ -56,6 +56,10 @@ class _LoginPageState extends State<LoginPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      Image.asset(
+                        'assets/images/logo.png',
+                        fit: BoxFit.contain,
+                      ),
                       CustomFormField(
                         icone: Icons.phone_android_outlined,
                         label: 'Telefone',
