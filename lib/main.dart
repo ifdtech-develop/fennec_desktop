@@ -1,5 +1,3 @@
-import 'package:fennec_desktop/components/appbar.dart';
-import 'package:fennec_desktop/components/bottom_navigation_bar.dart';
 import 'package:fennec_desktop/pages/login/login_page.dart';
 import 'package:fennec_desktop/pages/main_page.dart';
 import 'package:flutter/gestures.dart';
