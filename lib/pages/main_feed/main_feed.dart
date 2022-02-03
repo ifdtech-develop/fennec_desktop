@@ -146,7 +146,8 @@ class _MainFeedState extends State<MainFeed> {
                                         borderRadius:
                                             BorderRadius.circular(50.0),
                                         child: Image.network(
-                                            posts[index]['photo']),
+                                          'https://picsum.photos/id/1012/80/80',
+                                        ),
                                       ),
                                     ),
                                     Padding(
