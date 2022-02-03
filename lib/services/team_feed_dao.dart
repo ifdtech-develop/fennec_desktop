@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:fennec_desktop/models/team_feed.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class TeamFeedDao {
@@ -20,6 +21,37 @@ class TeamFeedDao {
       // print('response.erro');
       // print(response.body);
       throw Exception('Failed to load team feed');
+    }
+  }
+
+  Future<PostContent> postContent(
+    String post,
+    // String tipo,
+    // String status,
+  ) async {
+    final response = await http.post(
+      Uri.parse('http://localhost:3000/feed/send/1'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization':
+            'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI5Mjk5NTM1OTg1MiIsImV4cCI6MTY0NDcxMTI0OX0.Ya3syIrfNDAusPgHTJPMi03pDKYFZfjdo55jr3MgWifEiZ4Irp8oyRjciKc2kRfhYRnYzKvu3H6-_xh-Rwm_dA',
+      },
+      body: jsonEncode(<String, dynamic>{
+        "texto": post,
+        "tipo": "texto",
+        "status": "status",
+        "time": {"id": 1}
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      // print('response.body');
+      // print(response.body);
+      return PostContent.fromJson(jsonDecode(response.body));
+    } else {
+      print('error');
+      print(response.body);
+      throw ErrorDescription(response.body);
     }
   }
 }

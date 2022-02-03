@@ -13,6 +13,8 @@ class TeamScreen extends StatefulWidget {
 class _TeamScreenState extends State<TeamScreen> {
   final TeamFeedDao _daoTeamFeed = TeamFeedDao();
   late Future<TeamFeed> _getDados;
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _postController = TextEditingController();
 
   @override
   void initState() {
@@ -100,8 +102,8 @@ class _TeamScreenState extends State<TeamScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const Center(
-                  child: PostInput(),
+                Center(
+                  child: postInput(),
                 ),
                 const Padding(
                   padding: EdgeInsets.only(left: 15.0, right: 15.0),
@@ -160,7 +162,8 @@ class _TeamScreenState extends State<TeamScreen> {
                                             borderRadius:
                                                 BorderRadius.circular(50.0),
                                             child: Image.network(
-                                                posts[index]['photo']),
+                                              'https://picsum.photos/id/1027/80/80',
+                                            ),
                                           ),
                                         ),
                                         Padding(
@@ -247,6 +250,115 @@ class _TeamScreenState extends State<TeamScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Container postInput() {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
+      width: MediaQuery.of(context).size.width * 0.82,
+      child: Column(
+        children: [
+          Row(
+            children: const [
+              Text(
+                'Tem algo a dizer?',
+                style: TextStyle(
+                  color: Color(0xFF4D4D4D),
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+            child: Form(
+              key: _formKey,
+              child: TextFormField(
+                controller: _postController,
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.all(25.0),
+                  // cor da borda
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(
+                      color: Color(0xFF707070),
+                    ),
+                    borderRadius: BorderRadius.circular(50.0),
+                  ),
+                  // Border quando usuario clica no input
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  hintText:
+                      'Compartilhe o que está pensando...', // pass the hint text parameter here
+                  // hintStyle: TextStyle(color: tcolor),
+                ),
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+              ),
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color(0xFFFB00B8),
+                      Color(0xFFFB2588),
+                      Color(0xFFFB3079),
+                      Color(0xFFFB4B56),
+                      Color(0xFFFB5945),
+                      Color(0xFFFB6831),
+                      Color(0xFFFB6E29),
+                      Color(0xFFFB8C03),
+                      Color(0xFFFB8D01),
+                      Color(0xFFFB8E00),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(50.0),
+                ),
+                child: ElevatedButton(
+                  onPressed: () {
+                    _daoTeamFeed
+                        .postContent(_postController.text)
+                        .then((value) {
+                      setState(() {
+                        _getDados = _daoTeamFeed.getFeedContent();
+                        _postController.text = '';
+                      });
+                    }).catchError((onError) {
+                      print(onError);
+                    });
+                  },
+                  child: const Text(
+                    'Postar',
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 18.0,
+                      horizontal: 30.0,
+                    ),
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50.0),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
