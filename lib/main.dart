@@ -1,3 +1,5 @@
+import 'package:fennec_desktop/components/appbar.dart';
+import 'package:fennec_desktop/components/bottom_navigation_bar.dart';
 import 'package:fennec_desktop/pages/main_page.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -40,53 +42,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _selectedIndex = 0;
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        titleSpacing: 50.0,
-        title: Image.asset(
-          'assets/images/logo.png',
-          fit: BoxFit.contain,
-        ),
-        toolbarHeight: 80,
-        elevation: 0,
-      ),
+    return const Scaffold(
+      appBar: AppbarComponent(),
       backgroundColor: Colors.white,
-      body: const MainPage(),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            tooltip: '',
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            tooltip: '',
-            backgroundColor: Colors.transparent,
-            icon: Icon(Icons.business),
-            label: 'Business',
-          ),
-        ],
-        mouseCursor: SystemMouseCursors.alias,
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.white,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        onTap: _onItemTapped,
-        backgroundColor: Colors.white,
-        elevation: 0,
-      ),
+      body: MainPage(),
+      bottomNavigationBar: BottomNavigationBarComponent(),
     );
   }
 }
