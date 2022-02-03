@@ -1,5 +1,5 @@
 import 'package:fennec_desktop/pages/chat/chat_screen.dart';
-import 'package:fennec_desktop/pages/main_feed/main_feed.dart';
+import 'package:fennec_desktop/pages/main_feed/main_feed_screen.dart';
 import 'package:fennec_desktop/pages/menu/menu_screen.dart';
 import 'package:fennec_desktop/pages/squad/squad_screen.dart';
 import 'package:fennec_desktop/pages/team/team_screen.dart';
@@ -29,7 +29,7 @@ class _MainPageState extends State<MainPage> {
       children: [
         const Padding(
           padding: EdgeInsets.only(left: 100.0, right: 60.0),
-          child: MainFeed(),
+          child: MainFeedScreen(),
         ),
         // TIME/SQUAD/CHAT
         //conteudo principal serás sobreposto

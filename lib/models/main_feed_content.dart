@@ -1,9 +1,9 @@
-class MainFeedContent {
+class MainFeed {
   final List<PostContent> content;
 
-  MainFeedContent({required this.content});
+  MainFeed({required this.content});
 
-  factory MainFeedContent.fromJson(Map<String, dynamic> json) {
+  factory MainFeed.fromJson(Map<String, dynamic> json) {
     List<PostContent> listaPosts = [];
 
     for (dynamic i in json['content']) {
@@ -11,7 +11,7 @@ class MainFeedContent {
       listaPosts.add(post);
     }
 
-    return MainFeedContent(
+    return MainFeed(
       content: listaPosts,
     );
   }

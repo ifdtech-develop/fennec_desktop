@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class MainFeedDao {
-  Future<MainFeedContent> getFeedContent() async {
+  Future<MainFeed> getFeedContent() async {
     final response = await http
         .get(Uri.parse('http://localhost:3000/feed/pagination/0/5'), headers: {
       'Authorization':
@@ -16,7 +16,7 @@ class MainFeedDao {
       // print('mandando resposta');
       // print(response.body);
 
-      return MainFeedContent.fromJson(
+      return MainFeed.fromJson(
         jsonDecode(
           utf8.decode(response.bodyBytes),
         ),

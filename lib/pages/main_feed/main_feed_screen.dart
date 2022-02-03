@@ -2,17 +2,17 @@ import 'package:fennec_desktop/models/main_feed_content.dart';
 import 'package:fennec_desktop/services/main_feed_dao.dart';
 import 'package:flutter/material.dart';
 
-class MainFeed extends StatefulWidget {
+class MainFeedScreen extends StatefulWidget {
   final String? backgroundColor;
-  const MainFeed({Key? key, this.backgroundColor}) : super(key: key);
+  const MainFeedScreen({Key? key, this.backgroundColor}) : super(key: key);
 
   @override
-  _MainFeedState createState() => _MainFeedState();
+  _MainFeedScreenState createState() => _MainFeedScreenState();
 }
 
-class _MainFeedState extends State<MainFeed> {
+class _MainFeedScreenState extends State<MainFeedScreen> {
   final MainFeedDao _daoMainFeed = MainFeedDao();
-  late Future<MainFeedContent> _getDados;
+  late Future<MainFeed> _getDados;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _postController = TextEditingController();
 
@@ -95,7 +95,7 @@ class _MainFeedState extends State<MainFeed> {
                 color: Color(0xFFCCCCCC),
               ),
             ),
-            FutureBuilder<MainFeedContent>(
+            FutureBuilder<MainFeed>(
               future: _getDados,
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
@@ -124,7 +124,7 @@ class _MainFeedState extends State<MainFeed> {
                     break;
                   case ConnectionState.done:
                     if (snapshot.hasData) {
-                      final MainFeedContent? feedPosts = snapshot.data;
+                      final MainFeed? feedPosts = snapshot.data;
 
                       return Expanded(
                         child: ListView.separated(
