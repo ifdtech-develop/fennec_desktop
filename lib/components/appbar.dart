@@ -4,7 +4,7 @@ class AppbarComponent extends StatelessWidget with PreferredSizeWidget {
   const AppbarComponent({Key? key}) : super(key: key);
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(80);
 
   @override
   Widget build(BuildContext context) {
