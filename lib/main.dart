@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         scaffoldBackgroundColor: const Color(0xFFFFFFFF),
       ),
-      initialRoute: '/mainPage',
+      initialRoute: '/loginPage',
       routes: {
         '/loginPage': (context) => const LoginPage(),
         '/mainPage': (context) => const MainPage(),
