@@ -38,15 +38,23 @@ class _LoginPageState extends State<LoginPage> {
       ),
       child: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          // mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(
-              height: 500,
+              height: 250,
+              width: 250,
+              child: Image.asset(
+                'assets/images/white-logo.png',
+                fit: BoxFit.contain,
+              ),
+            ),
+            SizedBox(
+              height: 420,
               width: 500,
               child: Card(
                 // color: Color(0xFFFFA07A),
                 shape: RoundedRectangleBorder(
-                  side: const BorderSide(color: Colors.blueGrey, width: 1.0),
+                  side: const BorderSide(color: Colors.white, width: 1.0),
                   borderRadius: BorderRadius.circular(4.0),
                 ),
                 semanticContainer: true,
@@ -56,10 +64,6 @@ class _LoginPageState extends State<LoginPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Image.asset(
-                        'assets/images/logo.png',
-                        fit: BoxFit.contain,
-                      ),
                       CustomFormField(
                         icone: Icons.phone_android_outlined,
                         label: 'Telefone',
@@ -71,36 +75,58 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 50.0, bottom: 30.0),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              _formKey.currentState!.save();
-                              _dao
-                                  .login(_telefoneController.text,
-                                      _senhaController.text)
-                                  .then((value) {
-                                _setToken(value.token, value.nome, value.tell);
-                              }).catchError((onError) {
-                                print(onError);
-                              });
-                            }
-                          },
-                          child: const Text(
-                            'Login',
-                            style: TextStyle(
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.bold,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [
+                                Color(0xFFFB00B8),
+                                Color(0xFFFB2588),
+                                Color(0xFFFB3079),
+                                Color(0xFFFB4B56),
+                                Color(0xFFFB5945),
+                                Color(0xFFFB6831),
+                                Color(0xFFFB6E29),
+                                Color(0xFFFB8C03),
+                                Color(0xFFFB8D01),
+                                Color(0xFFFB8E00),
+                              ],
                             ),
+                            borderRadius: BorderRadius.circular(50.0),
                           ),
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 20,
-                              horizontal: 50,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                _formKey.currentState!.save();
+                                _dao
+                                    .login(_telefoneController.text,
+                                        _senhaController.text)
+                                    .then((value) {
+                                  _setToken(
+                                      value.token, value.nome, value.tell);
+                                }).catchError((onError) {
+                                  print(onError);
+                                });
+                              }
+                            },
+                            child: const Text(
+                              'Login',
+                              style: TextStyle(
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
                             ),
-                            shadowColor: Colors.grey,
-                            elevation: 5,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.transparent,
+                              shadowColor: Colors.transparent,
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 20.0,
+                                horizontal: 50.0,
+                              ),
+                              elevation: 5,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30.0),
+                              ),
                             ),
                           ),
                         ),
