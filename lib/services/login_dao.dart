@@ -10,7 +10,7 @@ class LoginDao {
     String senha,
   ) async {
     final response = await http.post(
-      Uri.parse('http://localhost:3000/login'),
+      Uri.parse('http://54.225.23.148:3000/login'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
