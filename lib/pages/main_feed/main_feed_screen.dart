@@ -16,48 +16,6 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _postController = TextEditingController();
 
-  final List posts = [
-    {
-      'photo': 'https://picsum.photos/id/1012/80/80',
-      'name': 'Matheus Motta',
-      'createdAt': 'há 36 minutos',
-      'comment': 'Bom dia, tudo bem?',
-    },
-    {
-      'photo': 'https://picsum.photos/id/1027/80/80',
-      'name': 'Letícia Almeida',
-      'createdAt': 'há 1 hora',
-      'comment': 'Boa semana!',
-    },
-    {
-      'photo': 'https://picsum.photos/id/1027/80/80',
-      'name': 'Letícia Almeida',
-      'createdAt': 'há 1 hora',
-      'comment': 'Boa semana!',
-    },
-    {
-      'photo': 'https://picsum.photos/id/1005/80/80',
-      'name': 'David Silvas',
-      'createdAt': 'há 15 minutos',
-      'comment':
-          'Lorem ipsum dolor sit amet. Sed saepe vitae sit perferendis corrupti et quis quia ut consequatur cumque ut libero internos in laborum dignissimos eos earum necessitatibus.',
-    },
-    {
-      'photo': 'https://picsum.photos/id/1005/80/80',
-      'name': 'David Silvas',
-      'createdAt': 'há 15 minutos',
-      'comment':
-          'Lorem ipsum dolor sit amet. Sed saepe vitae sit perferendis corrupti et quis quia ut consequatur cumque ut libero internos in laborum dignissimos eos earum necessitatibus.',
-    },
-    {
-      'photo': 'https://picsum.photos/id/1005/80/80',
-      'name': 'David Silvas',
-      'createdAt': 'há 15 minutos',
-      'comment':
-          'Lorem ipsum dolor sit amet. Sed saepe vitae sit perferendis corrupti et quis quia ut consequatur cumque ut libero internos in laborum dignissimos eos earum necessitatibus.',
-    },
-  ];
-
   @override
   void initState() {
     super.initState();
