@@ -4,12 +4,13 @@ import 'dart:convert';
 
 import 'package:fennec_desktop/models/main_feed_content.dart';
 import 'package:fennec_desktop/services/main_feed_dao.dart';
+import 'package:fennec_desktop/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
 
-const socketUrl = 'http://localhost:3000/wss';
+const socketUrl = '$serverURL/wss';
 
 class MainFeedScreen extends StatefulWidget {
   final String? backgroundColor;
@@ -28,8 +29,8 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _postController = TextEditingController();
 
-  void onConnect(StompClient client, StompFrame frame) {
-    client.subscribe(
+  void onConnect(StompFrame frame) {
+    stompClient!.subscribe(
       destination: '/topic/message',
       callback: (StompFrame frame) {
         if (frame.body != null) {
