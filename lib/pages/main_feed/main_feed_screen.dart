@@ -10,6 +10,7 @@ import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
 import 'package:intl/intl.dart';
+import 'package:linkwell/linkwell.dart';
 
 const socketUrl = '$serverURL/wss';
 
@@ -226,7 +227,7 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text(
+                                        LinkWell(
                                           post.texto,
                                           style: const TextStyle(
                                             color: Color(0xFF4D4D4D),
@@ -298,7 +299,7 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
             padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
             child: Form(
               key: _formKey,
-              child: TextFormField(
+              child: TextField(
                 controller: _postController,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.all(25.0),
