@@ -1,6 +1,15 @@
+// ignore_for_file: import_of_legacy_library_into_null_safe
+
+import 'dart:convert';
+
 import 'package:fennec_desktop/models/main_feed_content.dart';
 import 'package:fennec_desktop/services/main_feed_dao.dart';
 import 'package:flutter/material.dart';
+import 'package:stomp_dart_client/stomp.dart';
+import 'package:stomp_dart_client/stomp_config.dart';
+import 'package:stomp_dart_client/stomp_frame.dart';
+
+const socketUrl = 'http://localhost:3000/wss';
 
 class MainFeedScreen extends StatefulWidget {
   final String? backgroundColor;
@@ -11,15 +20,49 @@ class MainFeedScreen extends StatefulWidget {
 }
 
 class _MainFeedScreenState extends State<MainFeedScreen> {
+  StompClient? stompClient;
+  String texto = '';
+
   final MainFeedDao _daoMainFeed = MainFeedDao();
   late Future<MainFeed> _getDados;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _postController = TextEditingController();
 
+  void onConnect(StompClient client, StompFrame frame) {
+    client.subscribe(
+      destination: '/topic/message',
+      callback: (StompFrame frame) {
+        if (frame.body != null) {
+          // Map<String, dynamic> result = json.decode(frame.body!);
+          var result = json.decode(frame.body!);
+          print('result');
+          print(result);
+          setState(
+            () => {
+              // // postagens.add(result['texto']),
+              _getDados = _daoMainFeed.getFeedContent()
+            },
+          );
+        }
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
     _getDados = _daoMainFeed.getFeedContent();
+
+    if (stompClient == null) {
+      stompClient = StompClient(
+          config: StompConfig.SockJS(
+        url: socketUrl,
+        onConnect: onConnect,
+        onWebSocketError: (dynamic error) => print(error.toString()),
+      ));
+
+      stompClient!.activate();
+    }
   }
 
   @override
@@ -262,7 +305,7 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
                         .postContent(_postController.text)
                         .then((value) {
                       setState(() {
-                        _getDados = _daoMainFeed.getFeedContent();
+                        // _getDados = _daoMainFeed.getFeedContent();
                         _postController.text = '';
                       });
                     }).catchError((onError) {
