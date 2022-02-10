@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:fennec_desktop/models/login.dart';
+import 'package:fennec_desktop/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -10,7 +11,7 @@ class LoginDao {
     String senha,
   ) async {
     final response = await http.post(
-      Uri.parse('http://54.225.23.148:3000/login'),
+      Uri.parse('$serverURL/login'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

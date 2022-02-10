@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:fennec_desktop/models/main_feed_content.dart';
+import 'package:fennec_desktop/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,8 +18,7 @@ class MainFeedDao {
       throw Exception(e.toString());
     }
 
-    final response = await http.get(
-        Uri.parse('http://54.225.23.148:3000/feed/pagination/0/5'),
+    final response = await http.get(Uri.parse('$serverURL/feed/pagination/0/5'),
         headers: {'Authorization': token});
 
     if (response.statusCode == 200) {
@@ -53,7 +53,7 @@ class MainFeedDao {
     }
 
     final response = await http.post(
-      Uri.parse('http://54.225.23.148:3000/feed/send/0'),
+      Uri.parse('$serverURL/feed/send'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': token,
