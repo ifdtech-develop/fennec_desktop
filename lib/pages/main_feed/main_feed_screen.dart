@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
+import 'package:intl/intl.dart';
 
 const socketUrl = '$serverURL/wss';
 
@@ -147,6 +148,34 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
                             itemCount: feedPosts!.content.length,
                             itemBuilder: (BuildContext context, int index) {
                               final PostContent post = feedPosts.content[index];
+                              String date1 = DateFormat("HH:mm:ss").format(
+                                  DateFormat('HH:mm:ss').parse(post.hora));
+                              final convert1 =
+                                  DateFormat("HH:mm:ss").parse(date1);
+
+                              final date = DateFormat('dd/MM/yyyy').format(
+                                  DateFormat('yyyy-MM-dd').parse(post.data));
+                              DateTime formatISOTime(DateTime date) {
+                                var duration = date.timeZoneOffset;
+                                int h = int.parse(duration.inHours
+                                    .toString()
+                                    .padLeft(2, '0'));
+                                int m = int.parse((duration.inMinutes -
+                                        (duration.inHours * 60))
+                                    .toString()
+                                    .padLeft(2, '0'));
+                                if (duration.isNegative) {
+                                  return date
+                                      .add(Duration(hours: h, minutes: m));
+                                  // "-${duration.inHours.toString().padLeft(2, '0')}:${(duration.inMinutes - (duration.inHours * 60)).toString().padLeft(2, '0')}");
+                                } else {
+                                  return date
+                                      .subtract(Duration(hours: h, minutes: m));
+                                }
+                              }
+
+                              String local = (DateFormat('HH:mm:ss')
+                                  .format(formatISOTime(convert1)));
 
                               return Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -179,7 +208,7 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
                                               ),
                                             ),
                                             Text(
-                                              '${post.data} - ${post.hora}',
+                                              '${date} - ${local}',
                                               style: const TextStyle(
                                                 color: Color(0xFF4D4D4D),
                                                 fontSize: 12.0,
