@@ -11,6 +11,7 @@ import 'package:linkwell/linkwell.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
+import 'dart:math' as math;
 
 const socketUrl = '$serverURL/wss';
 
@@ -169,8 +170,22 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
                               width: 55.0,
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(50.0),
-                                child: Image.network(
-                                  'https://picsum.photos/id/1012/80/80',
+                                child: Container(
+                                  color: Color((math.Random().nextDouble() *
+                                              0xFFFFFF)
+                                          .toInt())
+                                      .withOpacity(1.0),
+                                  height: 55.0,
+                                  child: Center(
+                                    child: Text(
+                                      post.usuarioId.name.substring(0, 1),
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 25.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
