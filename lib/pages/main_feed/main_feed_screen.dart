@@ -38,13 +38,14 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
       callback: (StompFrame frame) {
         if (frame.body != null) {
           // Map<String, dynamic> result = json.decode(frame.body!);
-          var result = json.decode(frame.body!);
+          var result = PostContent.fromJson(jsonDecode(frame.body!));
           print('result');
           print(result);
           setState(
             () => {
-              // // postagens.add(result['texto']),
-              // _getDados = _daoMainFeed.getFeedContent()
+              // _getDados = _daoMainFeed.getFeedContent(),
+              // print(globalValue!.texto),
+              _postagens.insert(0, result)
             },
           );
         }
