@@ -267,7 +267,7 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
             padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
             child: Form(
               key: _formKey,
-              child: TextField(
+              child: TextFormField(
                 controller: _postController,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.all(25.0),
