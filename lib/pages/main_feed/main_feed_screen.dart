@@ -6,6 +6,7 @@ import 'package:fennec_desktop/models/main_feed_content.dart';
 import 'package:fennec_desktop/services/main_feed_dao.dart';
 import 'package:fennec_desktop/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:linkwell/linkwell.dart';
 import 'package:stomp_dart_client/stomp.dart';
@@ -281,27 +282,57 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
             padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
             child: Form(
               key: _formKey,
-              child: TextFormField(
-                controller: _postController,
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.all(25.0),
-                  // cor da borda
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(
-                      color: Color(0xFF707070),
+              child: RawKeyboardListener(
+                focusNode: FocusNode(),
+                onKey: (event) {
+                  if (event.isKeyPressed(LogicalKeyboardKey.enter)) {
+                    if (event.isKeyPressed(LogicalKeyboardKey.shiftLeft)) {
+                      print('break line');
+                    } else {
+                      print('Enter Pressed');
+                      String _texto = _postController.text;
+                      _texto = _texto.replaceAll('\r', '');
+                      _texto = _texto.replaceAll('\n', '');
+                      _texto = _texto.replaceAll('\r\n', '');
+                      _texto = _texto.replaceAll('\n\r', '');
+                      setState(() {
+                        // _getDados = _daoMainFeed.getFeedContent();
+                        _postController.text = '';
+                      });
+                      _daoMainFeed.postContent(_texto).then((value) {
+                        setState(() {
+                          // _getDados = _daoMainFeed.getFeedContent();
+                          _postController.text = '';
+                        });
+                      }).catchError((onError) {
+                        print(onError);
+                      });
+                    }
+                  }
+                },
+                child: TextFormField(
+                  controller: _postController,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.all(25.0),
+                    // cor da borda
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: Color(0xFF707070),
+                      ),
+                      borderRadius: BorderRadius.circular(50.0),
                     ),
-                    borderRadius: BorderRadius.circular(50.0),
+                    // Border quando usuario clica no input
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    hintText:
+                        'Compartilhe o que está pensando...', // pass the hint text parameter here
+                    // hintStyle: TextStyle(color: tcolor),
                   ),
-                  // Border quando usuario clica no input
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                  hintText:
-                      'Compartilhe o que está pensando...', // pass the hint text parameter here
-                  // hintStyle: TextStyle(color: tcolor),
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
+                  // textInputAction: TextInputAction.go,
                 ),
-                keyboardType: TextInputType.multiline,
-                maxLines: null,
               ),
             ),
           ),

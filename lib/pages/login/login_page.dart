@@ -61,90 +61,13 @@ class _LoginPageState extends State<LoginPage> {
                 semanticContainer: true,
                 clipBehavior: Clip.antiAliasWithSaveLayer,
                 child: RawKeyboardListener(
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CustomFormField(
-                            icone: Icons.phone_android_outlined,
-                            label: 'Telefone',
-                            textController: _telefoneController,
-                          ),
-                          CustomPasswordInput(
-                            label: 'Senha',
-                            textController: _senhaController,
-                            submited: () => {},
-                          ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.only(top: 50.0, bottom: 30.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  colors: [
-                                    Color(0xFFFB00B8),
-                                    Color(0xFFFB2588),
-                                    Color(0xFFFB3079),
-                                    Color(0xFFFB4B56),
-                                    Color(0xFFFB5945),
-                                    Color(0xFFFB6831),
-                                    Color(0xFFFB6E29),
-                                    Color(0xFFFB8C03),
-                                    Color(0xFFFB8D01),
-                                    Color(0xFFFB8E00),
-                                  ],
-                                ),
-                                borderRadius: BorderRadius.circular(50.0),
-                              ),
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  if (_formKey.currentState!.validate()) {
-                                    _formKey.currentState!.save();
-                                    _dao
-                                        .login(_telefoneController.text,
-                                            _senhaController.text)
-                                        .then((value) {
-                                      _setToken(
-                                          value.token, value.nome, value.tell);
-                                    }).catchError((onError) {
-                                      print(onError);
-                                    });
-                                  }
-                                },
-                                child: const Text(
-                                  'Login',
-                                  style: TextStyle(
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                  primary: Colors.transparent,
-                                  shadowColor: Colors.transparent,
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 20.0,
-                                    horizontal: 50.0,
-                                  ),
-                                  elevation: 5,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    onKey: (RawKeyEvent event) {
-                      print(event.data.logicalKey.keyId);
-                      if (event.runtimeType == RawKeyDownEvent &&
-                          (event.logicalKey.keyId ==
-                              4295426088)) //Enter Key ID from keyboard
-                      {
-                        print("asdadda");
+                  focusNode: FocusNode(),
+                  onKey: (event) {
+                    if (event.isKeyPressed(LogicalKeyboardKey.enter)) {
+                      if (event.isKeyPressed(LogicalKeyboardKey.shiftLeft)) {
+                        return print('break line');
+                      } else {
+                        print('Enter Pressed');
                         if (_formKey.currentState!.validate()) {
                           _formKey.currentState!.save();
                           _dao
@@ -157,8 +80,86 @@ class _LoginPageState extends State<LoginPage> {
                           });
                         }
                       }
-                    },
-                    focusNode: FocusNode()),
+                    }
+                  },
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CustomFormField(
+                          icone: Icons.phone_android_outlined,
+                          label: 'Telefone',
+                          textController: _telefoneController,
+                        ),
+                        CustomPasswordInput(
+                          label: 'Senha',
+                          textController: _senhaController,
+                          // submited: () => {},
+                        ),
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(top: 50.0, bottom: 30.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [
+                                  Color(0xFFFB00B8),
+                                  Color(0xFFFB2588),
+                                  Color(0xFFFB3079),
+                                  Color(0xFFFB4B56),
+                                  Color(0xFFFB5945),
+                                  Color(0xFFFB6831),
+                                  Color(0xFFFB6E29),
+                                  Color(0xFFFB8C03),
+                                  Color(0xFFFB8D01),
+                                  Color(0xFFFB8E00),
+                                ],
+                              ),
+                              borderRadius: BorderRadius.circular(50.0),
+                            ),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                if (_formKey.currentState!.validate()) {
+                                  _formKey.currentState!.save();
+                                  _dao
+                                      .login(_telefoneController.text,
+                                          _senhaController.text)
+                                      .then((value) {
+                                    _setToken(
+                                        value.token, value.nome, value.tell);
+                                  }).catchError((onError) {
+                                    print(onError);
+                                  });
+                                }
+                              },
+                              child: const Text(
+                                'Login',
+                                style: TextStyle(
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.transparent,
+                                shadowColor: Colors.transparent,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 20.0,
+                                  horizontal: 50.0,
+                                ),
+                                elevation: 5,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
                 elevation: 5,
                 margin: const EdgeInsets.all(50),
               ),
@@ -231,11 +232,13 @@ class CustomFormField extends StatelessWidget {
 class CustomPasswordInput extends StatefulWidget {
   final TextEditingController? textController;
   final String? label;
-  final Function submited;
+  // final Function submited;
 
-  const CustomPasswordInput(
-      {Key? key, this.textController, this.label, required this.submited})
-      : super(key: key);
+  const CustomPasswordInput({
+    Key? key,
+    this.textController,
+    this.label,
+  }) : super(key: key);
 
   @override
   _CustomPasswordInputState createState() => _CustomPasswordInputState();
@@ -276,7 +279,7 @@ class _CustomPasswordInputState extends State<CustomPasswordInput> {
             }
             return null;
           },
-          onFieldSubmitted: widget.submited(),
+          // onFieldSubmitted: widget.submited(),
         ),
       ),
     );
