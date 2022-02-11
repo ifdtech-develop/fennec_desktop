@@ -7,6 +7,7 @@ import 'package:fennec_desktop/services/main_feed_dao.dart';
 import 'package:fennec_desktop/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:linkwell/linkwell.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
@@ -203,7 +204,7 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
+                              LinkWell(
                                 post.texto,
                                 style: const TextStyle(
                                   color: Color(0xFF4D4D4D),
