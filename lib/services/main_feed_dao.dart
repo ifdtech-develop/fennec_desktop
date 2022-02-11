@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MainFeedDao {
-  Future<MainFeed> getFeedContent() async {
+  Future<MainFeed> getFeedContent(int index) async {
     final String token;
 
     try {
@@ -18,8 +18,10 @@ class MainFeedDao {
       throw Exception(e.toString());
     }
 
-    final response = await http.get(Uri.parse('$serverURL/feed/pagination/0/5'),
-        headers: {'Authorization': token});
+    final response = await http.get(
+      Uri.parse('$serverURL/feed/pagination/${index.toString()}/5'),
+      headers: {'Authorization': token},
+    );
 
     if (response.statusCode == 200) {
       // print('mandando resposta');
