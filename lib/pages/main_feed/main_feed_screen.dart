@@ -28,7 +28,7 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
   int index = 0;
   final MainFeedDao _daoMainFeed = MainFeedDao();
   // late Future<MainFeed> _getDados;
-  late List<PostContent> _postagens = [];
+  final List<PostContent> _postagens = [];
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _postController = TextEditingController();
 
