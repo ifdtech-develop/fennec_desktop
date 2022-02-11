@@ -11,8 +11,7 @@ import 'package:linkwell/linkwell.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
-import 'package:intl/intl.dart';
-import 'package:linkwell/linkwell.dart';
+import 'dart:math' as math;
 
 const socketUrl = '$serverURL/wss';
 
@@ -30,7 +29,7 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
   int index = 0;
   final MainFeedDao _daoMainFeed = MainFeedDao();
   // late Future<MainFeed> _getDados;
-  late List<PostContent> _postagens = [];
+  final List<PostContent> _postagens = [];
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _postController = TextEditingController();
 
@@ -40,13 +39,14 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
       callback: (StompFrame frame) {
         if (frame.body != null) {
           // Map<String, dynamic> result = json.decode(frame.body!);
-          var result = json.decode(frame.body!);
+          var result = PostContent.fromJson(jsonDecode(frame.body!));
           print('result');
           print(result);
           setState(
             () => {
-              // // postagens.add(result['texto']),
-              // _getDados = _daoMainFeed.getFeedContent()
+              // _getDados = _daoMainFeed.getFeedContent(),
+              // print(globalValue!.texto),
+              _postagens.insert(0, result)
             },
           );
         }
@@ -170,8 +170,22 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
                               width: 55.0,
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(50.0),
-                                child: Image.network(
-                                  'https://picsum.photos/id/1012/80/80',
+                                child: Container(
+                                  color: Color((math.Random().nextDouble() *
+                                              0xFFFFFF)
+                                          .toInt())
+                                      .withOpacity(1.0),
+                                  height: 55.0,
+                                  child: Center(
+                                    child: Text(
+                                      post.usuarioId.name.substring(0, 1),
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 25.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
