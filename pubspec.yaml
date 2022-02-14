@@ -38,6 +38,11 @@ dependencies:
   cupertino_icons: ^1.0.2
   intl: ^0.17.0
   linkwell: ^2.0.6
+  flutter_linkify: ^5.0.2
+  get_storage: ^2.0.3
+  freezed_annotation: ^1.1.0
+  equatable: ^2.0.3
+  build_runner: ^2.1.7
 
 dev_dependencies:
   flutter_test:

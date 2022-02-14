@@ -7,12 +7,15 @@ import 'package:fennec_desktop/services/main_feed_dao.dart';
 import 'package:fennec_desktop/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:intl/intl.dart';
 import 'package:linkwell/linkwell.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
 import 'dart:math' as math;
+
+import 'package:url_launcher/url_launcher.dart';
 
 const socketUrl = '$serverURL/wss';
 
@@ -221,8 +224,9 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              LinkWell(
-                                post.texto,
+                              SelectableLinkify(
+                                onOpen: _onOpen,
+                                text: post.texto,
                                 style: const TextStyle(
                                   color: Color(0xFF4D4D4D),
                                   fontSize: 16.0,
@@ -295,6 +299,10 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
                       _texto = _texto.replaceAll('\n', '');
                       _texto = _texto.replaceAll('\r\n', '');
                       _texto = _texto.replaceAll('\n\r', '');
+                      _postController.text =
+                          _postController.text.replaceAll('\r\n', '');
+                      _postController.text =
+                          _postController.text.replaceAll('\n', '');
                       setState(() {
                         // _getDados = _daoMainFeed.getFeedContent();
                         _postController.text = '';
@@ -397,5 +405,13 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> _onOpen(LinkableElement link) async {
+    if (await canLaunch(link.url)) {
+      await launch(link.url);
+    } else {
+      throw 'Could not launch $link';
+    }
   }
 }
