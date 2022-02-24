@@ -1,6 +1,7 @@
 // ignore_for_file: import_of_legacy_library_into_null_safe
 
 import 'dart:convert';
+import 'dart:math' as math;
 
 import 'package:fennec_desktop/models/main_feed_content.dart';
 import 'package:fennec_desktop/services/main_feed_dao.dart';
@@ -9,12 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:intl/intl.dart';
-import 'package:linkwell/linkwell.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
-import 'dart:math' as math;
-
 import 'package:url_launcher/url_launcher.dart';
 
 const socketUrl = '$serverURL/wss';
@@ -289,6 +287,7 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
               child: RawKeyboardListener(
                 focusNode: FocusNode(),
                 onKey: (event) {
+                  // função para postar com a tecla enter
                   if (event.isKeyPressed(LogicalKeyboardKey.enter)) {
                     if (event.isKeyPressed(LogicalKeyboardKey.shiftLeft)) {
                       print('break line');
@@ -303,10 +302,7 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
                           _postController.text.replaceAll('\r\n', '');
                       _postController.text =
                           _postController.text.replaceAll('\n', '');
-                      setState(() {
-                        // _getDados = _daoMainFeed.getFeedContent();
-                        _postController.text = '';
-                      });
+                      
                       _daoMainFeed.postContent(_texto).then((value) {
                         setState(() {
                           // _getDados = _daoMainFeed.getFeedContent();
@@ -334,7 +330,7 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
                       borderRadius: BorderRadius.circular(50),
                     ),
                     hintText:
-                        'Compartilhe o que está pensando...', // pass the hint text parameter here
+                        'Compartilhe o que está pensando...',
                     // hintStyle: TextStyle(color: tcolor),
                   ),
                   keyboardType: TextInputType.multiline,
