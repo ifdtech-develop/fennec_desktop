@@ -18,24 +18,24 @@ class MainFeed {
 }
 
 class PostContent {
-  final int idMensagem;
+  final int? idMensagem;
   final String hora;
   final String data;
   final String texto;
   final String tipo;
-  final String meio;
+  final String? meio;
   final Time? time;
   final Squad? squad;
   final String status;
   final UsuarioId usuarioId;
 
   PostContent({
-    required this.idMensagem,
+    this.idMensagem,
     required this.hora,
     required this.data,
     required this.texto,
     required this.tipo,
-    required this.meio,
+    this.meio,
     this.time,
     this.squad,
     required this.status,
