@@ -2,8 +2,16 @@ import 'package:fennec_desktop/pages/login/login_page.dart';
 import 'package:fennec_desktop/pages/main_page.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+late SharedPreferences prefs;
+var name;
+var tell;
+
+void main() async {
+  prefs = await SharedPreferences.getInstance();
+  name = prefs.getString('name');
+  tell = prefs.getString('phone');
   runApp(const MyApp());
 }
 
@@ -29,7 +37,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         scaffoldBackgroundColor: const Color(0xFFFFFFFF),
       ),
-      initialRoute: '/loginPage',
+      initialRoute: tell == null ? '/loginPage' : '/mainPage',
       routes: {
         '/loginPage': (context) => const LoginPage(),
         '/mainPage': (context) => const MainPage(),

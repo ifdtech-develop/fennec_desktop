@@ -1,3 +1,4 @@
+import 'package:fennec_desktop/main.dart';
 import 'package:fennec_desktop/pages/menu/profile/profile_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -158,6 +159,9 @@ class _MenuScreenState extends State<MenuScreen> {
             icon: Icons.logout,
             title: 'Sair',
             onSelect: () {
+              prefs.remove('token');
+              prefs.remove('name');
+              prefs.remove('phone');
               Navigator.of(context).pushNamed('/loginPage');
             },
           ),

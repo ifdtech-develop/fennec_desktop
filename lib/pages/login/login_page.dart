@@ -1,7 +1,7 @@
+import 'package:fennec_desktop/main.dart';
 import 'package:fennec_desktop/services/login_dao.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -170,8 +170,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  _setToken(token, name, phone) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+  _setToken(token, name, phone) {
     prefs.setString('token', token);
     prefs.setString('name', name);
     prefs.setString('phone', phone);
