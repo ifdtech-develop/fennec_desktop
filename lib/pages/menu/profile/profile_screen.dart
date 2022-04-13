@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:math' as math;
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -43,9 +44,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         Padding(
           padding: const EdgeInsets.only(bottom: 20.0),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(50.0),
-            child: Image.network('https://picsum.photos/id/237/80/80'),
+          child: SizedBox(
+            width: 70.0,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(50.0),
+              child: Container(
+                color: Color((math.Random().nextDouble() * 0xFFFFFF).toInt())
+                    .withOpacity(1.0),
+                height: 70.0,
+                child: Center(
+                  child: Text(
+                    userName.substring(0, 1),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 40.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
         Wrap(
