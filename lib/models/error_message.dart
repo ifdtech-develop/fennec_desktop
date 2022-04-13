@@ -1,5 +1,5 @@
 class ErrorMessage {
-  final String timestamp;
+  final dynamic timestamp;
   final int status;
   final String error;
   final String message;

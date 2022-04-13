@@ -1,8 +1,8 @@
 import 'dart:convert';
 
+import 'package:fennec_desktop/models/error_message.dart';
 import 'package:fennec_desktop/models/login.dart';
 import 'package:fennec_desktop/utils/constants.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class LoginDao {
@@ -28,7 +28,7 @@ class LoginDao {
     } else {
       print('error');
       print(response.body);
-      throw ErrorDescription(response.body);
+      throw ErrorMessage.fromJson(jsonDecode(response.body));
     }
   }
 }

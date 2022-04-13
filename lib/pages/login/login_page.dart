@@ -1,4 +1,6 @@
+import 'package:fennec_desktop/components/alert_dialog.dart';
 import 'package:fennec_desktop/main.dart';
+import 'package:fennec_desktop/models/error_message.dart';
 import 'package:fennec_desktop/services/login_dao.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,160 +16,197 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _telefoneController = TextEditingController();
   final TextEditingController _senhaController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
   final LoginDao _dao = LoginDao();
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Color(0xFFFB00B8),
-            Color(0xFFFB2588),
-            Color(0xFFFB3079),
-            Color(0xFFFB4B56),
-            Color(0xFFFB5945),
-            Color(0xFFFB6831),
-            Color(0xFFFB6E29),
-            Color(0xFFFB8C03),
-            // Color(0xFFFB8D01),
-            // Color(0xFFFB8E00),
-          ],
+    return Scaffold(
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color(0xFFFB00B8),
+              Color(0xFFFB2588),
+              Color(0xFFFB3079),
+              Color(0xFFFB4B56),
+              Color(0xFFFB5945),
+              Color(0xFFFB6831),
+              Color(0xFFFB6E29),
+              Color(0xFFFB8C03),
+              // Color(0xFFFB8D01),
+              // Color(0xFFFB8E00),
+            ],
+          ),
         ),
-      ),
-      child: Center(
-        child: Column(
-          // mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              height: 250,
-              width: 250,
-              child: Image.asset(
-                'assets/images/white-logo.png',
-                fit: BoxFit.contain,
-              ),
-            ),
-            SizedBox(
-              height: 420,
-              width: 500,
-              child: Card(
-                // color: Color(0xFFFFA07A),
-                shape: RoundedRectangleBorder(
-                  side: const BorderSide(color: Colors.white, width: 1.0),
-                  borderRadius: BorderRadius.circular(4.0),
+        child: Center(
+          child: Column(
+            // mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                height: 250,
+                width: 250,
+                child: Image.asset(
+                  'assets/images/white-logo.png',
+                  fit: BoxFit.contain,
                 ),
-                semanticContainer: true,
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                child: RawKeyboardListener(
-                  focusNode: FocusNode(),
-                  onKey: (event) {
-                    if (event.isKeyPressed(LogicalKeyboardKey.enter)) {
-                      if (event.isKeyPressed(LogicalKeyboardKey.shiftLeft)) {
-                        return print('break line');
-                      } else {
-                        print('Enter Pressed');
-                        if (_formKey.currentState!.validate()) {
-                          _formKey.currentState!.save();
-                          _dao
-                              .login(_telefoneController.text,
-                                  _senhaController.text)
-                              .then((value) {
-                            _setToken(value.token, value.nome, value.tell);
-                          }).catchError((onError) {
-                            print(onError);
-                          });
+              ),
+              SizedBox(
+                height: 420,
+                width: 500,
+                child: Card(
+                  // color: Color(0xFFFFA07A),
+                  shape: RoundedRectangleBorder(
+                    side: const BorderSide(color: Colors.white, width: 1.0),
+                    borderRadius: BorderRadius.circular(4.0),
+                  ),
+                  semanticContainer: true,
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  child: RawKeyboardListener(
+                    focusNode: FocusNode(),
+                    onKey: (event) {
+                      if (event.isKeyPressed(LogicalKeyboardKey.enter)) {
+                        if (event.isKeyPressed(LogicalKeyboardKey.shiftLeft)) {
+                          return print('break line');
+                        } else {
+                          print('Enter Pressed');
+                          if (_formKey.currentState!.validate()) {
+                            _formKey.currentState!.save();
+                            _dao
+                                .login(_telefoneController.text,
+                                    _senhaController.text)
+                                .then((value) {
+                              _setToken(value.token, value.nome, value.tell);
+                            }).catchError((onError) {
+                              getErrorFunction(onError);
+                            });
+                          }
                         }
                       }
-                    }
-                  },
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CustomFormField(
-                          icone: Icons.phone_android_outlined,
-                          label: 'Telefone',
-                          textController: _telefoneController,
-                        ),
-                        CustomPasswordInput(
-                          label: 'Senha',
-                          textController: _senhaController,
-                          // submited: () => {},
-                        ),
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(top: 50.0, bottom: 30.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                colors: [
-                                  Color(0xFFFB00B8),
-                                  Color(0xFFFB2588),
-                                  Color(0xFFFB3079),
-                                  Color(0xFFFB4B56),
-                                  Color(0xFFFB5945),
-                                  Color(0xFFFB6831),
-                                  Color(0xFFFB6E29),
-                                  Color(0xFFFB8C03),
-                                  Color(0xFFFB8D01),
-                                  Color(0xFFFB8E00),
-                                ],
-                              ),
-                              borderRadius: BorderRadius.circular(50.0),
-                            ),
-                            child: ElevatedButton(
-                              onPressed: () {
-                                if (_formKey.currentState!.validate()) {
-                                  _formKey.currentState!.save();
-                                  _dao
-                                      .login(_telefoneController.text,
-                                          _senhaController.text)
-                                      .then((value) {
-                                    _setToken(
-                                        value.token, value.nome, value.tell);
-                                  }).catchError((onError) {
-                                    print(onError);
-                                  });
-                                }
-                              },
-                              child: const Text(
-                                'Login',
-                                style: TextStyle(
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                    },
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CustomFormField(
+                            icone: Icons.phone_android_outlined,
+                            label: 'Telefone',
+                            textController: _telefoneController,
+                          ),
+                          CustomPasswordInput(
+                            label: 'Senha',
+                            textController: _senhaController,
+                            // submited: () => {},
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(top: 50.0, bottom: 30.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xFFFB00B8),
+                                    Color(0xFFFB2588),
+                                    Color(0xFFFB3079),
+                                    Color(0xFFFB4B56),
+                                    Color(0xFFFB5945),
+                                    Color(0xFFFB6831),
+                                    Color(0xFFFB6E29),
+                                    Color(0xFFFB8C03),
+                                    Color(0xFFFB8D01),
+                                    Color(0xFFFB8E00),
+                                  ],
                                 ),
+                                borderRadius: BorderRadius.circular(50.0),
                               ),
-                              style: ElevatedButton.styleFrom(
-                                primary: Colors.transparent,
-                                shadowColor: Colors.transparent,
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 20.0,
-                                  horizontal: 50.0,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  if (_formKey.currentState!.validate()) {
+                                    _formKey.currentState!.save();
+
+                                    _dao
+                                        .login(_telefoneController.text,
+                                            _senhaController.text)
+                                        .then((value) {
+                                      _setToken(
+                                          value.token, value.nome, value.tell);
+                                    }).catchError((onError) {
+                                      getErrorFunction(onError);
+                                    });
+                                  }
+                                },
+                                child: const Text(
+                                  'Login',
+                                  style: TextStyle(
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
                                 ),
-                                elevation: 5,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30.0),
+                                style: ElevatedButton.styleFrom(
+                                  primary: Colors.transparent,
+                                  shadowColor: Colors.transparent,
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 20.0,
+                                    horizontal: 50.0,
+                                  ),
+                                  elevation: 5,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30.0),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
+                  elevation: 5,
+                  margin: const EdgeInsets.all(50),
                 ),
-                elevation: 5,
-                margin: const EdgeInsets.all(50),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  getErrorFunction(onError) {
+    if (onError.runtimeType == ErrorMessage) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            onError.message,
+          ),
+          action: SnackBarAction(
+            label: 'OK',
+            onPressed: () {
+              // Code to execute.
+            },
+          ),
+          width: 280.0,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+
+      // se caso for outro tipo de erro, exemplo: SocketException, servidor fora do ar
+    } else {
+      Future.delayed(
+        const Duration(seconds: 0),
+        () => showDialog<String>(
+          context: context,
+          builder: (BuildContext context) => CustomAlertDialog(
+            description:
+                "${onError.toString()}.\n\nEntre em contato com o suporte.",
+          ),
+        ),
+      );
+    }
   }
 
   _setToken(token, name, phone) {
