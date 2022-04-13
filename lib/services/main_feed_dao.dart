@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:fennec_desktop/models/error_message.dart';
 import 'package:fennec_desktop/models/main_feed_content.dart';
 import 'package:fennec_desktop/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +36,11 @@ class MainFeedDao {
     } else {
       // print('response.erro');
       // print(response.body);
-      throw Exception('Failed to load squad feed');
+      throw ErrorMessage.fromJson(
+        jsonDecode(
+          utf8.decode(response.bodyBytes),
+        ),
+      );
     }
   }
 

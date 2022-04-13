@@ -3,6 +3,8 @@
 import 'dart:convert';
 import 'dart:math' as math;
 
+import 'package:fennec_desktop/components/alert_dialog.dart';
+import 'package:fennec_desktop/models/error_message.dart';
 import 'package:fennec_desktop/models/main_feed_content.dart';
 import 'package:fennec_desktop/services/main_feed_dao.dart';
 import 'package:fennec_desktop/utils/constants.dart';
@@ -63,8 +65,38 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
         _postagens.addAll(value.content);
       });
     }).catchError((onError) {
-      // !  caso o token tenha expirado, retorna para a tela de login
-      Navigator.of(context).pushNamed('/loginPage');
+      // se o erro for um tipo de erro da chamada
+      if (onError.runtimeType == ErrorMessage) {
+        if (onError.status == 403) {
+          // status for acesso negado
+          // !  caso o token tenha expirado, retorna para a tela de login
+          Navigator.of(context).pushNamed('/loginPage');
+        } else {
+          Future.delayed(
+            const Duration(seconds: 0),
+            () => showDialog<String>(
+              context: context,
+              builder: (BuildContext context) => CustomAlertDialog(
+                description: onError.message,
+              ),
+            ),
+          );
+        }
+
+        // se caso for outro tipo de erro, exemplo: SocketException, servidor fora do ar
+      } else {
+        Navigator.of(context).pushNamed('/loginPage');
+
+        Future.delayed(
+          const Duration(seconds: 0),
+          () => showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => CustomAlertDialog(
+              description: onError.toString(),
+            ),
+          ),
+        );
+      }
     });
   }
 
