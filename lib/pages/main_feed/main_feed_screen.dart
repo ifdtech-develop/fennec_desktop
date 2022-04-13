@@ -62,6 +62,9 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
       setState(() {
         _postagens.addAll(value.content);
       });
+    }).catchError((onError) {
+      // !  caso o token tenha expirado, retorna para a tela de login
+      Navigator.of(context).pushNamed('/loginPage');
     });
   }
 
