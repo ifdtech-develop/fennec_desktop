@@ -180,8 +180,10 @@ class _LoginPageState extends State<LoginPage> {
     if (onError.runtimeType == ErrorMessage) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
+          backgroundColor: const Color(0xFFF3F2F3),
           content: Text(
             onError.message,
+            style: const TextStyle(color: Colors.black),
           ),
           action: SnackBarAction(
             label: 'OK',
