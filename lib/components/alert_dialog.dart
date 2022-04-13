@@ -17,7 +17,7 @@ class CustomAlertDialog extends StatelessWidget {
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
       content: Text(
-        "$description.\n\nEntre em contato com o suporte.",
+        description,
         style: const TextStyle(fontWeight: FontWeight.w600),
       ),
       actions: <Widget>[

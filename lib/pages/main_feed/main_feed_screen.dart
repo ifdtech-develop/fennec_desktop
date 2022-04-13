@@ -77,7 +77,8 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
             () => showDialog<String>(
               context: context,
               builder: (BuildContext context) => CustomAlertDialog(
-                description: onError.message,
+                description:
+                    "${onError.message}.\n\nEntre em contato com o suporte.",
               ),
             ),
           );
@@ -92,7 +93,8 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
           () => showDialog<String>(
             context: context,
             builder: (BuildContext context) => CustomAlertDialog(
-              description: onError.toString(),
+              description:
+                  "${onError.toString()}.\n\nEntre em contato com o suporte.",
             ),
           ),
         );
