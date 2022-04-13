@@ -302,7 +302,7 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
                           _postController.text.replaceAll('\r\n', '');
                       _postController.text =
                           _postController.text.replaceAll('\n', '');
-                      
+
                       _daoMainFeed.postContent(_texto).then((value) {
                         setState(() {
                           // _getDados = _daoMainFeed.getFeedContent();
@@ -329,8 +329,7 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(50),
                     ),
-                    hintText:
-                        'Compartilhe o que está pensando...',
+                    hintText: 'Compartilhe o que está pensando...',
                     // hintStyle: TextStyle(color: tcolor),
                   ),
                   keyboardType: TextInputType.multiline,
