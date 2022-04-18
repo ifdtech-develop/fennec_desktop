@@ -23,6 +23,7 @@ class _TeamScreenState extends State<TeamScreen> {
   final TextEditingController _postController = TextEditingController();
 
   StompClient? stompClient;
+  int index = 0;
   final List<PostContent> _postagens = [];
 
   void onConnect(StompFrame frame) {
@@ -114,87 +115,105 @@ class _TeamScreenState extends State<TeamScreen> {
                   ),
                 ),
                 Expanded(
-                  child: ListView.separated(
-                    primary: false,
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.all(15.0),
-                    itemCount: _postagens.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      final PostContent post = _postagens[index];
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              SizedBox(
-                                width: 55.0,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(50.0),
-                                  child: Image.network(
-                                    'https://picsum.photos/id/1027/80/80',
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      post.usuarioId.name!,
-                                      style: const TextStyle(
-                                        color: Color(0xFF4D4D4D),
-                                        fontSize: 16.0,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      '${post.data} - ${post.hora}',
-                                      style: const TextStyle(
-                                        color: Color(0xFF4D4D4D),
-                                        fontSize: 12.0,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 63.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                  child: NotificationListener<ScrollNotification>(
+                    onNotification: (ScrollNotification notification) {
+                      if (notification.metrics.atEdge) {
+                        if (notification.metrics.pixels == 0) {
+                          print('At top');
+                        } else {
+                          print('At bottom');
+                          setState(() {
+                            index++;
+                            print(index);
+                            populateArray(index);
+                          });
+                        }
+                      }
+                      return true;
+                    },
+                    child: ListView.separated(
+                      primary: false,
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.all(15.0),
+                      itemCount: _postagens.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        final PostContent post = _postagens[index];
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
                               children: [
-                                Text(
-                                  post.texto!,
-                                  style: const TextStyle(
-                                    color: Color(0xFF4D4D4D),
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.bold,
+                                SizedBox(
+                                  width: 55.0,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(50.0),
+                                    child: Image.network(
+                                      'https://picsum.photos/id/1027/80/80',
+                                    ),
                                   ),
                                 ),
-                                Container(
-                                  width: 100.0,
-                                  padding: const EdgeInsets.only(top: 20.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: const [
-                                      Icon(Icons.thumb_up_alt_outlined),
-                                      Icon(Icons.comment_outlined),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 8.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        post.usuarioId.name!,
+                                        style: const TextStyle(
+                                          color: Color(0xFF4D4D4D),
+                                          fontSize: 16.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        '${post.data} - ${post.hora}',
+                                        style: const TextStyle(
+                                          color: Color(0xFF4D4D4D),
+                                          fontSize: 12.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
                                     ],
                                   ),
-                                )
+                                ),
                               ],
                             ),
-                          )
-                        ],
-                      );
-                    },
-                    separatorBuilder: (BuildContext context, int index) =>
-                        const Divider(
-                      color: Color(0xFFF3F2F3),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 63.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    post.texto!,
+                                    style: const TextStyle(
+                                      color: Color(0xFF4D4D4D),
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 100.0,
+                                    padding: const EdgeInsets.only(top: 20.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: const [
+                                        Icon(Icons.thumb_up_alt_outlined),
+                                        Icon(Icons.comment_outlined),
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                            )
+                          ],
+                        );
+                      },
+                      separatorBuilder: (BuildContext context, int index) =>
+                          const Divider(
+                        color: Color(0xFFF3F2F3),
+                      ),
                     ),
                   ),
                 ),
