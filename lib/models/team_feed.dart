@@ -18,27 +18,27 @@ class TeamFeed {
 }
 
 class PostContent {
-  final int idMensagem;
-  final String hora;
-  final String data;
-  final String texto;
-  final String tipo;
-  final String meio;
-  final Time time;
+  final int? idMensagem;
+  final String? hora;
+  final String? data;
+  final String? texto;
+  final String? tipo;
+  final String? meio;
+  final Time? time;
   final String? squad;
-  final String status;
+  final String? status;
   final UsuarioId usuarioId;
 
   PostContent({
-    required this.idMensagem,
-    required this.hora,
-    required this.data,
-    required this.texto,
-    required this.tipo,
-    required this.meio,
-    required this.time,
+    this.idMensagem,
+    this.hora,
+    this.data,
+    this.texto,
+    this.tipo,
+    this.meio,
+    this.time,
     this.squad,
-    required this.status,
+    this.status,
     required this.usuarioId,
   });
 
@@ -59,14 +59,14 @@ class PostContent {
 }
 
 class Time {
-  final int id;
-  final String name;
-  final String description;
+  final int? id;
+  final String? name;
+  final String? description;
 
   Time({
-    required this.id,
-    required this.name,
-    required this.description,
+    this.id,
+    this.name,
+    this.description,
   });
 
   factory Time.fromJson(Map<String, dynamic> json) {
@@ -79,16 +79,16 @@ class Time {
 }
 
 class UsuarioId {
-  final int id;
-  final String name;
-  final String hierarquia;
-  final String nivel;
+  final int? id;
+  final String? name;
+  final String? hierarquia;
+  final String? nivel;
 
   UsuarioId({
-    required this.id,
-    required this.name,
-    required this.hierarquia,
-    required this.nivel,
+    this.id,
+    this.name,
+    this.hierarquia,
+    this.nivel,
   });
 
   factory UsuarioId.fromJson(Map<String, dynamic> json) {

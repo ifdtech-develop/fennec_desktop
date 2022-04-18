@@ -174,7 +174,7 @@ class _TeamScreenState extends State<TeamScreen> {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                post.usuarioId.name,
+                                                post.usuarioId.name!,
                                                 style: const TextStyle(
                                                   color: Color(0xFF4D4D4D),
                                                   fontSize: 16.0,
@@ -202,7 +202,7 @@ class _TeamScreenState extends State<TeamScreen> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            post.texto,
+                                            post.texto!,
                                             style: const TextStyle(
                                               color: Color(0xFF4D4D4D),
                                               fontSize: 16.0,
