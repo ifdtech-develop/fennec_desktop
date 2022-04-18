@@ -5,6 +5,7 @@ import 'package:fennec_desktop/models/squad_feed.dart';
 import 'package:fennec_desktop/services/squad_feed_dao.dart';
 import 'package:fennec_desktop/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
@@ -141,6 +142,35 @@ class _SquadScreenState extends State<SquadScreen> {
                       itemCount: _postagens.length,
                       itemBuilder: (BuildContext context, int index) {
                         final PostContent post = _postagens[index];
+
+                        // data e hora
+                        String date1 = DateFormat("HH:mm:ss")
+                            .format(DateFormat('HH:mm:ss').parse(post.hora!));
+                        final convert1 = DateFormat("HH:mm:ss").parse(date1);
+
+                        final date = DateFormat('dd/MM/yyyy')
+                            .format(DateFormat('yyyy-MM-dd').parse(post.data!));
+                        DateTime formatISOTime(DateTime date) {
+                          var duration = date.timeZoneOffset;
+                          int h = int.parse(
+                              duration.inHours.toString().padLeft(2, '0'));
+                          int m = int.parse(
+                              (duration.inMinutes - (duration.inHours * 60))
+                                  .toString()
+                                  .padLeft(2, '0'));
+                          if (duration.isNegative) {
+                            return date.add(Duration(hours: h, minutes: m));
+                            // "-${duration.inHours.toString().padLeft(2, '0')}:${(duration.inMinutes - (duration.inHours * 60)).toString().padLeft(2, '0')}");
+                          } else {
+                            return date
+                                .subtract(Duration(hours: h, minutes: m));
+                          }
+                        }
+
+                        String local = (DateFormat('HH:mm:ss')
+                            .format(formatISOTime(convert1)));
+                        // fim data e hora
+
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -184,7 +214,7 @@ class _SquadScreenState extends State<SquadScreen> {
                                         ),
                                       ),
                                       Text(
-                                        '${post.data} - ${post.hora}',
+                                        '$date - $local',
                                         style: const TextStyle(
                                           color: Color(0xFF4D4D4D),
                                           fontSize: 12.0,
