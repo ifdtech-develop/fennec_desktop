@@ -17,8 +17,6 @@ import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-const socketUrl = '$serverURL/wss';
-
 class MainFeedScreen extends StatefulWidget {
   final String? backgroundColor;
   const MainFeedScreen({Key? key, this.backgroundColor}) : super(key: key);
