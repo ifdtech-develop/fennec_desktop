@@ -27,7 +27,6 @@ class MainFeedScreen extends StatefulWidget {
 
 class _MainFeedScreenState extends State<MainFeedScreen> {
   StompClient? stompClient;
-  String texto = '';
   int index = 0;
   final MainFeedDao _daoMainFeed = MainFeedDao();
   // late Future<MainFeed> _getDados;
@@ -40,16 +39,11 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
       destination: '/topic/message',
       callback: (StompFrame frame) {
         if (frame.body != null) {
-          // Map<String, dynamic> result = json.decode(frame.body!);
           var result = PostContent.fromJson(jsonDecode(frame.body!));
           print('result');
           print(result);
           setState(
-            () => {
-              // _getDados = _daoMainFeed.getFeedContent(),
-              // print(globalValue!.texto),
-              _postagens.insert(0, result)
-            },
+            () => {_postagens.insert(0, result)},
           );
         }
       },
@@ -58,7 +52,6 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
 
   void populateArray(int index) async {
     await _daoMainFeed.getFeedContent(index).then((value) {
-      print(value.content.length);
       setState(() {
         _postagens.addAll(value.content);
       });
@@ -158,6 +151,7 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
                       print('At bottom');
                       setState(() {
                         index++;
+                        print(index);
                         populateArray(index);
                       });
                     }
