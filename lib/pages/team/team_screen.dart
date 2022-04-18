@@ -18,7 +18,6 @@ class TeamScreen extends StatefulWidget {
 
 class _TeamScreenState extends State<TeamScreen> {
   final TeamFeedDao _daoTeamFeed = TeamFeedDao();
-  late Future<TeamFeed> _getDados;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _postController = TextEditingController();
 
