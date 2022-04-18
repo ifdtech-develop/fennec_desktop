@@ -123,7 +123,6 @@ class _TeamScreenState extends State<TeamScreen> {
                           print('At bottom');
                           setState(() {
                             index++;
-                            print(index);
                             populateArray(index);
                           });
                         }
