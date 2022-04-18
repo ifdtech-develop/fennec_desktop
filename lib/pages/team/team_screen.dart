@@ -1,6 +1,12 @@
+import 'dart:convert';
+
 import 'package:fennec_desktop/models/team_feed.dart';
 import 'package:fennec_desktop/services/team_feed_dao.dart';
+import 'package:fennec_desktop/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:stomp_dart_client/stomp.dart';
+import 'package:stomp_dart_client/stomp_config.dart';
+import 'package:stomp_dart_client/stomp_frame.dart';
 
 class TeamScreen extends StatefulWidget {
   final String backgroundColor;
@@ -16,53 +22,49 @@ class _TeamScreenState extends State<TeamScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _postController = TextEditingController();
 
+  StompClient? stompClient;
+  final List<PostContent> _postagens = [];
+
+  void onConnect(StompFrame frame) {
+    stompClient!.subscribe(
+      destination: '/topic/message/1',
+      callback: (StompFrame frame) {
+        if (frame.body != null) {
+          var result = PostContent.fromJson(jsonDecode(frame.body!));
+          print('result team');
+          print(frame.body);
+          setState(
+            () => {_postagens.insert(0, result)},
+          );
+        }
+      },
+    );
+  }
+
+  void populateArray(int index) async {
+    await _daoTeamFeed.getFeedContent(index).then((value) {
+      setState(() {
+        _postagens.addAll(value.content);
+      });
+    });
+  }
+
   @override
   void initState() {
     super.initState();
-    _getDados = _daoTeamFeed.getFeedContent();
-  }
+    populateArray(0);
 
-  final List posts = [
-    {
-      'photo': 'https://picsum.photos/id/1012/80/80',
-      'name': 'Matheus Motta',
-      'createdAt': 'há 36 minutos',
-      'comment': 'Bom dia, tudo bem?',
-    },
-    {
-      'photo': 'https://picsum.photos/id/1027/80/80',
-      'name': 'Letícia Almeida',
-      'createdAt': 'há 1 hora',
-      'comment': 'Boa semana!',
-    },
-    {
-      'photo': 'https://picsum.photos/id/1027/80/80',
-      'name': 'Letícia Almeida',
-      'createdAt': 'há 1 hora',
-      'comment': 'Boa semana!',
-    },
-    {
-      'photo': 'https://picsum.photos/id/1005/80/80',
-      'name': 'David Silvas',
-      'createdAt': 'há 15 minutos',
-      'comment':
-          'Lorem ipsum dolor sit amet. Sed saepe vitae sit perferendis corrupti et quis quia ut consequatur cumque ut libero internos in laborum dignissimos eos earum necessitatibus.',
-    },
-    {
-      'photo': 'https://picsum.photos/id/1005/80/80',
-      'name': 'David Silvas',
-      'createdAt': 'há 15 minutos',
-      'comment':
-          'Lorem ipsum dolor sit amet. Sed saepe vitae sit perferendis corrupti et quis quia ut consequatur cumque ut libero internos in laborum dignissimos eos earum necessitatibus.',
-    },
-    {
-      'photo': 'https://picsum.photos/id/1005/80/80',
-      'name': 'David Silvas',
-      'createdAt': 'há 15 minutos',
-      'comment':
-          'Lorem ipsum dolor sit amet. Sed saepe vitae sit perferendis corrupti et quis quia ut consequatur cumque ut libero internos in laborum dignissimos eos earum necessitatibus.',
-    },
-  ];
+    if (stompClient == null) {
+      stompClient = StompClient(
+          config: StompConfig.SockJS(
+        url: socketUrl,
+        onConnect: onConnect,
+        onWebSocketError: (dynamic error) => print(error.toString()),
+      ));
+
+      stompClient!.activate();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -111,140 +113,90 @@ class _TeamScreenState extends State<TeamScreen> {
                     color: Color(0xFFF3F2F3),
                   ),
                 ),
-                FutureBuilder<TeamFeed>(
-                  future: _getDados,
-                  builder: (context, snapshot) {
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.none:
-                        // Future ainda não foi executado
-                        // Normal colocar um widget que permite um clique ou outro tipo de
-                        // ação, e que dê início ao Future
-                        break;
-                      case ConnectionState.waiting:
-                        return Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: const [
-                              CircularProgressIndicator(),
-                              Text('Loading'),
-                            ],
-                          ),
-                        );
-                      // break;
-                      case ConnectionState.active:
-                        // possui um dado disponível, mas o Future ainda não foi finalizado
-                        // Isso acontece quando utilizamos outra referência, conhecida
-                        // como stream, que trabalha trazendo pedaços de um carregamento
-                        // assíncrono, por exemplo no caso do progresso de um download.
-                        break;
-                      case ConnectionState.done:
-                        if (snapshot.hasData) {
-                          final TeamFeed? teamPosts = snapshot.data;
-
-                          return Expanded(
-                            child: ListView.separated(
-                              primary: false,
-                              shrinkWrap: true,
-                              padding: const EdgeInsets.all(15.0),
-                              itemCount: teamPosts!.content.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                final PostContent post =
-                                    teamPosts.content[index];
-                                return Column(
+                Expanded(
+                  child: ListView.separated(
+                    primary: false,
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.all(15.0),
+                    itemCount: _postagens.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final PostContent post = _postagens[index];
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: 55.0,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(50.0),
+                                  child: Image.network(
+                                    'https://picsum.photos/id/1027/80/80',
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Row(
-                                      children: [
-                                        SizedBox(
-                                          width: 55.0,
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(50.0),
-                                            child: Image.network(
-                                              'https://picsum.photos/id/1027/80/80',
-                                            ),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 8.0),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                post.usuarioId.name!,
-                                                style: const TextStyle(
-                                                  color: Color(0xFF4D4D4D),
-                                                  fontSize: 16.0,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                              Text(
-                                                '${post.data} - ${post.hora}',
-                                                style: const TextStyle(
-                                                  color: Color(0xFF4D4D4D),
-                                                  fontSize: 12.0,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.only(left: 63.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            post.texto!,
-                                            style: const TextStyle(
-                                              color: Color(0xFF4D4D4D),
-                                              fontSize: 16.0,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          Container(
-                                            width: 100.0,
-                                            padding: const EdgeInsets.only(
-                                                top: 20.0),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: const [
-                                                Icon(Icons
-                                                    .thumb_up_alt_outlined),
-                                                Icon(Icons.comment_outlined),
-                                              ],
-                                            ),
-                                          )
-                                        ],
+                                    Text(
+                                      post.usuarioId.name!,
+                                      style: const TextStyle(
+                                        color: Color(0xFF4D4D4D),
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                    )
+                                    ),
+                                    Text(
+                                      '${post.data} - ${post.hora}',
+                                      style: const TextStyle(
+                                        color: Color(0xFF4D4D4D),
+                                        fontSize: 12.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                                   ],
-                                );
-                              },
-                              separatorBuilder:
-                                  (BuildContext context, int index) =>
-                                      const Divider(
-                                color: Color(0xFFF3F2F3),
+                                ),
                               ),
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 63.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  post.texto!,
+                                  style: const TextStyle(
+                                    color: Color(0xFF4D4D4D),
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Container(
+                                  width: 100.0,
+                                  padding: const EdgeInsets.only(top: 20.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: const [
+                                      Icon(Icons.thumb_up_alt_outlined),
+                                      Icon(Icons.comment_outlined),
+                                    ],
+                                  ),
+                                )
+                              ],
                             ),
-                          );
-                        } else if (snapshot.hasError) {
-                          return Text('${snapshot.error}');
-                        }
-                        break;
-                    }
-
-                    return const Text('Unkown error');
-                  },
+                          )
+                        ],
+                      );
+                    },
+                    separatorBuilder: (BuildContext context, int index) =>
+                        const Divider(
+                      color: Color(0xFFF3F2F3),
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -327,7 +279,6 @@ class _TeamScreenState extends State<TeamScreen> {
                         .postContent(_postController.text)
                         .then((value) {
                       setState(() {
-                        _getDados = _daoTeamFeed.getFeedContent();
                         _postController.text = '';
                       });
                     }).catchError((onError) {

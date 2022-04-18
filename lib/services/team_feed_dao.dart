@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TeamFeedDao {
-  Future<TeamFeed> getFeedContent() async {
+  Future<TeamFeed> getFeedContent(int index) async {
     final String token;
 
     try {
@@ -19,7 +19,7 @@ class TeamFeedDao {
     }
 
     final response = await http.get(
-        Uri.parse('$serverURL/feed/pagbytime/0/5/1'),
+        Uri.parse('$serverURL/feed/pagbytime/${index.toString()}/5/1'),
         headers: {'Authorization': token});
 
     if (response.statusCode == 200) {
