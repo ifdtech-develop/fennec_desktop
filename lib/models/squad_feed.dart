@@ -27,7 +27,7 @@ class PostContent {
   final Time? time;
   final Squad? squad;
   final String? status;
-  final UsuarioId? usuarioId;
+  final UsuarioId usuarioId;
 
   PostContent({
     this.idMensagem,
@@ -39,7 +39,7 @@ class PostContent {
     this.time,
     this.squad,
     this.status,
-    this.usuarioId,
+    required this.usuarioId,
   });
 
   factory PostContent.fromJson(Map<String, dynamic> json) {
@@ -99,7 +99,7 @@ class Squad {
       id: json['id'],
       name: json['name'],
       description: json['description'],
-      time: Time.fromJson(json['time']),
+      time: json['time'] != null ? Time.fromJson(json['time']) : null,
     );
   }
 }
