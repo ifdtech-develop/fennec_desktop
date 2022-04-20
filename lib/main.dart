@@ -1,5 +1,6 @@
 import 'package:fennec_desktop/pages/login/login_page.dart';
 import 'package:fennec_desktop/pages/main_page.dart';
+import 'package:fennec_desktop/utils/global_variables.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,6 +13,8 @@ void main() async {
   prefs = await SharedPreferences.getInstance();
   name = prefs.getString('name');
   tell = prefs.getString('phone');
+  getTeam();
+
   runApp(const MyApp());
 }
 

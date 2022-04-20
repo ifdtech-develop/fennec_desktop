@@ -1,9 +1,12 @@
 import 'dart:convert';
 import 'dart:math' as math;
 
+import 'package:fennec_desktop/main.dart';
 import 'package:fennec_desktop/models/team_feed.dart';
+import 'package:fennec_desktop/services/team_list_dao.dart';
 import 'package:fennec_desktop/services/team_feed_dao.dart';
 import 'package:fennec_desktop/utils/constants.dart';
+import 'package:fennec_desktop/utils/global_variables.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:stomp_dart_client/stomp.dart';
@@ -46,7 +49,7 @@ class _TeamScreenState extends State<TeamScreen> {
   }
 
   void populateArray(int index) async {
-    await _daoTeamFeed.getFeedContent(index).then((value) {
+    await _daoTeamFeed.getFeedContent(index, teamId).then((value) {
       setState(() {
         _postagens.addAll(value.content);
       });
@@ -110,7 +113,9 @@ class _TeamScreenState extends State<TeamScreen> {
             end: Alignment.centerLeft,
             stops: const [0.5, 0.5],
             colors: [
-              Color(int.parse(widget.backgroundColor)),
+              Color(
+                int.parse(widget.backgroundColor),
+              ),
               const Color(0xFFCCCCCC),
             ],
           ),
@@ -384,7 +389,7 @@ class _TeamScreenState extends State<TeamScreen> {
                 child: ElevatedButton(
                   onPressed: () {
                     _daoTeamFeed
-                        .postContent(_postController.text)
+                        .postContent(_postController.text, teamId)
                         .then((value) {
                       setState(() {
                         _postController.text = '';
