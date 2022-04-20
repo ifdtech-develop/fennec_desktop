@@ -55,7 +55,7 @@ class _SquadScreenState extends State<SquadScreen> {
   }
 
   void populateArray(int index) async {
-    await _daoSquadFeed.getFeedContent(index).then((value) {
+    await _daoSquadFeed.getFeedContent(index, squadId).then((value) {
       setState(() {
         _postagens.addAll(value.content);
       });
@@ -422,7 +422,7 @@ class _SquadScreenState extends State<SquadScreen> {
                 child: ElevatedButton(
                   onPressed: () {
                     _daoSquadFeed
-                        .postContent(_postController.text)
+                        .postContent(_postController.text, squadId)
                         .then((value) {
                       setState(() {
                         _postController.text = '';

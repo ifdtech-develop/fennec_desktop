@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SquadFeedDao {
-  Future<SquadFeed> getFeedContent(int index) async {
+  Future<SquadFeed> getFeedContent(int index, int squadId) async {
     final String token;
 
     try {
@@ -19,8 +19,11 @@ class SquadFeedDao {
     }
 
     final response = await http.get(
-        Uri.parse('$serverURL/feed/pagbysquad/${index.toString()}/5/1'),
-        headers: {'Authorization': token});
+      Uri.parse(
+        '$serverURL/feed/pagbysquad/${index.toString()}/5/${squadId.toString()}',
+      ),
+      headers: {'Authorization': token},
+    );
 
     if (response.statusCode == 200) {
       // print('mandando resposta');
@@ -36,7 +39,7 @@ class SquadFeedDao {
 
   Future<PostContent> postContent(
     String post,
-    // String tipo,
+    int squadId,
     // String status,
   ) async {
     final String token;
@@ -59,7 +62,7 @@ class SquadFeedDao {
         "texto": post,
         "tipo": "texto",
         "status": "status",
-        "squad": {"id": 1}
+        "squad": {"id": squadId}
       }),
     );
 
