@@ -3,6 +3,7 @@ import 'dart:math' as math;
 
 import 'package:fennec_desktop/models/squad_feed.dart';
 import 'package:fennec_desktop/services/squad_feed_dao.dart';
+import 'package:fennec_desktop/services/squad_list_dao.dart';
 import 'package:fennec_desktop/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -22,8 +23,14 @@ class SquadScreen extends StatefulWidget {
 
 class _SquadScreenState extends State<SquadScreen> {
   final SquadFeedDao _daoSquadFeed = SquadFeedDao();
+  final SquadListDao _daoSquadList = SquadListDao();
+
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _postController = TextEditingController();
+  final List<PopupMenuItem> popupMenuItem = [];
+  String squadName = "";
+  int squadId = 1;
+  bool noSquad = true;
 
   StompClient? stompClient;
   int index = 0;
@@ -70,6 +77,42 @@ class _SquadScreenState extends State<SquadScreen> {
 
       stompClient!.activate();
     }
+
+    _daoSquadList.listaSquad().then((squads) {
+      if (squads.isEmpty) {
+        if (mounted) {
+          setState(() {
+            noSquad = true;
+          });
+        }
+      } else {
+        if (mounted) {
+          setState(() {
+            noSquad = false;
+          });
+        }
+
+        for (var squad in squads) {
+          squadId = squads[0].id!;
+          squadName = squads[0].name!;
+
+          popupMenuItem.add(
+            PopupMenuItem(
+              child: Text(squad.name!),
+              value: squad.id,
+              onTap: () {
+                setState(() {
+                  squadId = squad.id!;
+                  squadName = squad.name!;
+                  _postagens.clear();
+                  populateArray(0);
+                });
+              },
+            ),
+          );
+        }
+      }
+    });
   }
 
   @override
@@ -99,173 +142,210 @@ class _SquadScreenState extends State<SquadScreen> {
             //borda do container cortada e o texto some ao passar por ela
             color: const Color(0xFFF3F2F3),
             height: MediaQuery.of(context).size.height,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Squad',
-                  style: TextStyle(
-                    color: Color(0xFF4D4D4D),
-                    fontSize: 35.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Center(
-                  child: postInput(),
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 15.0, right: 15.0),
-                  child: Divider(
-                    color: Color(0xFFCCCCCC),
-                  ),
-                ),
-                Expanded(
-                  child: NotificationListener<ScrollNotification>(
-                    onNotification: (ScrollNotification notification) {
-                      if (notification.metrics.atEdge) {
-                        if (notification.metrics.pixels == 0) {
-                          print('At top');
-                        } else {
-                          print('At bottom');
-                          setState(() {
-                            index++;
-                            populateArray(index);
-                          });
-                        }
-                      }
-                      return true;
-                    },
-                    child: ListView.separated(
-                      primary: false,
-                      shrinkWrap: true,
-                      padding: const EdgeInsets.all(15.0),
-                      itemCount: _postagens.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        final PostContent post = _postagens[index];
-
-                        // data e hora
-                        String date1 = DateFormat("HH:mm:ss")
-                            .format(DateFormat('HH:mm:ss').parse(post.hora!));
-                        final convert1 = DateFormat("HH:mm:ss").parse(date1);
-
-                        final date = DateFormat('dd/MM/yyyy')
-                            .format(DateFormat('yyyy-MM-dd').parse(post.data!));
-                        DateTime formatISOTime(DateTime date) {
-                          var duration = date.timeZoneOffset;
-                          int h = int.parse(
-                              duration.inHours.toString().padLeft(2, '0'));
-                          int m = int.parse(
-                              (duration.inMinutes - (duration.inHours * 60))
-                                  .toString()
-                                  .padLeft(2, '0'));
-                          if (duration.isNegative) {
-                            return date.add(Duration(hours: h, minutes: m));
-                            // "-${duration.inHours.toString().padLeft(2, '0')}:${(duration.inMinutes - (duration.inHours * 60)).toString().padLeft(2, '0')}");
-                          } else {
-                            return date
-                                .subtract(Duration(hours: h, minutes: m));
-                          }
-                        }
-
-                        String local = (DateFormat('HH:mm:ss')
-                            .format(formatISOTime(convert1)));
-                        // fim data e hora
-
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
+            child: noSquad
+                ? const Center(
+                    child: Text(
+                      'Nenhuma squad nesse time por agora. 🥺',
+                      style: TextStyle(fontSize: 25.0),
+                      textAlign: TextAlign.center,
+                    ),
+                  )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.only(left: 15.0, right: 15.0),
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.80,
+                            child: Row(
                               children: [
-                                SizedBox(
-                                  width: 55.0,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(50.0),
-                                    child: Container(
-                                      color: Color((math.Random().nextDouble() *
-                                                  0xFFFFFF)
-                                              .toInt())
-                                          .withOpacity(1.0),
-                                      height: 55.0,
-                                      child: Center(
-                                        child: Text(
-                                          post.usuarioId.name!.substring(0, 1),
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 25.0,
-                                            fontWeight: FontWeight.bold,
+                                Text(
+                                  squadName,
+                                  style: const TextStyle(
+                                    color: Color(0xFF4D4D4D),
+                                    fontSize: 35.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                PopupMenuButton(
+                                  padding: const EdgeInsets.only(left: 25.0),
+                                  icon: const Icon(Icons.menu,
+                                      color: Colors.black87),
+                                  itemBuilder: (context) => popupMenuItem,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Center(
+                        child: postInput(),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 15.0, right: 15.0),
+                        child: Divider(
+                          color: Color(0xFFCCCCCC),
+                        ),
+                      ),
+                      Expanded(
+                        child: NotificationListener<ScrollNotification>(
+                          onNotification: (ScrollNotification notification) {
+                            if (notification.metrics.atEdge) {
+                              if (notification.metrics.pixels == 0) {
+                                print('At top');
+                              } else {
+                                print('At bottom');
+                                setState(() {
+                                  index++;
+                                  populateArray(index);
+                                });
+                              }
+                            }
+                            return true;
+                          },
+                          child: ListView.separated(
+                            primary: false,
+                            shrinkWrap: true,
+                            padding: const EdgeInsets.all(15.0),
+                            itemCount: _postagens.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              final PostContent post = _postagens[index];
+
+                              // data e hora
+                              String date1 = DateFormat("HH:mm:ss").format(
+                                  DateFormat('HH:mm:ss').parse(post.hora!));
+                              final convert1 =
+                                  DateFormat("HH:mm:ss").parse(date1);
+
+                              final date = DateFormat('dd/MM/yyyy').format(
+                                  DateFormat('yyyy-MM-dd').parse(post.data!));
+                              DateTime formatISOTime(DateTime date) {
+                                var duration = date.timeZoneOffset;
+                                int h = int.parse(duration.inHours
+                                    .toString()
+                                    .padLeft(2, '0'));
+                                int m = int.parse((duration.inMinutes -
+                                        (duration.inHours * 60))
+                                    .toString()
+                                    .padLeft(2, '0'));
+                                if (duration.isNegative) {
+                                  return date
+                                      .add(Duration(hours: h, minutes: m));
+                                  // "-${duration.inHours.toString().padLeft(2, '0')}:${(duration.inMinutes - (duration.inHours * 60)).toString().padLeft(2, '0')}");
+                                } else {
+                                  return date
+                                      .subtract(Duration(hours: h, minutes: m));
+                                }
+                              }
+
+                              String local = (DateFormat('HH:mm:ss')
+                                  .format(formatISOTime(convert1)));
+                              // fim data e hora
+
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      SizedBox(
+                                        width: 55.0,
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(50.0),
+                                          child: Container(
+                                            color: Color((math.Random()
+                                                            .nextDouble() *
+                                                        0xFFFFFF)
+                                                    .toInt())
+                                                .withOpacity(1.0),
+                                            height: 55.0,
+                                            child: Center(
+                                              child: Text(
+                                                post.usuarioId.name!
+                                                    .substring(0, 1),
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 25.0,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 8.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        post.usuarioId.name!,
-                                        style: const TextStyle(
-                                          color: Color(0xFF4D4D4D),
-                                          fontSize: 16.0,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      Text(
-                                        '$date - $local',
-                                        style: const TextStyle(
-                                          color: Color(0xFF4D4D4D),
-                                          fontSize: 12.0,
-                                          fontWeight: FontWeight.bold,
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 8.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              post.usuarioId.name!,
+                                              style: const TextStyle(
+                                                color: Color(0xFF4D4D4D),
+                                                fontSize: 16.0,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Text(
+                                              '$date - $local',
+                                              style: const TextStyle(
+                                                color: Color(0xFF4D4D4D),
+                                                fontSize: 12.0,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ],
                                   ),
-                                ),
-                              ],
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 63.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    post.texto!,
-                                    style: const TextStyle(
-                                      color: Color(0xFF4D4D4D),
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Container(
-                                    width: 100.0,
-                                    padding: const EdgeInsets.only(top: 20.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: const [
-                                        Icon(Icons.thumb_up_alt_outlined),
-                                        Icon(Icons.comment_outlined),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 63.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          post.texto!,
+                                          style: const TextStyle(
+                                            color: Color(0xFF4D4D4D),
+                                            fontSize: 16.0,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Container(
+                                          width: 100.0,
+                                          padding:
+                                              const EdgeInsets.only(top: 20.0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: const [
+                                              Icon(Icons.thumb_up_alt_outlined),
+                                              Icon(Icons.comment_outlined),
+                                            ],
+                                          ),
+                                        )
                                       ],
                                     ),
                                   )
                                 ],
-                              ),
-                            )
-                          ],
-                        );
-                      },
-                      separatorBuilder: (BuildContext context, int index) =>
-                          const Divider(
-                        color: Color(0xFFCCCCCC),
+                              );
+                            },
+                            separatorBuilder:
+                                (BuildContext context, int index) =>
+                                    const Divider(
+                              color: Color(0xFFCCCCCC),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                ),
-              ],
-            ),
           ),
         ),
       ),
