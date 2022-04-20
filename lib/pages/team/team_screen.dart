@@ -20,8 +20,10 @@ class TeamScreen extends StatefulWidget {
 
 class _TeamScreenState extends State<TeamScreen> {
   final TeamFeedDao _daoTeamFeed = TeamFeedDao();
+  final TeamListDao _daoListaTime = TeamListDao();
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _postController = TextEditingController();
+  final List<PopupMenuItem> popupMenuItem = [];
 
   StompClient? stompClient;
   int index = 0;
@@ -66,6 +68,33 @@ class _TeamScreenState extends State<TeamScreen> {
 
       stompClient!.activate();
     }
+
+    _daoListaTime.listaTime().then((times) {
+      for (var time in times) {
+        // caso, vazio preencher com o primeiro da lista
+        if (prefs.getString('teamName') == null) {
+          prefs.setString('teamName', times[0].description!);
+          prefs.setInt('teamId', times[0].id!);
+        }
+
+        popupMenuItem.add(
+          PopupMenuItem(
+            child: Text(time.description!),
+            value: time.id,
+            onTap: () {
+              setState(() {
+                prefs.setString('teamName', time.description!);
+                prefs.setInt('teamId', time.id!);
+                teamId = time.id!;
+                teamName = time.description!;
+                _postagens.clear();
+                populateArray(0);
+              });
+            },
+          ),
+        );
+      }
+    });
   }
 
   @override
@@ -98,12 +127,29 @@ class _TeamScreenState extends State<TeamScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Time',
-                  style: TextStyle(
-                    color: Color(0xFF4D4D4D),
-                    fontSize: 35.0,
-                    fontWeight: FontWeight.bold,
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.80,
+                      child: Row(
+                        children: [
+                          Text(
+                            teamName,
+                            style: const TextStyle(
+                              color: Color(0xFF4D4D4D),
+                              fontSize: 35.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          PopupMenuButton(
+                            padding: const EdgeInsets.only(left: 25.0),
+                            icon: const Icon(Icons.menu, color: Colors.black87),
+                            itemBuilder: (context) => popupMenuItem,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
                 Center(
