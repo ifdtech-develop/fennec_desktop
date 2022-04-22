@@ -39,10 +39,14 @@ class _TeamScreenState extends State<TeamScreen> {
         if (frame.body != null) {
           var result = PostContent.fromJson(jsonDecode(frame.body!));
           print('result team');
-          print(frame.body);
-          setState(
-            () => {_postagens.insert(0, result)},
-          );
+          print(result);
+
+          // se o time da postagem for igual ao selecionado, a postagem só aparecerá nele
+          if (result.time!.id == teamId) {
+            setState(
+              () => {_postagens.insert(0, result)},
+            );
+          }
         }
       },
     );

@@ -43,12 +43,14 @@ class _SquadScreenState extends State<SquadScreen> {
         if (frame.body != null) {
           var result = PostContent.fromJson(jsonDecode(frame.body!));
           print('result squad');
-          print(frame.body);
-          setState(
-            () => {
-              _postagens.insert(0, result),
-            },
-          );
+          print(result.squad!.id);
+
+          // se a squad da postagem for igual ao selecionado, a postagem só aparecerá nele
+          if (result.squad!.id == squadId) {
+            setState(
+              () => {_postagens.insert(0, result)},
+            );
+          }
         }
       },
     );
