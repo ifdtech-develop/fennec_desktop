@@ -143,12 +143,14 @@ class _TeamScreenState extends State<TeamScreen> {
                       width: MediaQuery.of(context).size.width * 0.80,
                       child: Row(
                         children: [
-                          Text(
-                            teamName,
-                            style: const TextStyle(
-                              color: Color(0xFF4D4D4D),
-                              fontSize: 35.0,
-                              fontWeight: FontWeight.bold,
+                          Flexible(
+                            child: Text(
+                              teamName,
+                              style: const TextStyle(
+                                color: Color(0xFF4D4D4D),
+                                fontSize: 35.0,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                           PopupMenuButton(

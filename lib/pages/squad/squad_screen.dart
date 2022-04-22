@@ -163,16 +163,18 @@ class _SquadScreenState extends State<SquadScreen> {
                             width: MediaQuery.of(context).size.width * 0.80,
                             child: Row(
                               children: [
-                                Text(
-                                  squadName,
-                                  style: const TextStyle(
-                                    color: Color(0xFF4D4D4D),
-                                    fontSize: 35.0,
-                                    fontWeight: FontWeight.bold,
+                                Flexible(
+                                  child: Text(
+                                    squadName,
+                                    style: const TextStyle(
+                                      color: Color(0xFF4D4D4D),
+                                      fontSize: 35.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                                 PopupMenuButton(
-                                  padding: const EdgeInsets.only(left: 25.0),
+                                  // padding: const EdgeInsets.only(left: 20.0),
                                   icon: const Icon(Icons.menu,
                                       color: Colors.black87),
                                   itemBuilder: (context) => popupMenuItem,
