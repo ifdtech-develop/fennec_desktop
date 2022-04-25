@@ -9,6 +9,7 @@ import 'package:fennec_desktop/services/team_feed_dao.dart';
 import 'package:fennec_desktop/utils/constants.dart';
 import 'package:fennec_desktop/utils/global_variables.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:stomp_dart_client/stomp.dart';
@@ -380,27 +381,59 @@ class _TeamScreenState extends State<TeamScreen> {
             padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
             child: Form(
               key: _formKey,
-              child: TextFormField(
-                controller: _postController,
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.all(25.0),
-                  // cor da borda
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(
-                      color: Color(0xFF707070),
+              child: RawKeyboardListener(
+                focusNode: FocusNode(),
+                onKey: (event) {
+                  // função para postar com a tecla enter
+                  if (event.isKeyPressed(LogicalKeyboardKey.enter)) {
+                    if (event.isKeyPressed(LogicalKeyboardKey.shiftLeft)) {
+                      print('break line');
+                    } else {
+                      print('Enter Pressed');
+                      String _texto = _postController.text;
+                      _texto = _texto.replaceAll('\r', '');
+                      _texto = _texto.replaceAll('\n', '');
+                      _texto = _texto.replaceAll('\r\n', '');
+                      _texto = _texto.replaceAll('\n\r', '');
+                      _postController.text =
+                          _postController.text.replaceAll('\r\n', '');
+                      _postController.text =
+                          _postController.text.replaceAll('\n', '');
+
+                      _daoTeamFeed
+                          .postContent(_postController.text, teamId)
+                          .then((value) {
+                        setState(() {
+                          _postController.text = '';
+                        });
+                      }).catchError((onError) {
+                        print(onError);
+                      });
+                    }
+                  }
+                },
+                child: TextFormField(
+                  controller: _postController,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.all(25.0),
+                    // cor da borda
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        color: Color(0xFF707070),
+                      ),
+                      borderRadius: BorderRadius.circular(50.0),
                     ),
-                    borderRadius: BorderRadius.circular(50.0),
+                    // Border quando usuario clica no input
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    hintText:
+                        'Compartilhe o que está pensando...', // pass the hint text parameter here
+                    // hintStyle: TextStyle(color: tcolor),
                   ),
-                  // Border quando usuario clica no input
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                  hintText:
-                      'Compartilhe o que está pensando...', // pass the hint text parameter here
-                  // hintStyle: TextStyle(color: tcolor),
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
                 ),
-                keyboardType: TextInputType.multiline,
-                maxLines: null,
               ),
             ),
           ),
