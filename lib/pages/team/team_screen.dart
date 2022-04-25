@@ -29,6 +29,7 @@ class _TeamScreenState extends State<TeamScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _postController = TextEditingController();
   final List<PopupMenuItem> popupMenuItem = [];
+  bool loadingPosts = true;
 
   StompClient? stompClient;
   int index = 0;
@@ -58,6 +59,7 @@ class _TeamScreenState extends State<TeamScreen> {
     await _daoTeamFeed.getFeedContent(index, teamId).then((value) {
       setState(() {
         _postagens.addAll(value.content);
+        loadingPosts = false;
       });
     });
   }
@@ -97,6 +99,7 @@ class _TeamScreenState extends State<TeamScreen> {
                 teamId = time.id!;
                 teamName = time.description!;
                 _postagens.clear();
+                loadingPosts = true;
                 populateArray(0);
               });
             },
@@ -196,139 +199,153 @@ class _TeamScreenState extends State<TeamScreen> {
                           }
                           return true;
                         },
-                        child: ListView.separated(
-                          primary: false,
-                          shrinkWrap: true,
-                          padding: const EdgeInsets.all(15.0),
-                          itemCount: _postagens.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            final PostContent post = _postagens[index];
+                        child: loadingPosts
+                            ? const Center(
+                                child: CircularProgressIndicator(),
+                              )
+                            : ListView.separated(
+                                primary: false,
+                                shrinkWrap: true,
+                                padding: const EdgeInsets.all(15.0),
+                                itemCount: _postagens.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  final PostContent post = _postagens[index];
 
-                            // data e hora
-                            String date1 = DateFormat("HH:mm:ss").format(
-                                DateFormat('HH:mm:ss').parse(post.hora!));
-                            final convert1 =
-                                DateFormat("HH:mm:ss").parse(date1);
+                                  // data e hora
+                                  String date1 = DateFormat("HH:mm:ss").format(
+                                      DateFormat('HH:mm:ss').parse(post.hora!));
+                                  final convert1 =
+                                      DateFormat("HH:mm:ss").parse(date1);
 
-                            final date = DateFormat('dd/MM/yyyy').format(
-                                DateFormat('yyyy-MM-dd').parse(post.data!));
-                            DateTime formatISOTime(DateTime date) {
-                              var duration = date.timeZoneOffset;
-                              int h = int.parse(
-                                  duration.inHours.toString().padLeft(2, '0'));
-                              int m = int.parse(
-                                  (duration.inMinutes - (duration.inHours * 60))
-                                      .toString()
-                                      .padLeft(2, '0'));
-                              if (duration.isNegative) {
-                                return date.add(Duration(hours: h, minutes: m));
-                                // "-${duration.inHours.toString().padLeft(2, '0')}:${(duration.inMinutes - (duration.inHours * 60)).toString().padLeft(2, '0')}");
-                              } else {
-                                return date
-                                    .subtract(Duration(hours: h, minutes: m));
-                              }
-                            }
+                                  final date = DateFormat('dd/MM/yyyy').format(
+                                      DateFormat('yyyy-MM-dd')
+                                          .parse(post.data!));
+                                  DateTime formatISOTime(DateTime date) {
+                                    var duration = date.timeZoneOffset;
+                                    int h = int.parse(duration.inHours
+                                        .toString()
+                                        .padLeft(2, '0'));
+                                    int m = int.parse((duration.inMinutes -
+                                            (duration.inHours * 60))
+                                        .toString()
+                                        .padLeft(2, '0'));
+                                    if (duration.isNegative) {
+                                      return date
+                                          .add(Duration(hours: h, minutes: m));
+                                      // "-${duration.inHours.toString().padLeft(2, '0')}:${(duration.inMinutes - (duration.inHours * 60)).toString().padLeft(2, '0')}");
+                                    } else {
+                                      return date.subtract(
+                                          Duration(hours: h, minutes: m));
+                                    }
+                                  }
 
-                            String local = (DateFormat('HH:mm:ss')
-                                .format(formatISOTime(convert1)));
-                            // fim data e hora
+                                  String local = (DateFormat('HH:mm:ss')
+                                      .format(formatISOTime(convert1)));
+                                  // fim data e hora
 
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    SizedBox(
-                                      width: 55.0,
-                                      child: ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(50.0),
-                                        child: Container(
-                                          color: Color(
-                                                  (math.Random().nextDouble() *
-                                                          0xFFFFFF)
-                                                      .toInt())
-                                              .withOpacity(1.0),
-                                          height: 55.0,
-                                          child: Center(
-                                            child: Text(
-                                              post.usuarioId.name!
-                                                  .substring(0, 1),
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 25.0,
-                                                fontWeight: FontWeight.bold,
+                                  return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 55.0,
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(50.0),
+                                              child: Container(
+                                                color: Color((math.Random()
+                                                                .nextDouble() *
+                                                            0xFFFFFF)
+                                                        .toInt())
+                                                    .withOpacity(1.0),
+                                                height: 55.0,
+                                                child: Center(
+                                                  child: Text(
+                                                    post.usuarioId.name!
+                                                        .substring(0, 1),
+                                                    style: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 25.0,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 8.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            post.usuarioId.name!,
-                                            style: const TextStyle(
-                                              color: Color(0xFF4D4D4D),
-                                              fontSize: 16.0,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          Text(
-                                            '$date - $local',
-                                            style: const TextStyle(
-                                              color: Color(0xFF4D4D4D),
-                                              fontSize: 12.0,
-                                              fontWeight: FontWeight.bold,
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 8.0),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  post.usuarioId.name!,
+                                                  style: const TextStyle(
+                                                    color: Color(0xFF4D4D4D),
+                                                    fontSize: 16.0,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  '$date - $local',
+                                                  style: const TextStyle(
+                                                    color: Color(0xFF4D4D4D),
+                                                    fontSize: 12.0,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
                                         ],
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 63.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        post.texto!,
-                                        style: const TextStyle(
-                                          color: Color(0xFF4D4D4D),
-                                          fontSize: 16.0,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      Container(
-                                        width: 100.0,
+                                      Padding(
                                         padding:
-                                            const EdgeInsets.only(top: 20.0),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: const [
-                                            Icon(Icons.thumb_up_alt_outlined),
-                                            Icon(Icons.comment_outlined),
+                                            const EdgeInsets.only(left: 63.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              post.texto!,
+                                              style: const TextStyle(
+                                                color: Color(0xFF4D4D4D),
+                                                fontSize: 16.0,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Container(
+                                              width: 100.0,
+                                              padding: const EdgeInsets.only(
+                                                  top: 20.0),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: const [
+                                                  Icon(Icons
+                                                      .thumb_up_alt_outlined),
+                                                  Icon(Icons.comment_outlined),
+                                                ],
+                                              ),
+                                            )
                                           ],
                                         ),
                                       )
                                     ],
-                                  ),
-                                )
-                              ],
-                            );
-                          },
-                          separatorBuilder: (BuildContext context, int index) =>
-                              const Divider(
-                            color: Color(0xFFF3F2F3),
-                          ),
-                        ),
+                                  );
+                                },
+                                separatorBuilder:
+                                    (BuildContext context, int index) =>
+                                        const Divider(
+                                  color: Color(0xFFF3F2F3),
+                                ),
+                              ),
                       ),
                     ),
                   ],

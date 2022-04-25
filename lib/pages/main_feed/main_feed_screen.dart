@@ -33,6 +33,7 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
   final List<PostContent> _postagens = [];
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _postController = TextEditingController();
+  bool loadingPosts = true;
 
   void onConnect(StompFrame frame) {
     stompClient!.subscribe(
@@ -54,6 +55,7 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
     await _daoMainFeed.getFeedContent(index).then((value) {
       setState(() {
         _postagens.addAll(value.content);
+        loadingPosts = false;
       });
     }).catchError((onError) {
       // se o erro for um tipo de erro da chamada
@@ -158,131 +160,138 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
                   }
                   return true;
                 },
-                child: ListView.separated(
-                  primary: false,
-                  shrinkWrap: true,
-                  padding: const EdgeInsets.all(15.0),
-                  itemCount: _postagens.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    final PostContent post = _postagens[index];
-                    // data e hora
-                    String date1 = DateFormat("HH:mm:ss")
-                        .format(DateFormat('HH:mm:ss').parse(post.hora));
-                    final convert1 = DateFormat("HH:mm:ss").parse(date1);
+                child: loadingPosts
+                    ? const Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : ListView.separated(
+                        primary: false,
+                        shrinkWrap: true,
+                        padding: const EdgeInsets.all(15.0),
+                        itemCount: _postagens.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final PostContent post = _postagens[index];
+                          // data e hora
+                          String date1 = DateFormat("HH:mm:ss")
+                              .format(DateFormat('HH:mm:ss').parse(post.hora));
+                          final convert1 = DateFormat("HH:mm:ss").parse(date1);
 
-                    final date = DateFormat('dd/MM/yyyy')
-                        .format(DateFormat('yyyy-MM-dd').parse(post.data));
-                    DateTime formatISOTime(DateTime date) {
-                      var duration = date.timeZoneOffset;
-                      int h = int.parse(
-                          duration.inHours.toString().padLeft(2, '0'));
-                      int m = int.parse(
-                          (duration.inMinutes - (duration.inHours * 60))
-                              .toString()
-                              .padLeft(2, '0'));
-                      if (duration.isNegative) {
-                        return date.add(Duration(hours: h, minutes: m));
-                        // "-${duration.inHours.toString().padLeft(2, '0')}:${(duration.inMinutes - (duration.inHours * 60)).toString().padLeft(2, '0')}");
-                      } else {
-                        return date.subtract(Duration(hours: h, minutes: m));
-                      }
-                    }
+                          final date = DateFormat('dd/MM/yyyy').format(
+                              DateFormat('yyyy-MM-dd').parse(post.data));
+                          DateTime formatISOTime(DateTime date) {
+                            var duration = date.timeZoneOffset;
+                            int h = int.parse(
+                                duration.inHours.toString().padLeft(2, '0'));
+                            int m = int.parse(
+                                (duration.inMinutes - (duration.inHours * 60))
+                                    .toString()
+                                    .padLeft(2, '0'));
+                            if (duration.isNegative) {
+                              return date.add(Duration(hours: h, minutes: m));
+                              // "-${duration.inHours.toString().padLeft(2, '0')}:${(duration.inMinutes - (duration.inHours * 60)).toString().padLeft(2, '0')}");
+                            } else {
+                              return date
+                                  .subtract(Duration(hours: h, minutes: m));
+                            }
+                          }
 
-                    String local = (DateFormat('HH:mm:ss')
-                        .format(formatISOTime(convert1)));
-                    // fim data e hora
+                          String local = (DateFormat('HH:mm:ss')
+                              .format(formatISOTime(convert1)));
+                          // fim data e hora
 
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            SizedBox(
-                              width: 55.0,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(50.0),
-                                child: Container(
-                                  color: Color((math.Random().nextDouble() *
-                                              0xFFFFFF)
-                                          .toInt())
-                                      .withOpacity(1.0),
-                                  height: 55.0,
-                                  child: Center(
-                                    child: Text(
-                                      post.usuarioId.name.substring(0, 1),
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 25.0,
-                                        fontWeight: FontWeight.bold,
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    width: 55.0,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(50.0),
+                                      child: Container(
+                                        color: Color(
+                                                (math.Random().nextDouble() *
+                                                        0xFFFFFF)
+                                                    .toInt())
+                                            .withOpacity(1.0),
+                                        height: 55.0,
+                                        child: Center(
+                                          child: Text(
+                                            post.usuarioId.name.substring(0, 1),
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 25.0,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    post.usuarioId.name,
-                                    style: const TextStyle(
-                                      color: Color(0xFF4D4D4D),
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    '$date - $local',
-                                    style: const TextStyle(
-                                      color: Color(0xFF4D4D4D),
-                                      fontSize: 12.0,
-                                      fontWeight: FontWeight.bold,
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          post.usuarioId.name,
+                                          style: const TextStyle(
+                                            color: Color(0xFF4D4D4D),
+                                            fontSize: 16.0,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(
+                                          '$date - $local',
+                                          style: const TextStyle(
+                                            color: Color(0xFF4D4D4D),
+                                            fontSize: 12.0,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],
                               ),
-                            ),
-                          ],
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 63.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SelectableLinkify(
-                                onOpen: _onOpen,
-                                text: post.texto,
-                                style: const TextStyle(
-                                  color: Color(0xFF4D4D4D),
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Container(
-                                width: 100.0,
-                                padding: const EdgeInsets.only(top: 20.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: const [
-                                    Icon(Icons.thumb_up_alt_outlined),
-                                    Icon(Icons.comment_outlined),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 63.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SelectableLinkify(
+                                      onOpen: _onOpen,
+                                      text: post.texto,
+                                      style: const TextStyle(
+                                        color: Color(0xFF4D4D4D),
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Container(
+                                      width: 100.0,
+                                      padding: const EdgeInsets.only(top: 20.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: const [
+                                          Icon(Icons.thumb_up_alt_outlined),
+                                          Icon(Icons.comment_outlined),
+                                        ],
+                                      ),
+                                    )
                                   ],
                                 ),
                               )
                             ],
-                          ),
-                        )
-                      ],
-                    );
-                  },
-                  separatorBuilder: (BuildContext context, int index) =>
-                      const Divider(
-                    color: Color(0xFFCCCCCC),
-                  ),
-                ),
+                          );
+                        },
+                        separatorBuilder: (BuildContext context, int index) =>
+                            const Divider(
+                          color: Color(0xFFCCCCCC),
+                        ),
+                      ),
               ),
             ),
           ],
