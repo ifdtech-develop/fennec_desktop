@@ -126,12 +126,20 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Feed',
-              style: TextStyle(
-                color: Color(0xFF4D4D4D),
-                fontSize: 35.0,
-                fontWeight: FontWeight.bold,
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.80,
+                  child: const Text(
+                    'Feed',
+                    style: TextStyle(
+                      color: Color(0xFF4D4D4D),
+                      fontSize: 35.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
               ),
             ),
             Center(
