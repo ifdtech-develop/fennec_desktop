@@ -69,7 +69,8 @@ class _SquadScreenState extends State<SquadScreen> {
   @override
   void initState() {
     super.initState();
-    populateArray(0);
+    _postagens.clear();
+    popupMenuItem.clear();
 
     if (stompClient == null) {
       stompClient = StompClient(
@@ -115,6 +116,8 @@ class _SquadScreenState extends State<SquadScreen> {
             ),
           );
         }
+        // populando array de posts da squad
+        populateArray(0);
       }
     });
   }
