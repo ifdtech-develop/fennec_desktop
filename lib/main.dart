@@ -1,8 +1,10 @@
+import 'package:fennec_desktop/models/squad_notifier.dart';
 import 'package:fennec_desktop/pages/login/login_page.dart';
 import 'package:fennec_desktop/pages/main_page.dart';
 import 'package:fennec_desktop/utils/global_variables.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 late SharedPreferences prefs;
@@ -15,7 +17,12 @@ void main() async {
   tell = prefs.getString('phone');
   getTeam();
 
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => SquadNotifier(false),
+      child: const MyApp(),
+    ),
+  );
 }
 
 // não mostra o scrollBar na aplicação inteira

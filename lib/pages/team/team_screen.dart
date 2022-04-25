@@ -3,12 +3,14 @@ import 'dart:math' as math;
 
 import 'package:fennec_desktop/main.dart';
 import 'package:fennec_desktop/models/team_feed.dart';
+import 'package:fennec_desktop/models/squad_notifier.dart';
 import 'package:fennec_desktop/services/team_list_dao.dart';
 import 'package:fennec_desktop/services/team_feed_dao.dart';
 import 'package:fennec_desktop/utils/constants.dart';
 import 'package:fennec_desktop/utils/global_variables.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
@@ -106,222 +108,236 @@ class _TeamScreenState extends State<TeamScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        height: MediaQuery.of(context).size.height,
-        //background do container teams que deve mudar de acordo com o widget selecionado
-        // color: Color(int.parse(widget.backgroundColor)),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.centerRight,
-            end: Alignment.centerLeft,
-            stops: const [0.5, 0.5],
-            colors: [
-              Color(
-                int.parse(widget.backgroundColor),
-              ),
-              const Color(0xFFCCCCCC),
-            ],
-          ),
-        ),
-        child: ClipRRect(
-          //borda do container cortada e o texto some ao passar por ela
-          borderRadius: const BorderRadius.only(
-            topRight: Radius.circular(100.0),
-            bottomRight: Radius.circular(100.0),
-          ),
+    return Consumer<SquadNotifier>(
+      builder: (context, storedValue, child) {
+        return Expanded(
           child: Container(
-            color: const Color(0xFFCCCCCC),
             height: MediaQuery.of(context).size.height,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.80,
-                      child: Row(
-                        children: [
-                          Flexible(
-                            child: Text(
-                              teamName,
-                              style: const TextStyle(
-                                color: Color(0xFF4D4D4D),
-                                fontSize: 35.0,
-                                fontWeight: FontWeight.bold,
+            //background do container teams que deve mudar de acordo com o widget selecionado
+            // color: Color(int.parse(widget.backgroundColor)),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.centerRight,
+                end: Alignment.centerLeft,
+                stops: const [0.5, 0.5],
+                colors: [
+                  Color(
+                    int.parse(widget.backgroundColor),
+                  ),
+                  const Color(0xFFCCCCCC),
+                ],
+              ),
+            ),
+            child: ClipRRect(
+              //borda do container cortada e o texto some ao passar por ela
+              borderRadius: const BorderRadius.only(
+                topRight: Radius.circular(100.0),
+                bottomRight: Radius.circular(100.0),
+              ),
+              child: Container(
+                color: const Color(0xFFCCCCCC),
+                height: MediaQuery.of(context).size.height,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.80,
+                          child: Row(
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  teamName,
+                                  style: const TextStyle(
+                                    color: Color(0xFF4D4D4D),
+                                    fontSize: 35.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
-                            ),
+                              PopupMenuButton(
+                                padding: const EdgeInsets.only(left: 25.0),
+                                icon: const Icon(Icons.menu,
+                                    color: Colors.black87),
+                                onSelected: (value) {
+                                  storedValue.reloadSquad();
+                                },
+                                itemBuilder: (context) => popupMenuItem,
+                              ),
+                            ],
                           ),
-                          PopupMenuButton(
-                            padding: const EdgeInsets.only(left: 25.0),
-                            icon: const Icon(Icons.menu, color: Colors.black87),
-                            itemBuilder: (context) => popupMenuItem,
-                          ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                ),
-                Center(
-                  child: postInput(),
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 15.0, right: 15.0),
-                  child: Divider(
-                    color: Color(0xFFF3F2F3),
-                  ),
-                ),
-                Expanded(
-                  child: NotificationListener<ScrollNotification>(
-                    onNotification: (ScrollNotification notification) {
-                      if (notification.metrics.atEdge) {
-                        if (notification.metrics.pixels == 0) {
-                          print('At top');
-                        } else {
-                          print('At bottom');
-                          setState(() {
-                            index++;
-                            populateArray(index);
-                          });
-                        }
-                      }
-                      return true;
-                    },
-                    child: ListView.separated(
-                      primary: false,
-                      shrinkWrap: true,
-                      padding: const EdgeInsets.all(15.0),
-                      itemCount: _postagens.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        final PostContent post = _postagens[index];
-
-                        // data e hora
-                        String date1 = DateFormat("HH:mm:ss")
-                            .format(DateFormat('HH:mm:ss').parse(post.hora!));
-                        final convert1 = DateFormat("HH:mm:ss").parse(date1);
-
-                        final date = DateFormat('dd/MM/yyyy')
-                            .format(DateFormat('yyyy-MM-dd').parse(post.data!));
-                        DateTime formatISOTime(DateTime date) {
-                          var duration = date.timeZoneOffset;
-                          int h = int.parse(
-                              duration.inHours.toString().padLeft(2, '0'));
-                          int m = int.parse(
-                              (duration.inMinutes - (duration.inHours * 60))
-                                  .toString()
-                                  .padLeft(2, '0'));
-                          if (duration.isNegative) {
-                            return date.add(Duration(hours: h, minutes: m));
-                            // "-${duration.inHours.toString().padLeft(2, '0')}:${(duration.inMinutes - (duration.inHours * 60)).toString().padLeft(2, '0')}");
-                          } else {
-                            return date
-                                .subtract(Duration(hours: h, minutes: m));
+                    Center(
+                      child: postInput(),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 15.0, right: 15.0),
+                      child: Divider(
+                        color: Color(0xFFF3F2F3),
+                      ),
+                    ),
+                    Expanded(
+                      child: NotificationListener<ScrollNotification>(
+                        onNotification: (ScrollNotification notification) {
+                          if (notification.metrics.atEdge) {
+                            if (notification.metrics.pixels == 0) {
+                              print('At top');
+                            } else {
+                              print('At bottom');
+                              setState(() {
+                                index++;
+                                populateArray(index);
+                              });
+                            }
                           }
-                        }
+                          return true;
+                        },
+                        child: ListView.separated(
+                          primary: false,
+                          shrinkWrap: true,
+                          padding: const EdgeInsets.all(15.0),
+                          itemCount: _postagens.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            final PostContent post = _postagens[index];
 
-                        String local = (DateFormat('HH:mm:ss')
-                            .format(formatISOTime(convert1)));
-                        // fim data e hora
+                            // data e hora
+                            String date1 = DateFormat("HH:mm:ss").format(
+                                DateFormat('HH:mm:ss').parse(post.hora!));
+                            final convert1 =
+                                DateFormat("HH:mm:ss").parse(date1);
 
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
+                            final date = DateFormat('dd/MM/yyyy').format(
+                                DateFormat('yyyy-MM-dd').parse(post.data!));
+                            DateTime formatISOTime(DateTime date) {
+                              var duration = date.timeZoneOffset;
+                              int h = int.parse(
+                                  duration.inHours.toString().padLeft(2, '0'));
+                              int m = int.parse(
+                                  (duration.inMinutes - (duration.inHours * 60))
+                                      .toString()
+                                      .padLeft(2, '0'));
+                              if (duration.isNegative) {
+                                return date.add(Duration(hours: h, minutes: m));
+                                // "-${duration.inHours.toString().padLeft(2, '0')}:${(duration.inMinutes - (duration.inHours * 60)).toString().padLeft(2, '0')}");
+                              } else {
+                                return date
+                                    .subtract(Duration(hours: h, minutes: m));
+                              }
+                            }
+
+                            String local = (DateFormat('HH:mm:ss')
+                                .format(formatISOTime(convert1)));
+                            // fim data e hora
+
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                SizedBox(
-                                  width: 55.0,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(50.0),
-                                    child: Container(
-                                      color: Color((math.Random().nextDouble() *
-                                                  0xFFFFFF)
-                                              .toInt())
-                                          .withOpacity(1.0),
-                                      height: 55.0,
-                                      child: Center(
-                                        child: Text(
-                                          post.usuarioId.name!.substring(0, 1),
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 25.0,
-                                            fontWeight: FontWeight.bold,
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 55.0,
+                                      child: ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(50.0),
+                                        child: Container(
+                                          color: Color(
+                                                  (math.Random().nextDouble() *
+                                                          0xFFFFFF)
+                                                      .toInt())
+                                              .withOpacity(1.0),
+                                          height: 55.0,
+                                          child: Center(
+                                            child: Text(
+                                              post.usuarioId.name!
+                                                  .substring(0, 1),
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 25.0,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 8.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            post.usuarioId.name!,
+                                            style: const TextStyle(
+                                              color: Color(0xFF4D4D4D),
+                                              fontSize: 16.0,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          Text(
+                                            '$date - $local',
+                                            style: const TextStyle(
+                                              color: Color(0xFF4D4D4D),
+                                              fontSize: 12.0,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 8.0),
+                                  padding: const EdgeInsets.only(left: 63.0),
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        post.usuarioId.name!,
+                                        post.texto!,
                                         style: const TextStyle(
                                           color: Color(0xFF4D4D4D),
                                           fontSize: 16.0,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      Text(
-                                        '$date - $local',
-                                        style: const TextStyle(
-                                          color: Color(0xFF4D4D4D),
-                                          fontSize: 12.0,
-                                          fontWeight: FontWeight.bold,
+                                      Container(
+                                        width: 100.0,
+                                        padding:
+                                            const EdgeInsets.only(top: 20.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: const [
+                                            Icon(Icons.thumb_up_alt_outlined),
+                                            Icon(Icons.comment_outlined),
+                                          ],
                                         ),
-                                      ),
+                                      )
                                     ],
                                   ),
-                                ),
+                                )
                               ],
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 63.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    post.texto!,
-                                    style: const TextStyle(
-                                      color: Color(0xFF4D4D4D),
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Container(
-                                    width: 100.0,
-                                    padding: const EdgeInsets.only(top: 20.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: const [
-                                        Icon(Icons.thumb_up_alt_outlined),
-                                        Icon(Icons.comment_outlined),
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            )
-                          ],
-                        );
-                      },
-                      separatorBuilder: (BuildContext context, int index) =>
-                          const Divider(
-                        color: Color(0xFFF3F2F3),
+                            );
+                          },
+                          separatorBuilder: (BuildContext context, int index) =>
+                              const Divider(
+                            color: Color(0xFFF3F2F3),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
