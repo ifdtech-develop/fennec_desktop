@@ -124,11 +124,12 @@ class _SquadScreenState extends State<SquadScreen> {
     return Consumer<SquadNotifier>(
       builder: (context, storedValue, child) {
         if (storedValue.reload) {
-          print('hello');
+          // reseto os valores
           storedValue.reload = false;
-          _daoSquadList.listaSquad().then((squads) {
-            popupMenuItem.clear();
+          popupMenuItem.clear();
+          _postagens.clear();
 
+          _daoSquadList.listaSquad().then((squads) {
             if (squads.isEmpty) {
               setState(() {
                 noSquad = true;
@@ -158,6 +159,8 @@ class _SquadScreenState extends State<SquadScreen> {
                 );
               }
             }
+            // populando array de posts da squad
+            populateArray(0);
           });
         }
 
