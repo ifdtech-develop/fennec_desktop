@@ -134,7 +134,8 @@ class _MainPageState extends State<MainPage> {
           //fica em cima das telas principais do conteudo principal
           Positioned(
             right: 20.0,
-            bottom: 150.0,
+            bottom: 0.0,
+            top: 0.0,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
