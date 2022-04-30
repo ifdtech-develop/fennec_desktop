@@ -127,6 +127,21 @@ class _MainPageState extends State<MainPage> {
                     }
                   });
                 },
+                onFeedSelected: () {
+                  setState(() {
+                    _isTeamVisible = false;
+                    //estou alocando um valor booleano na posicao 0 do array
+                    _selected[0] = false;
+                    _isSquadVisible = false;
+                    //estou alocando um valor booleano na posicao 1 do array
+                    _selected[1] = false;
+                    _isChatVisible = false;
+                    //estou alocando um valor booleano na posicao 2 do array
+                    _selected[2] = false;
+                    // background do menu
+                    backgroundcolorMenu = '0xFFFDF5E6';
+                  });
+                },
               ),
             ),
           ),

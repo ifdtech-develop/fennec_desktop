@@ -8,12 +8,14 @@ class MenuScreen extends StatefulWidget {
   //ação nesse widget
   final VoidCallback onProfileSelected;
   final VoidCallback onTeamSelected;
+  final VoidCallback onFeedSelected;
 
   const MenuScreen({
     Key? key,
     required this.backgroundColor,
     required this.onProfileSelected,
     required this.onTeamSelected,
+    required this.onFeedSelected,
   }) : super(key: key);
 
   @override
@@ -121,6 +123,19 @@ class _MenuScreenState extends State<MenuScreen> {
           ),
         ),
         SidebarButtons(
+          icon: Icons.feed,
+          title: 'Feed',
+          onSelect: () {
+            setState(() {
+              widget.onFeedSelected();
+              //se o menu do perfil aberto, fechar ele
+              if (_isMenuVisible) {
+                _isMenuVisible = !_isMenuVisible;
+              }
+            });
+          },
+        ),
+        SidebarButtons(
           icon: Icons.groups,
           title: 'Time',
           onSelect: () {
@@ -136,11 +151,6 @@ class _MenuScreenState extends State<MenuScreen> {
         SidebarButtons(
           icon: Icons.workspaces,
           title: 'Workspace',
-          onSelect: () {},
-        ),
-        SidebarButtons(
-          icon: Icons.feed,
-          title: 'Feed',
           onSelect: () {},
         ),
         SidebarButtons(
