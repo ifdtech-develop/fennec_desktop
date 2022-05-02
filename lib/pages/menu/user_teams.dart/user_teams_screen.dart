@@ -43,7 +43,7 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
           topRight: Radius.circular(100.0),
           bottomRight: Radius.circular(100.0),
         ),
-        child: Container(
+        child: SizedBox(
           height: MediaQuery.of(context).size.height,
           child: Row(
             children: [
