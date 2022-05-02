@@ -20,6 +20,11 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
   String teamDescription = "";
   List<ListOfUsers> teamUsersList = [];
   List<SquadList> teamSquadsList = [];
+  TextStyle listTileStyle = const TextStyle(
+    fontSize: 15.0,
+    color: Color(0xFF4D4D4D),
+    fontWeight: FontWeight.w600,
+  );
 
   TextEditingController searchTeamsController = TextEditingController();
   TextEditingController searchTeamUsersController = TextEditingController();
@@ -261,24 +266,10 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
                             var squad = teamSquadsList[index];
 
                             if (searchSquadsController.text.isEmpty) {
-                              return Column(
-                                children: [
-                                  ListTile(
-                                    title: Text(squad.name!),
-                                  ),
-                                  const Divider(),
-                                ],
-                              );
+                              return squadListTile(squad);
                             } else if (squad.name!.toLowerCase().contains(
                                 searchSquadsController.text.toLowerCase())) {
-                              return Column(
-                                children: [
-                                  ListTile(
-                                    title: Text(squad.name!),
-                                  ),
-                                  const Divider(),
-                                ],
-                              );
+                              return squadListTile(squad);
                             }
 
                             return Container();
@@ -293,6 +284,68 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Column teamsListTile(TeamList item) {
+    return Column(
+      children: [
+        ListTile(
+          title: Text(
+            item.description!,
+            style: listTileStyle,
+          ),
+          onTap: () {
+            teamUsersList.clear();
+            teamSquadsList.clear();
+
+            _daoTeamList.usersOnTeamList(item.id!).then((users) {
+              for (var user in users) {
+                teamUsersList.add(user);
+              }
+              setState(() {
+                teamName = item.description!;
+                teamDescription = item.name!;
+              });
+            });
+
+            _daoTeamList.teamSquads(item.id!).then((squads) {
+              for (var squad in squads) {
+                teamSquadsList.add(squad);
+              }
+            });
+          },
+        ),
+        const Divider(),
+      ],
+    );
+  }
+
+  Column teamUserListTile(ListOfUsers user) {
+    return Column(
+      children: [
+        ListTile(
+          title: Text(
+            user.name!,
+            style: listTileStyle,
+          ),
+        ),
+        const Divider(),
+      ],
+    );
+  }
+
+  Column squadListTile(SquadList squad) {
+    return Column(
+      children: [
+        ListTile(
+          title: Text(
+            squad.name!,
+            style: listTileStyle,
+          ),
+        ),
+        const Divider(),
+      ],
     );
   }
 
@@ -335,48 +388,6 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
           ),
         ),
       ),
-    );
-  }
-
-  Column teamsListTile(TeamList item) {
-    return Column(
-      children: [
-        ListTile(
-          title: Text(item.description!),
-          onTap: () {
-            teamUsersList.clear();
-            teamSquadsList.clear();
-
-            _daoTeamList.usersOnTeamList(item.id!).then((users) {
-              for (var user in users) {
-                teamUsersList.add(user);
-              }
-              setState(() {
-                teamName = item.description!;
-                teamDescription = item.name!;
-              });
-            });
-
-            _daoTeamList.teamSquads(item.id!).then((squads) {
-              for (var squad in squads) {
-                teamSquadsList.add(squad);
-              }
-            });
-          },
-        ),
-        const Divider(),
-      ],
-    );
-  }
-
-  Column teamUserListTile(ListOfUsers user) {
-    return Column(
-      children: [
-        ListTile(
-          title: Text(user.name!),
-        ),
-        const Divider(),
-      ],
     );
   }
 }
