@@ -112,11 +112,39 @@ class TeamListDao {
     } else {
       print('error');
       print(response.body);
-      throw ErrorMessage.fromJson(
-        jsonDecode(
-          utf8.decode(response.bodyBytes),
-        ),
-      );
+      throw ErrorMessage.fromJson(jsonDecode(response.body));
+    }
+  }
+
+  Future<TeamList> createTeam(String name, String description) async {
+    final String token;
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      token = prefs.getString('token')!;
+    } on Exception catch (e) {
+      print(e.toString());
+      throw Exception(e.toString());
+    }
+
+    final response = await http.post(
+      Uri.parse('$serverURL/time'),
+      headers: <String, String>{
+        'Authorization': token,
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        "description": description,
+        "name": name,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return TeamList.fromJson(jsonDecode(response.body));
+    } else {
+      print('error');
+      print(response.body);
+      throw ErrorMessage.fromJson(jsonDecode(response.body));
     }
   }
 }

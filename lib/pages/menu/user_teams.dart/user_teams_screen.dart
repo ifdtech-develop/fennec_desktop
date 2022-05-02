@@ -1,3 +1,4 @@
+import 'package:fennec_desktop/components/alert_dialog.dart';
 import 'package:fennec_desktop/components/appbar.dart';
 import 'package:fennec_desktop/components/bottom_navigation_bar.dart';
 import 'package:fennec_desktop/models/list_of_users.dart';
@@ -30,6 +31,8 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
   TextEditingController searchTeamsController = TextEditingController();
   TextEditingController searchTeamUsersController = TextEditingController();
   TextEditingController searchSquadsController = TextEditingController();
+  TextEditingController teamNameController = TextEditingController();
+  TextEditingController teamDescriptionController = TextEditingController();
 
   @override
   void initState() {
@@ -78,7 +81,11 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
                                 padding: const EdgeInsets.only(top: 10.0),
                                 child: InkWell(
                                   onTap: () {
-                                    print('asdasdsadasdas');
+                                    showDialog<String>(
+                                      context: context,
+                                      builder: (BuildContext context) =>
+                                          alertDialog(context),
+                                    );
                                   },
                                   child: Row(
                                     children: const [
@@ -106,25 +113,28 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
                           future: _getTeamList,
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
-                              return ListView.builder(
-                                shrinkWrap: true,
-                                padding: const EdgeInsets.fromLTRB(
-                                    0.0, 10.0, 0.0, 10.0),
-                                itemCount: snapshot.data!.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  var item = snapshot.data![index];
+                              return Expanded(
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  padding: const EdgeInsets.fromLTRB(
+                                      0.0, 10.0, 0.0, 10.0),
+                                  itemCount: snapshot.data!.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    var item = snapshot.data![index];
 
-                                  if (searchTeamsController.text.isEmpty) {
-                                    return teamsListTile(item);
-                                  } else if (item.description!
-                                      .toLowerCase()
-                                      .contains(searchTeamsController.text
-                                          .toLowerCase())) {
-                                    return teamsListTile(item);
-                                  }
+                                    if (searchTeamsController.text.isEmpty) {
+                                      return teamsListTile(item);
+                                    } else if (item.description!
+                                        .toLowerCase()
+                                        .contains(searchTeamsController.text
+                                            .toLowerCase())) {
+                                      return teamsListTile(item);
+                                    }
 
-                                  return Container();
-                                },
+                                    return Container();
+                                  },
+                                ),
                               );
                             } else if (snapshot.hasError) {
                               return Text('${snapshot.error}');
@@ -295,6 +305,140 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
     );
   }
 
+  AlertDialog alertDialog(BuildContext context) {
+    return AlertDialog(
+      title: const Text(
+        'Adicionar Time',
+        textAlign: TextAlign.center,
+      ),
+      titleTextStyle: const TextStyle(
+        fontWeight: FontWeight.bold,
+        color: Color(0xFF4D4D4D),
+        fontSize: 25.0,
+      ),
+      content: alertDialogContent(context),
+      actionsAlignment: MainAxisAlignment.spaceEvenly,
+      actions: [
+        // TextButton(
+        //   onPressed: () => Navigator.pop(
+        //       context, 'Cancelar'),
+        //   child: const Text(
+        //     'Cancelar',
+        //     style: TextStyle(
+        //       color: Colors.white,
+        //       fontSize: 18.0,
+        //       fontWeight: FontWeight.w600,
+        //     ),
+        //   ),
+        //   style: ButtonStyle(
+        //     backgroundColor:
+        //         MaterialStateProperty.all<
+        //             Color>(Colors.red),
+        //     elevation: MaterialStateProperty
+        //         .all<double>(5),
+        //     padding:
+        //         MaterialStateProperty.all(
+        //       const EdgeInsets.symmetric(
+        //           vertical: 20.0,
+        //           horizontal: 35.0),
+        //     ),
+        //   ),
+        // ),
+        Container(
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [
+                Color(0xFFFB00B8),
+                Color(0xFFFB2588),
+                Color(0xFFFB3079),
+                Color(0xFFFB4B56),
+                Color(0xFFFB5945),
+                Color(0xFFFB6831),
+                Color(0xFFFB6E29),
+                Color(0xFFFB8C03),
+                Color(0xFFFB8D01),
+                Color(0xFFFB8E00),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(50.0),
+          ),
+          child: ElevatedButton(
+            onPressed: () {
+              _daoTeamList
+                  .createTeam(
+                      teamNameController.text, teamDescriptionController.text)
+                  .then((value) {
+                print('to criando um time');
+                print(value);
+                setState(() {
+                  Navigator.pop(context, 'Adicionar');
+
+                  _getTeamList = _daoTeamList.listaTime();
+                });
+              }).catchError((onError) {
+                Future.delayed(
+                  const Duration(seconds: 0),
+                  () => showDialog<String>(
+                    context: context,
+                    builder: (BuildContext context) => CustomAlertDialog(
+                      description:
+                          "${onError.message.toString()}.\n\nEntre em contato com o suporte.",
+                    ),
+                  ),
+                );
+              });
+            },
+            child: const Text(
+              'Adicionar',
+              style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            style: ElevatedButton.styleFrom(
+              primary: Colors.transparent,
+              shadowColor: Colors.transparent,
+              padding: const EdgeInsets.symmetric(
+                vertical: 20.0,
+                horizontal: 50.0,
+              ),
+              elevation: 10,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Form alertDialogContent(BuildContext context) {
+    return Form(
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.4,
+        height: MediaQuery.of(context).size.height * 0.4,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            CustomTextFormField(
+              autofocus: true,
+              controller: teamNameController,
+              labelText: 'Nome do Time',
+            ),
+            CustomTextFormField(
+              autofocus: false,
+              controller: teamDescriptionController,
+              labelText: 'Descrição do Time',
+              linhas: 2,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Column teamsListTile(TeamList item) {
     return Column(
       children: [
@@ -414,6 +558,51 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class CustomTextFormField extends StatelessWidget {
+  final TextEditingController controller;
+  final bool autofocus;
+  final String labelText;
+  final IconData? icon;
+  final int? linhas;
+
+  const CustomTextFormField({
+    Key? key,
+    required this.controller,
+    required this.autofocus,
+    required this.labelText,
+    this.icon,
+    this.linhas,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      autofocus: autofocus,
+      controller: controller,
+      style: const TextStyle(
+        color: Colors.black,
+        fontSize: 18.0,
+      ),
+      maxLines: linhas,
+      decoration: InputDecoration(
+        border: const OutlineInputBorder(),
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        labelText: labelText,
+        labelStyle: const TextStyle(
+          color: Color(0xFFB0B0B0),
+        ),
+        prefixIcon: icon != null ? Icon(icon) : null,
+      ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Campo obrigatório.';
+        }
+        return null;
+      },
     );
   }
 }
