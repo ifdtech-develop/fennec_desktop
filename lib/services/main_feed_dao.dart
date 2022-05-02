@@ -83,11 +83,7 @@ class MainFeedDao {
     } else {
       print('error');
       print(response.body);
-      throw ErrorDescription(
-        jsonDecode(
-          utf8.decode(response.bodyBytes),
-        ),
-      );
+      throw ErrorMessage.fromJson(jsonDecode(response.body));
     }
   }
 }

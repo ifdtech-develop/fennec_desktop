@@ -72,7 +72,7 @@ class TeamFeedDao {
     } else {
       print('error');
       print(response.body);
-      throw ErrorDescription(jsonDecode(utf8.decode(response.bodyBytes)));
+      throw ErrorDescription(jsonDecode(response.body));
     }
   }
 }

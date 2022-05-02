@@ -28,7 +28,7 @@ class LoginDao {
     } else {
       print('error');
       print(response.body);
-      throw ErrorMessage.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
+      throw ErrorMessage.fromJson(jsonDecode(response.body));
     }
   }
 }
