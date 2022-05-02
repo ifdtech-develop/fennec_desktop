@@ -18,6 +18,7 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
   late Future<List<TeamList>> _getTeamList;
   String teamName = "";
   String teamDescription = "";
+  int _tileSelected = -1;
   List<ListOfUsers> teamUsersList = [];
   List<SquadList> teamSquadsList = [];
   TextStyle listTileStyle = const TextStyle(
@@ -56,42 +57,49 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
                 child: Container(
                   color: const Color(0xFFE4E4E4),
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 20.0, top: 8.0),
+                    padding: const EdgeInsets.only(top: 8.0),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Seus Times',
-                          style: TextStyle(
-                            fontSize: 30.0,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF4D4D4D),
-                          ),
-                        ),
-                        searchInput(searchTeamsController),
                         Padding(
-                          padding: const EdgeInsets.only(top: 10.0),
-                          child: InkWell(
-                            onTap: () {
-                              print('asdasdsadasdas');
-                            },
-                            child: Row(
-                              children: const [
-                                Padding(
-                                  padding: EdgeInsets.only(right: 8.0),
-                                  child: Icon(
-                                    Icons.add,
-                                    color: Color(0xFF707070),
+                          padding: const EdgeInsets.only(left: 20.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Seus Times',
+                                style: TextStyle(
+                                  fontSize: 30.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF4D4D4D),
+                                ),
+                              ),
+                              searchInput(searchTeamsController),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 10.0),
+                                child: InkWell(
+                                  onTap: () {
+                                    print('asdasdsadasdas');
+                                  },
+                                  child: Row(
+                                    children: const [
+                                      Padding(
+                                        padding: EdgeInsets.only(right: 8.0),
+                                        child: Icon(
+                                          Icons.add,
+                                          color: Color(0xFF707070),
+                                        ),
+                                      ),
+                                      Text(
+                                        'Adicionar Time',
+                                        style: TextStyle(
+                                          color: Color(0xFF707070),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                Text(
-                                  'Adicionar Time',
-                                  style: TextStyle(
-                                    color: Color(0xFF707070),
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                         FutureBuilder<List<TeamList>>(
@@ -101,7 +109,7 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
                               return ListView.builder(
                                 shrinkWrap: true,
                                 padding: const EdgeInsets.fromLTRB(
-                                    0.0, 8.0, 20.0, 8.0),
+                                    0.0, 10.0, 0.0, 10.0),
                                 itemCount: snapshot.data!.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   var item = snapshot.data![index];
@@ -290,33 +298,51 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
   Column teamsListTile(TeamList item) {
     return Column(
       children: [
-        ListTile(
-          title: Text(
-            item.description!,
-            style: listTileStyle,
-          ),
-          onTap: () {
-            teamUsersList.clear();
-            teamSquadsList.clear();
-
-            _daoTeamList.usersOnTeamList(item.id!).then((users) {
-              for (var user in users) {
-                teamUsersList.add(user);
-              }
+        Card(
+          margin: EdgeInsets.zero,
+          elevation: 0,
+          child: ListTile(
+            title: Padding(
+              padding: const EdgeInsets.fromLTRB(20.0, 15.0, 0.0, 15.0),
+              child: Text(
+                item.description!,
+                style: listTileStyle,
+              ),
+            ),
+            // selected: _tileSelected == item.id!,
+            tileColor: _tileSelected == item.id!
+                ? const Color(0xFFF3F3F3)
+                : const Color(0xFFE4E4E4),
+            // selectedTileColor: Colors.greenAccent,
+            onTap: () {
               setState(() {
-                teamName = item.description!;
-                teamDescription = item.name!;
+                _tileSelected = item.id!;
               });
-            });
+              teamUsersList.clear();
+              teamSquadsList.clear();
+              // setState(() {;
 
-            _daoTeamList.teamSquads(item.id!).then((squads) {
-              for (var squad in squads) {
-                teamSquadsList.add(squad);
-              }
-            });
-          },
+              _daoTeamList.usersOnTeamList(item.id!).then((users) {
+                for (var user in users) {
+                  teamUsersList.add(user);
+                }
+                setState(() {
+                  teamName = item.description!;
+                  teamDescription = item.name!;
+                });
+              });
+
+              _daoTeamList.teamSquads(item.id!).then((squads) {
+                for (var squad in squads) {
+                  teamSquadsList.add(squad);
+                }
+              });
+            },
+          ),
         ),
-        const Divider(),
+        const Divider(
+          height: 0,
+        ),
       ],
     );
   }
