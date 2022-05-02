@@ -37,11 +37,17 @@ class SquadListDao {
                 ),
           );
 
-      return listaSquadFromJson(response.body);
+      return listaSquadFromJson(
+        utf8.decode(response.bodyBytes),
+      );
     } else {
       print('error');
       print(response.body);
-      throw ErrorMessage.fromJson(jsonDecode(response.body));
+      throw ErrorMessage.fromJson(
+        jsonDecode(
+          utf8.decode(response.bodyBytes),
+        ),
+      );
     }
   }
 }

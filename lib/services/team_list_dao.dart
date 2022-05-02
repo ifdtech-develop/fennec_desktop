@@ -31,11 +31,11 @@ class TeamListDao {
                 ),
           );
 
-      return listaTimeFromJson(response.body);
+      return listaTimeFromJson(utf8.decode(response.bodyBytes));
     } else {
       print('error');
       print(response.body);
-      throw ErrorMessage.fromJson(jsonDecode(response.body));
+      throw ErrorMessage.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
     }
   }
 

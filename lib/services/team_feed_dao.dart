@@ -68,11 +68,11 @@ class TeamFeedDao {
     if (response.statusCode == 200) {
       // print('response.body');
       // print(response.body);
-      return PostContent.fromJson(jsonDecode(response.body));
+      return PostContent.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
     } else {
       print('error');
       print(response.body);
-      throw ErrorDescription(response.body);
+      throw ErrorDescription(jsonDecode(utf8.decode(response.bodyBytes)));
     }
   }
 }
