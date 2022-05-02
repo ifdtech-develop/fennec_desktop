@@ -1,6 +1,7 @@
 import 'package:fennec_desktop/components/appbar.dart';
 import 'package:fennec_desktop/components/bottom_navigation_bar.dart';
 import 'package:fennec_desktop/models/list_of_users.dart';
+import 'package:fennec_desktop/models/squad_list.dart';
 import 'package:fennec_desktop/models/team_list.dart';
 import 'package:fennec_desktop/services/team_list_dao.dart';
 import 'package:flutter/material.dart';
@@ -18,9 +19,11 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
   String teamName = "";
   String teamDescription = "";
   List<ListOfUsers> teamUsersList = [];
+  List<SquadList> teamSquadsList = [];
 
   TextEditingController searchTeamsController = TextEditingController();
   TextEditingController searchTeamUsersController = TextEditingController();
+  TextEditingController searchSquadsController = TextEditingController();
 
   @override
   void initState() {
@@ -210,10 +213,79 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
               Expanded(
                 child: Container(
                   color: const Color(0xFFFFFD8A),
-                  child: Column(
-                    children: const [
-                      Text('dadasd'),
-                    ],
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 20.0, top: 8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Squads',
+                          style: TextStyle(
+                            fontSize: 30.0,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF4D4D4D),
+                          ),
+                        ),
+                        searchInput(searchSquadsController),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10.0),
+                          child: InkWell(
+                            onTap: () {
+                              print('asdasdsadasdas');
+                            },
+                            child: Row(
+                              children: const [
+                                Padding(
+                                  padding: EdgeInsets.only(right: 8.0),
+                                  child: Icon(
+                                    Icons.add,
+                                    color: Color(0xFF707070),
+                                  ),
+                                ),
+                                Text(
+                                  'Adicionar Squad',
+                                  style: TextStyle(
+                                    color: Color(0xFF707070),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        ListView.builder(
+                          shrinkWrap: true,
+                          padding:
+                              const EdgeInsets.fromLTRB(0.0, 8.0, 20.0, 8.0),
+                          itemCount: teamSquadsList.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            var squad = teamSquadsList[index];
+
+                            if (searchSquadsController.text.isEmpty) {
+                              return Column(
+                                children: [
+                                  ListTile(
+                                    title: Text(squad.name!),
+                                  ),
+                                  const Divider(),
+                                ],
+                              );
+                            } else if (squad.name!.toLowerCase().contains(
+                                searchSquadsController.text.toLowerCase())) {
+                              return Column(
+                                children: [
+                                  ListTile(
+                                    title: Text(squad.name!),
+                                  ),
+                                  const Divider(),
+                                ],
+                              );
+                            }
+
+                            return Container();
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -273,16 +345,22 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
           title: Text(item.description!),
           onTap: () {
             teamUsersList.clear();
+            teamSquadsList.clear();
 
             _daoTeamList.usersOnTeamList(item.id!).then((users) {
               for (var user in users) {
-                print(user);
                 teamUsersList.add(user);
               }
               setState(() {
                 teamName = item.description!;
                 teamDescription = item.name!;
               });
+            });
+
+            _daoTeamList.teamSquads(item.id!).then((squads) {
+              for (var squad in squads) {
+                teamSquadsList.add(squad);
+              }
             });
           },
         ),
