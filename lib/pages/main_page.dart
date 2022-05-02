@@ -96,7 +96,7 @@ class _MainPageState extends State<MainPage> {
                     }
                   });
                 },
-                onTeamSelected: () {
+                onGeralSelected: () {
                   setState(() {
                     //estou alocando um valor booleano na posicao 0 do array
                     _selected[0] = true;

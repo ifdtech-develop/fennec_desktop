@@ -1,5 +1,6 @@
 import 'package:fennec_desktop/main.dart';
 import 'package:fennec_desktop/pages/menu/profile/profile_screen.dart';
+import 'package:fennec_desktop/pages/menu/user_teams.dart/user_teams_screen.dart';
 import 'package:flutter/material.dart';
 
 class MenuScreen extends StatefulWidget {
@@ -7,14 +8,14 @@ class MenuScreen extends StatefulWidget {
   //Por essa função, aviso ao component pai que chamar esse widget que aconteceu uma
   //ação nesse widget
   final VoidCallback onProfileSelected;
-  final VoidCallback onTeamSelected;
+  final VoidCallback onGeralSelected;
   final VoidCallback onFeedSelected;
 
   const MenuScreen({
     Key? key,
     required this.backgroundColor,
     required this.onProfileSelected,
-    required this.onTeamSelected,
+    required this.onGeralSelected,
     required this.onFeedSelected,
   }) : super(key: key);
 
@@ -140,7 +141,24 @@ class _MenuScreenState extends State<MenuScreen> {
           title: 'Time',
           onSelect: () {
             setState(() {
-              widget.onTeamSelected();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const UserTeamsScreen()),
+              );
+              //se o menu do perfil aberto, fechar ele
+              if (_isMenuVisible) {
+                _isMenuVisible = !_isMenuVisible;
+              }
+            });
+          },
+        ),
+        SidebarButtons(
+          icon: Icons.groups,
+          title: 'Geral',
+          onSelect: () {
+            setState(() {
+              widget.onGeralSelected();
               //se o menu do perfil aberto, fechar ele
               if (_isMenuVisible) {
                 _isMenuVisible = !_isMenuVisible;

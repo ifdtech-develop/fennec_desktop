@@ -17,6 +17,7 @@ class AppbarComponent extends StatelessWidget with PreferredSizeWidget {
       ),
       toolbarHeight: 80,
       elevation: 0,
+      iconTheme: const IconThemeData(color: Colors.orange),
     );
   }
 }
