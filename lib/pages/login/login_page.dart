@@ -204,7 +204,7 @@ class _LoginPageState extends State<LoginPage> {
           context: context,
           builder: (BuildContext context) => CustomAlertDialog(
             description:
-                "${onError.toString()}.\n\nEntre em contato com o suporte.",
+                "${onError.message.toString()}.\n\nEntre em contato com o suporte.",
           ),
         ),
       );
