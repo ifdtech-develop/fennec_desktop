@@ -28,6 +28,7 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
   String teamName = "";
   String teamDescription = "";
   int _teamIdSelected = -1;
+  int _squadIdSelected = -1;
   List<ListOfUsers> teamUsersList = [];
   List<SquadList> teamSquadsList = [];
   TextStyle listTileStyle = const TextStyle(
@@ -204,7 +205,10 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
                               showDialog<String>(
                                 context: context,
                                 builder: (BuildContext context) =>
-                                    addUserToTeamDialog(),
+                                    addUserDialog(
+                                  'Adicionar usuários ao Time',
+                                  addUsersToTeamFunction,
+                                ),
                               ).then((value) {
                                 // atualizo a lista de usuários
                                 _daoTeamList
@@ -354,11 +358,14 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
     );
   }
 
-  StatefulBuilder addUserToTeamDialog() {
+  StatefulBuilder addUserDialog(
+    String title,
+    Function onPressedFunction,
+  ) {
     return StatefulBuilder(builder: (context, setState) {
       return AlertDialog(
-        title: const Text(
-          'Adicionar usuários ao time',
+        title: Text(
+          title,
           textAlign: TextAlign.center,
         ),
         titleTextStyle: const TextStyle(
@@ -366,7 +373,7 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
           color: Color(0xFF4D4D4D),
           fontSize: 25.0,
         ),
-        content: addUserToTeamContent(setState),
+        content: addUserContent(setState),
         actionsAlignment: MainAxisAlignment.spaceEvenly,
         actions: [
           Container(
@@ -389,30 +396,7 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
             ),
             child: ElevatedButton(
               onPressed: () {
-                var json = [];
-                for (var user in selectedUsers) {
-                  json.add({"id": user});
-                }
-
-                _daoTeamList
-                    .addUsersToTeam(_teamIdSelected, json)
-                    .then((value) {
-                  setState(() {
-                    selectedUsers = [];
-                  });
-                  Navigator.pop(context, 'Adicionar');
-                }).catchError((onError) {
-                  Future.delayed(
-                    const Duration(seconds: 0),
-                    () => showDialog<String>(
-                      context: context,
-                      builder: (BuildContext context) => CustomAlertDialog(
-                        description:
-                            "${onError.message.toString()}.\n\nEntre em contato com o suporte.",
-                      ),
-                    ),
-                  );
-                });
+                onPressedFunction();
               },
               child: const Text(
                 'Adicionar',
@@ -441,7 +425,7 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
     });
   }
 
-  SizedBox addUserToTeamContent(setState) {
+  SizedBox addUserContent(setState) {
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.4,
       height: MediaQuery.of(context).size.height * 0.4,
@@ -875,16 +859,82 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
     );
   }
 
-  Column squadListTile(SquadList squad) {
-    return Column(
+  ExpansionTile squadListTile(SquadList squad) {
+    return ExpansionTile(
+      title: Text(squad.name!, style: listTileStyle),
+      onExpansionChanged: (value) {
+        if (value) {
+          setState(() {
+            _squadIdSelected = squad.id!;
+            print(_squadIdSelected);
+          });
+        }
+      },
       children: [
-        ListTile(
-          title: Text(
-            squad.name!,
-            style: listTileStyle,
+        Padding(
+          padding: const EdgeInsets.only(left: 10.0),
+          child: SizedBox(
+            width: double.infinity,
+            child: InkWell(
+              onTap: () {
+                showDialog<String>(
+                  context: context,
+                  builder: (BuildContext context) => addUserDialog(
+                    'Adicionar usuários a Squad',
+                    addUsersToSquadFunction,
+                  ),
+                ).then((value) {
+                  // atualizo a lista de usuários
+                  setState(() {});
+                });
+              },
+              child: Row(
+                children: const [
+                  Padding(
+                    padding: EdgeInsets.only(right: 8.0),
+                    child: Icon(
+                      Icons.add,
+                      color: Color(0xFF707070),
+                    ),
+                  ),
+                  Text(
+                    'Adicionar usuário',
+                    style: TextStyle(
+                      color: Color(0xFF707070),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
-        const Divider(),
+        FutureBuilder<List<ListOfUsers>>(
+          future: _daoSquadList.usersOnSquadList(_squadIdSelected),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return ListView.builder(
+                shrinkWrap: true,
+                padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
+                itemCount: snapshot.data!.length,
+                itemBuilder: (BuildContext context, int index) {
+                  var user = snapshot.data![index];
+
+                  return ListTile(
+                    title: Text(
+                      user.name!,
+                      style: listTileStyle,
+                    ),
+                  );
+                },
+              );
+            } else if (snapshot.hasError) {
+              return Text('${snapshot.error}');
+            }
+
+            // By default, show a loading spinner.
+            return const CircularProgressIndicator();
+          },
+        ),
       ],
     );
   }
@@ -929,6 +979,56 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
         ),
       ),
     );
+  }
+
+  void addUsersToTeamFunction() {
+    var json = [];
+    for (var user in selectedUsers) {
+      json.add({"id": user});
+    }
+
+    _daoTeamList.addUsersToTeam(_teamIdSelected, json).then((value) {
+      setState(() {
+        selectedUsers = [];
+      });
+      Navigator.pop(context, 'Adicionar');
+    }).catchError((onError) {
+      Future.delayed(
+        const Duration(seconds: 0),
+        () => showDialog<String>(
+          context: context,
+          builder: (BuildContext context) => CustomAlertDialog(
+            description:
+                "${onError.message.toString()}.\n\nEntre em contato com o suporte.",
+          ),
+        ),
+      );
+    });
+  }
+
+  void addUsersToSquadFunction() {
+    var json = [];
+    for (var user in selectedUsers) {
+      json.add({"id": user});
+    }
+
+    _daoSquadList.addUsersToSquad(_squadIdSelected, json).then((value) {
+      setState(() {
+        selectedUsers = [];
+      });
+      Navigator.pop(context, 'Adicionar');
+    }).catchError((onError) {
+      Future.delayed(
+        const Duration(seconds: 0),
+        () => showDialog<String>(
+          context: context,
+          builder: (BuildContext context) => CustomAlertDialog(
+            description:
+                "${onError.message.toString()}.\n\nEntre em contato com o suporte.",
+          ),
+        ),
+      );
+    });
   }
 }
 
