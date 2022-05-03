@@ -5,6 +5,7 @@ import 'package:fennec_desktop/models/list_of_users.dart';
 import 'package:fennec_desktop/models/squad_list.dart';
 import 'package:fennec_desktop/models/team_list.dart';
 import 'package:fennec_desktop/services/get_users_dao.dart';
+import 'package:fennec_desktop/services/squad_list_dao.dart';
 import 'package:fennec_desktop/services/team_list_dao.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
@@ -18,6 +19,7 @@ class UserTeamsScreen extends StatefulWidget {
 
 class _UserTeamsScreenState extends State<UserTeamsScreen> {
   final TeamListDao _daoTeamList = TeamListDao();
+  final SquadListDao _daoSquadList = SquadListDao();
   final GetUsersDao _daoGetUsers = GetUsersDao();
   late Future<List<TeamList>> _getTeamList;
   late Future<List<ListOfUsers>> _getUsers;
@@ -40,6 +42,8 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
   TextEditingController searchUsersController = TextEditingController();
   TextEditingController teamNameController = TextEditingController();
   TextEditingController teamDescriptionController = TextEditingController();
+  TextEditingController squadNameController = TextEditingController();
+  TextEditingController squadDescriptionController = TextEditingController();
 
   @override
   void initState() {
@@ -281,7 +285,23 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
                           padding: const EdgeInsets.only(top: 10.0),
                           child: InkWell(
                             onTap: () {
-                              print('asdasdsadasdas');
+                              showDialog<String>(
+                                context: context,
+                                builder: (BuildContext context) =>
+                                    addSquadToTeamDialog(context),
+                              ).then((value) {
+                                // atualizo a lista de squads
+                                _daoTeamList
+                                    .teamSquads(_teamIdSelected)
+                                    .then((squads) {
+                                  teamSquadsList.clear();
+                                  for (var squad in squads) {
+                                    setState(() {
+                                      teamSquadsList.add(squad);
+                                    });
+                                  }
+                                });
+                              });
                             },
                             child: Row(
                               children: const [
@@ -302,23 +322,25 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
                             ),
                           ),
                         ),
-                        ListView.builder(
-                          shrinkWrap: true,
-                          padding:
-                              const EdgeInsets.fromLTRB(0.0, 8.0, 20.0, 8.0),
-                          itemCount: teamSquadsList.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            var squad = teamSquadsList[index];
+                        Expanded(
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            padding:
+                                const EdgeInsets.fromLTRB(0.0, 8.0, 20.0, 8.0),
+                            itemCount: teamSquadsList.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              var squad = teamSquadsList[index];
 
-                            if (searchSquadsController.text.isEmpty) {
-                              return squadListTile(squad);
-                            } else if (squad.name!.toLowerCase().contains(
-                                searchSquadsController.text.toLowerCase())) {
-                              return squadListTile(squad);
-                            }
+                              if (searchSquadsController.text.isEmpty) {
+                                return squadListTile(squad);
+                              } else if (squad.name!.toLowerCase().contains(
+                                  searchSquadsController.text.toLowerCase())) {
+                                return squadListTile(squad);
+                              }
 
-                            return Container();
-                          },
+                              return Container();
+                            },
+                          ),
                         ),
                       ],
                     ),
@@ -631,6 +653,122 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
                   Navigator.pop(context, 'Adicionar');
 
                   _getTeamList = _daoTeamList.listaTime();
+                });
+              }).catchError((onError) {
+                Future.delayed(
+                  const Duration(seconds: 0),
+                  () => showDialog<String>(
+                    context: context,
+                    builder: (BuildContext context) => CustomAlertDialog(
+                      description:
+                          "${onError.message.toString()}.\n\nEntre em contato com o suporte.",
+                    ),
+                  ),
+                );
+              });
+            },
+            child: const Text(
+              'Adicionar',
+              style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            style: ElevatedButton.styleFrom(
+              primary: Colors.transparent,
+              shadowColor: Colors.transparent,
+              padding: const EdgeInsets.symmetric(
+                vertical: 20.0,
+                horizontal: 50.0,
+              ),
+              elevation: 10,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  AlertDialog addSquadToTeamDialog(BuildContext context) {
+    return AlertDialog(
+      title: const Text(
+        'Adicionar Squad',
+        textAlign: TextAlign.center,
+      ),
+      titleTextStyle: const TextStyle(
+        fontWeight: FontWeight.bold,
+        color: Color(0xFF4D4D4D),
+        fontSize: 25.0,
+      ),
+      content: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.4,
+        height: MediaQuery.of(context).size.height * 0.44,
+        child: Column(
+          children: [
+            Text(
+              'Time: $teamName',
+              style: const TextStyle(
+                color: Color(0xFF707070),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Form(
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width * 0.4,
+                height: MediaQuery.of(context).size.height * 0.4,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    CustomTextFormField(
+                      autofocus: true,
+                      controller: squadNameController,
+                      labelText: 'Nome da Squad',
+                    ),
+                    CustomTextFormField(
+                      autofocus: false,
+                      controller: squadDescriptionController,
+                      labelText: 'Descrição da Squad',
+                      linhas: 2,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      actionsAlignment: MainAxisAlignment.spaceEvenly,
+      actions: [
+        Container(
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [
+                Color(0xFFFB00B8),
+                Color(0xFFFB2588),
+                Color(0xFFFB3079),
+                Color(0xFFFB4B56),
+                Color(0xFFFB5945),
+                Color(0xFFFB6831),
+                Color(0xFFFB6E29),
+                Color(0xFFFB8C03),
+                Color(0xFFFB8D01),
+                Color(0xFFFB8E00),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(50.0),
+          ),
+          child: ElevatedButton(
+            onPressed: () {
+              _daoSquadList
+                  .createSquad(squadDescriptionController.text,
+                      squadNameController.text, _teamIdSelected)
+                  .then((value) {
+                setState(() {
+                  Navigator.pop(context, 'Adicionar');
                 });
               }).catchError((onError) {
                 Future.delayed(

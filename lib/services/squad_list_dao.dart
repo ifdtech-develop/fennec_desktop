@@ -46,4 +46,38 @@ class SquadListDao {
       throw ErrorMessage.fromJson(jsonDecode(response.body));
     }
   }
+
+  Future<SquadList> createSquad(
+      String description, String name, int teamId) async {
+    final String token;
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      token = prefs.getString('token')!;
+    } on Exception catch (e) {
+      print(e.toString());
+      throw Exception(e.toString());
+    }
+
+    final response = await http.post(
+      Uri.parse('$serverURL/squad'),
+      headers: {
+        'Authorization': token,
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        "description": description,
+        "name": name,
+        "time": {"id": teamId}
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return SquadList.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
+    } else {
+      print('error');
+      print(response.body);
+      throw ErrorMessage.fromJson(jsonDecode(response.body));
+    }
+  }
 }
