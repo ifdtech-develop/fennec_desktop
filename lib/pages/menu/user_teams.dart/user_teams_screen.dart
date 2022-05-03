@@ -4,8 +4,10 @@ import 'package:fennec_desktop/components/bottom_navigation_bar.dart';
 import 'package:fennec_desktop/models/list_of_users.dart';
 import 'package:fennec_desktop/models/squad_list.dart';
 import 'package:fennec_desktop/models/team_list.dart';
+import 'package:fennec_desktop/services/get_users_dao.dart';
 import 'package:fennec_desktop/services/team_list_dao.dart';
 import 'package:flutter/material.dart';
+import 'dart:math' as math;
 
 class UserTeamsScreen extends StatefulWidget {
   const UserTeamsScreen({Key? key}) : super(key: key);
@@ -16,10 +18,14 @@ class UserTeamsScreen extends StatefulWidget {
 
 class _UserTeamsScreenState extends State<UserTeamsScreen> {
   final TeamListDao _daoTeamList = TeamListDao();
+  final GetUsersDao _daoGetUsers = GetUsersDao();
   late Future<List<TeamList>> _getTeamList;
+  late Future<List<ListOfUsers>> _getUsers;
+  List selectedUsers = [];
+
   String teamName = "";
   String teamDescription = "";
-  int _tileSelected = -1;
+  int _teamIdSelected = -1;
   List<ListOfUsers> teamUsersList = [];
   List<SquadList> teamSquadsList = [];
   TextStyle listTileStyle = const TextStyle(
@@ -31,6 +37,7 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
   TextEditingController searchTeamsController = TextEditingController();
   TextEditingController searchTeamUsersController = TextEditingController();
   TextEditingController searchSquadsController = TextEditingController();
+  TextEditingController searchUsersController = TextEditingController();
   TextEditingController teamNameController = TextEditingController();
   TextEditingController teamDescriptionController = TextEditingController();
 
@@ -39,6 +46,7 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
     super.initState();
 
     _getTeamList = _daoTeamList.listaTime();
+    _getUsers = _daoGetUsers.getUsers();
   }
 
   @override
@@ -84,7 +92,7 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
                                     showDialog<String>(
                                       context: context,
                                       builder: (BuildContext context) =>
-                                          alertDialog(context),
+                                          addTeamDialog(context),
                                     );
                                   },
                                   child: Row(
@@ -189,7 +197,11 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
                           padding: const EdgeInsets.only(top: 10.0),
                           child: InkWell(
                             onTap: () {
-                              print('asdasdsadasdas');
+                              showDialog<String>(
+                                context: context,
+                                builder: (BuildContext context) =>
+                                    addUserToTeamDialog(),
+                              );
                             },
                             child: Row(
                               children: const [
@@ -305,7 +317,241 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
     );
   }
 
-  AlertDialog alertDialog(BuildContext context) {
+  StatefulBuilder addUserToTeamDialog() {
+    return StatefulBuilder(builder: (context, setState) {
+      return AlertDialog(
+        title: const Text(
+          'Adicionar usuários ao time',
+          textAlign: TextAlign.center,
+        ),
+        titleTextStyle: const TextStyle(
+          fontWeight: FontWeight.bold,
+          color: Color(0xFF4D4D4D),
+          fontSize: 25.0,
+        ),
+        content: addUserToTeamContent(setState),
+        actionsAlignment: MainAxisAlignment.spaceEvenly,
+        actions: [
+          Container(
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [
+                  Color(0xFFFB00B8),
+                  Color(0xFFFB2588),
+                  Color(0xFFFB3079),
+                  Color(0xFFFB4B56),
+                  Color(0xFFFB5945),
+                  Color(0xFFFB6831),
+                  Color(0xFFFB6E29),
+                  Color(0xFFFB8C03),
+                  Color(0xFFFB8D01),
+                  Color(0xFFFB8E00),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(50.0),
+            ),
+            child: ElevatedButton(
+              onPressed: () {
+                var json = [];
+                for (var user in selectedUsers) {
+                  json.add({"id": user});
+                }
+
+                _daoTeamList
+                    .addUsersToTeam(_teamIdSelected, json)
+                    .then((value) {
+                  print('value');
+                  print(value);
+                  setState(() {
+                    Navigator.pop(context, 'Adicionar');
+
+                    _getUsers = _daoGetUsers.getUsers();
+                  });
+                });
+
+                print('json');
+                print(json);
+              },
+              child: const Text(
+                'Adicionar',
+                style: TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.transparent,
+                shadowColor: Colors.transparent,
+                padding: const EdgeInsets.symmetric(
+                  vertical: 20.0,
+                  horizontal: 50.0,
+                ),
+                elevation: 10,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    });
+  }
+
+  SizedBox addUserToTeamContent(setState) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.4,
+      height: MediaQuery.of(context).size.height * 0.4,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10.0),
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.25,
+              height: 50,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 20.0, top: 10.0),
+                child: TextField(
+                  autofocus: true,
+                  onChanged: (value) {
+                    setState(() {});
+                  },
+                  controller: searchUsersController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide:
+                          const BorderSide(color: Colors.blue, width: 1),
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+
+                    filled: true,
+                    fillColor: Colors.white,
+                    labelText: "Pesquisa",
+                    // hintText: "Filtrar por nome, função ou setor",
+                    prefixIcon: const Icon(Icons.search),
+                    suffixIcon: InkWell(
+                      onTap: () {
+                        searchUsersController.text = '';
+                        setState(() {});
+                      },
+                      child: const Icon(Icons.close_outlined),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          FutureBuilder<List<ListOfUsers>>(
+            future: _getUsers,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Expanded(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      var user = snapshot.data![index];
+
+                      if (searchUsersController.text.isEmpty) {
+                        return addUserListTile(user, setState);
+                      } else if (user.name!
+                          .toLowerCase()
+                          .contains(searchUsersController.text.toLowerCase())) {
+                        return addUserListTile(user, setState);
+                      }
+
+                      return Container();
+                    },
+                  ),
+                );
+              } else if (snapshot.hasError) {
+                return Text('${snapshot.error}');
+              }
+
+              // By default, show a loading spinner.
+              return const CircularProgressIndicator();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Column addUserListTile(ListOfUsers user, setState) {
+    return Column(
+      children: [
+        Card(
+          color:
+              selectedUsers.contains(user.id) ? const Color(0xFFAFEEEE) : null,
+          shape: (selectedUsers.contains(user.id))
+              ? RoundedRectangleBorder(
+                  side: const BorderSide(color: Colors.blueGrey, width: 2),
+                  borderRadius: BorderRadius.circular(5),
+                )
+              : null,
+          margin: EdgeInsets.zero,
+          elevation: 0,
+          child: ListTile(
+            title: Padding(
+              padding: const EdgeInsets.fromLTRB(20.0, 15.0, 0.0, 15.0),
+              child: Text(
+                user.name!,
+                style: listTileStyle,
+              ),
+            ),
+            leading: SizedBox(
+              width: 50.0,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(50.0),
+                child: Container(
+                  color: Color((math.Random().nextDouble() * 0xFFFFFF).toInt())
+                      .withOpacity(1.0),
+                  height: 50.0,
+                  child: Center(
+                    child: Text(
+                      user.name!.substring(0, 1),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 25.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            onTap: () {
+              setState(() {
+                if (selectedUsers.contains(user.id)) {
+                  selectedUsers.remove(user.id);
+                } else {
+                  selectedUsers.add(user.id);
+                }
+              });
+
+              print('selectedUsers');
+              print(selectedUsers);
+            },
+          ),
+        ),
+        const Divider(
+          height: 0,
+        ),
+      ],
+    );
+  }
+
+  AlertDialog addTeamDialog(BuildContext context) {
     return AlertDialog(
       title: const Text(
         'Adicionar Time',
@@ -316,34 +562,9 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
         color: Color(0xFF4D4D4D),
         fontSize: 25.0,
       ),
-      content: alertDialogContent(context),
+      content: addTeamDialogContent(context),
       actionsAlignment: MainAxisAlignment.spaceEvenly,
       actions: [
-        // TextButton(
-        //   onPressed: () => Navigator.pop(
-        //       context, 'Cancelar'),
-        //   child: const Text(
-        //     'Cancelar',
-        //     style: TextStyle(
-        //       color: Colors.white,
-        //       fontSize: 18.0,
-        //       fontWeight: FontWeight.w600,
-        //     ),
-        //   ),
-        //   style: ButtonStyle(
-        //     backgroundColor:
-        //         MaterialStateProperty.all<
-        //             Color>(Colors.red),
-        //     elevation: MaterialStateProperty
-        //         .all<double>(5),
-        //     padding:
-        //         MaterialStateProperty.all(
-        //       const EdgeInsets.symmetric(
-        //           vertical: 20.0,
-        //           horizontal: 35.0),
-        //     ),
-        //   ),
-        // ),
         Container(
           decoration: BoxDecoration(
             gradient: const LinearGradient(
@@ -414,7 +635,7 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
     );
   }
 
-  Form alertDialogContent(BuildContext context) {
+  Form addTeamDialogContent(BuildContext context) {
     return Form(
       child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.4,
@@ -454,13 +675,13 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
               ),
             ),
             // selected: _tileSelected == item.id!,
-            tileColor: _tileSelected == item.id!
+            tileColor: _teamIdSelected == item.id!
                 ? const Color(0xFFF3F3F3)
                 : const Color(0xFFE4E4E4),
             // selectedTileColor: Colors.greenAccent,
             onTap: () {
               setState(() {
-                _tileSelected = item.id!;
+                _teamIdSelected = item.id!;
               });
               teamUsersList.clear();
               teamSquadsList.clear();

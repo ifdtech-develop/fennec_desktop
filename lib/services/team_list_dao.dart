@@ -147,4 +147,41 @@ class TeamListDao {
       throw ErrorMessage.fromJson(jsonDecode(response.body));
     }
   }
+
+  Future<List<ListOfUsers>> addUsersToTeam(int teamId, usersJson) async {
+    final String token;
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      token = prefs.getString('token')!;
+    } on Exception catch (e) {
+      print(e.toString());
+      throw Exception(e.toString());
+    }
+
+    final response = await http.post(
+      Uri.parse('$serverURL/time/addusuario'),
+      headers: <String, String>{
+        'Authorization': token,
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        "id": teamId,
+        "users": usersJson,
+      }),
+    );
+    if (response.statusCode == 200) {
+      List<ListOfUsers> listUsersFromJson(String str) => List<ListOfUsers>.from(
+            json.decode(str).map(
+                  (x) => ListOfUsers.fromJson(x),
+                ),
+          );
+
+      return listUsersFromJson(utf8.decode(response.bodyBytes));
+    } else {
+      print('error');
+      print(response.body);
+      throw ErrorMessage.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
+    }
+  }
 }
