@@ -579,7 +579,28 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
         color: Color(0xFF4D4D4D),
         fontSize: 25.0,
       ),
-      content: addTeamDialogContent(context),
+      content: Form(
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width * 0.4,
+          height: MediaQuery.of(context).size.height * 0.4,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              CustomTextFormField(
+                autofocus: true,
+                controller: teamNameController,
+                labelText: 'Nome do Time',
+              ),
+              CustomTextFormField(
+                autofocus: false,
+                controller: teamDescriptionController,
+                labelText: 'Descrição do Time',
+                linhas: 2,
+              ),
+            ],
+          ),
+        ),
+      ),
       actionsAlignment: MainAxisAlignment.spaceEvenly,
       actions: [
         Container(
@@ -647,31 +668,6 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
           ),
         ),
       ],
-    );
-  }
-
-  Form addTeamDialogContent(BuildContext context) {
-    return Form(
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.4,
-        height: MediaQuery.of(context).size.height * 0.4,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            CustomTextFormField(
-              autofocus: true,
-              controller: teamNameController,
-              labelText: 'Nome do Time',
-            ),
-            CustomTextFormField(
-              autofocus: false,
-              controller: teamDescriptionController,
-              labelText: 'Descrição do Time',
-              linhas: 2,
-            ),
-          ],
-        ),
-      ),
     );
   }
 
