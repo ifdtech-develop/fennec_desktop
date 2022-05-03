@@ -154,7 +154,7 @@ class _MenuScreenState extends State<MenuScreen> {
           },
         ),
         SidebarButtons(
-          icon: Icons.groups,
+          icon: Icons.swap_horiz,
           title: 'Geral',
           onSelect: () {
             setState(() {
