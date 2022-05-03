@@ -69,7 +69,9 @@ class TeamListDao {
                 ),
           );
 
-      return listFromJson(response.body);
+      return listFromJson(
+        utf8.decode(response.bodyBytes),
+      );
     } else {
       print('error');
       print(response.body);
