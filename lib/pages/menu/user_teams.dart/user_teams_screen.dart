@@ -222,23 +222,26 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
                             ),
                           ),
                         ),
-                        ListView.builder(
-                          shrinkWrap: true,
-                          padding:
-                              const EdgeInsets.fromLTRB(0.0, 8.0, 20.0, 8.0),
-                          itemCount: teamUsersList.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            var user = teamUsersList[index];
+                        Expanded(
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            padding:
+                                const EdgeInsets.fromLTRB(0.0, 8.0, 20.0, 8.0),
+                            itemCount: teamUsersList.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              var user = teamUsersList[index];
 
-                            if (searchTeamUsersController.text.isEmpty) {
-                              return teamUserListTile(user);
-                            } else if (user.name!.toLowerCase().contains(
-                                searchTeamUsersController.text.toLowerCase())) {
-                              return teamUserListTile(user);
-                            }
+                              if (searchTeamUsersController.text.isEmpty) {
+                                return teamUserListTile(user);
+                              } else if (user.name!.toLowerCase().contains(
+                                  searchTeamUsersController.text
+                                      .toLowerCase())) {
+                                return teamUserListTile(user);
+                              }
 
-                            return Container();
-                          },
+                              return Container();
+                            },
+                          ),
                         ),
                       ],
                     ),
