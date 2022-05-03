@@ -24,6 +24,7 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
   late Future<List<TeamList>> _getTeamList;
   late Future<List<ListOfUsers>> _getUsers;
   List selectedUsers = [];
+  bool showInfo = false;
 
   String teamName = "";
   String teamDescription = "";
@@ -89,7 +90,10 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
                                   color: Color(0xFF4D4D4D),
                                 ),
                               ),
-                              searchInput(searchTeamsController),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.4,
+                                child: searchInput(searchTeamsController),
+                              ),
                               Padding(
                                 padding: const EdgeInsets.only(top: 10.0),
                                 child: InkWell(
@@ -162,191 +166,219 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
                   ),
                 ),
               ),
-              Expanded(
-                child: Container(
-                  color: const Color(0xFFF3F2F3),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 20.0, top: 8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          teamName,
-                          style: const TextStyle(
-                            fontSize: 30.0,
-                            color: Color(0xFF4D4D4D),
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          teamDescription,
-                          style: const TextStyle(
-                            fontSize: 20.0,
-                            color: Color(0xFF4D4D4D),
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.only(top: 30.0),
-                          child: Text(
-                            'Pessoas no Time',
+              Visibility(
+                visible: showInfo,
+                child: Expanded(
+                  child: Container(
+                    color: const Color(0xFFF3F2F3),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 20.0, top: 8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Usuários',
                             style: TextStyle(
                               fontSize: 30.0,
                               fontWeight: FontWeight.bold,
                               color: Color(0xFF4D4D4D),
                             ),
                           ),
-                        ),
-                        searchInput(searchTeamUsersController),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10.0),
-                          child: InkWell(
-                            onTap: () {
-                              showDialog<String>(
-                                context: context,
-                                builder: (BuildContext context) =>
-                                    addUserDialog(
-                                  'Adicionar usuários ao Time',
-                                  addUsersToTeamFunction,
-                                ),
-                              ).then((value) {
-                                // atualizo a lista de usuários
-                                _daoTeamList
-                                    .usersOnTeamList(_teamIdSelected)
-                                    .then((users) {
-                                  teamUsersList.clear();
-                                  for (var user in users) {
-                                    setState(() {
-                                      teamUsersList.add(user);
-                                    });
-                                  }
-                                });
-                              });
-                            },
-                            child: Row(
-                              children: const [
-                                Padding(
-                                  padding: EdgeInsets.only(right: 8.0),
-                                  child: Icon(
-                                    Icons.add,
-                                    color: Color(0xFF707070),
-                                  ),
-                                ),
-                                Text(
-                                  'Adicionar usuário',
-                                  style: TextStyle(
-                                    color: Color(0xFF707070),
-                                  ),
-                                ),
-                              ],
+                          searchInput(searchTeamUsersController),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(top: 10.0, bottom: 8.0),
+                            child: Text(
+                              teamName,
+                              style: const TextStyle(
+                                fontSize: 20.0,
+                                color: Color(0xFF4D4D4D),
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
-                        ),
-                        Expanded(
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            padding:
-                                const EdgeInsets.fromLTRB(0.0, 8.0, 20.0, 8.0),
-                            itemCount: teamUsersList.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              var user = teamUsersList[index];
-
-                              if (searchTeamUsersController.text.isEmpty) {
-                                return teamUserListTile(user);
-                              } else if (user.name!.toLowerCase().contains(
-                                  searchTeamUsersController.text
-                                      .toLowerCase())) {
-                                return teamUserListTile(user);
-                              }
-
-                              return Container();
-                            },
+                          Text(
+                            teamDescription,
+                            style: const TextStyle(
+                              fontSize: 20.0,
+                              color: Color(0xFF4D4D4D),
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                      ],
+                          Padding(
+                            padding: const EdgeInsets.only(top: 15.0),
+                            child: InkWell(
+                              onTap: () {
+                                showDialog<String>(
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                      addUserDialog(
+                                    'Adicionar usuários ao Time',
+                                    addUsersToTeamFunction,
+                                  ),
+                                ).then((value) {
+                                  // atualizo a lista de usuários
+                                  _daoTeamList
+                                      .usersOnTeamList(_teamIdSelected)
+                                      .then((users) {
+                                    teamUsersList.clear();
+                                    for (var user in users) {
+                                      setState(() {
+                                        teamUsersList.add(user);
+                                      });
+                                    }
+                                  });
+                                });
+                              },
+                              child: Row(
+                                children: const [
+                                  Padding(
+                                    padding: EdgeInsets.only(right: 8.0),
+                                    child: Icon(
+                                      Icons.add,
+                                      color: Color(0xFF707070),
+                                    ),
+                                  ),
+                                  Text(
+                                    'Adicionar usuário',
+                                    style: TextStyle(
+                                      color: Color(0xFF707070),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              padding: const EdgeInsets.fromLTRB(
+                                  0.0, 8.0, 20.0, 8.0),
+                              itemCount: teamUsersList.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                var user = teamUsersList[index];
+
+                                if (searchTeamUsersController.text.isEmpty) {
+                                  return teamUserListTile(user);
+                                } else if (user.name!.toLowerCase().contains(
+                                    searchTeamUsersController.text
+                                        .toLowerCase())) {
+                                  return teamUserListTile(user);
+                                }
+
+                                return Container();
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-              Expanded(
-                child: Container(
-                  color: const Color(0xFFFFFD8A),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 20.0, top: 8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Squads',
-                          style: TextStyle(
-                            fontSize: 30.0,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF4D4D4D),
-                          ),
-                        ),
-                        searchInput(searchSquadsController),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10.0),
-                          child: InkWell(
-                            onTap: () {
-                              showDialog<String>(
-                                context: context,
-                                builder: (BuildContext context) =>
-                                    addSquadToTeamDialog(context),
-                              ).then((value) {
-                                // atualizo a lista de squads
-                                _daoTeamList
-                                    .teamSquads(_teamIdSelected)
-                                    .then((squads) {
-                                  teamSquadsList.clear();
-                                  for (var squad in squads) {
-                                    setState(() {
-                                      teamSquadsList.add(squad);
-                                    });
-                                  }
-                                });
-                              });
-                            },
-                            child: Row(
-                              children: const [
-                                Padding(
-                                  padding: EdgeInsets.only(right: 8.0),
-                                  child: Icon(
-                                    Icons.add,
-                                    color: Color(0xFF707070),
-                                  ),
-                                ),
-                                Text(
-                                  'Adicionar Squad',
-                                  style: TextStyle(
-                                    color: Color(0xFF707070),
-                                  ),
-                                ),
-                              ],
+              Visibility(
+                visible: showInfo,
+                child: Expanded(
+                  child: Container(
+                    color: const Color(0xFFFFFD8A),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 20.0, top: 8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Squads',
+                            style: TextStyle(
+                              fontSize: 30.0,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF4D4D4D),
                             ),
                           ),
-                        ),
-                        Expanded(
-                          child: ListView.builder(
-                            shrinkWrap: true,
+                          searchInput(searchSquadsController),
+                          Padding(
                             padding:
-                                const EdgeInsets.fromLTRB(0.0, 8.0, 20.0, 8.0),
-                            itemCount: teamSquadsList.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              var squad = teamSquadsList[index];
-
-                              if (searchSquadsController.text.isEmpty) {
-                                return squadListTile(squad);
-                              } else if (squad.name!.toLowerCase().contains(
-                                  searchSquadsController.text.toLowerCase())) {
-                                return squadListTile(squad);
-                              }
-
-                              return Container();
-                            },
+                                const EdgeInsets.only(top: 10.0, bottom: 8.0),
+                            child: Text(
+                              teamName,
+                              style: const TextStyle(
+                                fontSize: 20.0,
+                                color: Color(0xFF4D4D4D),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
-                        ),
-                      ],
+                          Text(
+                            teamDescription,
+                            style: const TextStyle(
+                              fontSize: 20.0,
+                              color: Color(0xFF4D4D4D),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 15.0),
+                            child: InkWell(
+                              onTap: () {
+                                showDialog<String>(
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                      addSquadToTeamDialog(context),
+                                ).then((value) {
+                                  // atualizo a lista de squads
+                                  _daoTeamList
+                                      .teamSquads(_teamIdSelected)
+                                      .then((squads) {
+                                    teamSquadsList.clear();
+                                    for (var squad in squads) {
+                                      setState(() {
+                                        teamSquadsList.add(squad);
+                                      });
+                                    }
+                                  });
+                                });
+                              },
+                              child: Row(
+                                children: const [
+                                  Padding(
+                                    padding: EdgeInsets.only(right: 8.0),
+                                    child: Icon(
+                                      Icons.add,
+                                      color: Color(0xFF707070),
+                                    ),
+                                  ),
+                                  Text(
+                                    'Adicionar Squad',
+                                    style: TextStyle(
+                                      color: Color(0xFF707070),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              padding: const EdgeInsets.fromLTRB(
+                                  0.0, 8.0, 20.0, 8.0),
+                              itemCount: teamSquadsList.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                var squad = teamSquadsList[index];
+
+                                if (searchSquadsController.text.isEmpty) {
+                                  return squadListTile(squad);
+                                } else if (squad.name!.toLowerCase().contains(
+                                    searchSquadsController.text
+                                        .toLowerCase())) {
+                                  return squadListTile(squad);
+                                }
+
+                                return Container();
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
