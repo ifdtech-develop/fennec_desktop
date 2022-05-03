@@ -634,6 +634,8 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
                       teamNameController.text, teamDescriptionController.text)
                   .then((value) {
                 setState(() {
+                  teamNameController.text = "";
+                  teamDescriptionController.text = "";
                   Navigator.pop(context, 'Adicionar');
 
                   _getTeamList = _daoTeamList.listaTime();
@@ -752,6 +754,8 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
                       squadNameController.text, _teamIdSelected)
                   .then((value) {
                 setState(() {
+                  squadNameController.text = "";
+                  squadDescriptionController.text = "";
                   Navigator.pop(context, 'Adicionar');
                 });
               }).catchError((onError) {
