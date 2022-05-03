@@ -201,7 +201,19 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
                                 context: context,
                                 builder: (BuildContext context) =>
                                     addUserToTeamDialog(),
-                              );
+                              ).then((value) {
+                                // atualizo a lista de usuários
+                                _daoTeamList
+                                    .usersOnTeamList(_teamIdSelected)
+                                    .then((users) {
+                                  teamUsersList.clear();
+                                  for (var user in users) {
+                                    setState(() {
+                                      teamUsersList.add(user);
+                                    });
+                                  }
+                                });
+                              });
                             },
                             child: Row(
                               children: const [
@@ -363,17 +375,22 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
                 _daoTeamList
                     .addUsersToTeam(_teamIdSelected, json)
                     .then((value) {
-                  print('value');
-                  print(value);
                   setState(() {
-                    Navigator.pop(context, 'Adicionar');
-
-                    _getUsers = _daoGetUsers.getUsers();
+                    selectedUsers = [];
                   });
+                  Navigator.pop(context, 'Adicionar');
+                }).catchError((onError) {
+                  Future.delayed(
+                    const Duration(seconds: 0),
+                    () => showDialog<String>(
+                      context: context,
+                      builder: (BuildContext context) => CustomAlertDialog(
+                        description:
+                            "${onError.message.toString()}.\n\nEntre em contato com o suporte.",
+                      ),
+                    ),
+                  );
                 });
-
-                print('json');
-                print(json);
               },
               child: const Text(
                 'Adicionar',
@@ -541,9 +558,6 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
                   selectedUsers.add(user.id);
                 }
               });
-
-              print('selectedUsers');
-              print(selectedUsers);
             },
           ),
         ),
@@ -592,8 +606,6 @@ class _UserTeamsScreenState extends State<UserTeamsScreen> {
                   .createTeam(
                       teamNameController.text, teamDescriptionController.text)
                   .then((value) {
-                print('to criando um time');
-                print(value);
                 setState(() {
                   Navigator.pop(context, 'Adicionar');
 
