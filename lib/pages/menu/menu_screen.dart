@@ -1,6 +1,7 @@
 import 'package:fennec_desktop/main.dart';
 import 'package:fennec_desktop/pages/menu/profile/profile_screen.dart';
 import 'package:fennec_desktop/pages/menu/user_teams.dart/user_teams_screen.dart';
+import 'package:fennec_desktop/pages/menu/workspace/workspace_screen.dart';
 import 'package:flutter/material.dart';
 
 class MenuScreen extends StatefulWidget {
@@ -169,7 +170,20 @@ class _MenuScreenState extends State<MenuScreen> {
         SidebarButtons(
           icon: Icons.workspaces,
           title: 'Workspace',
-          onSelect: () {},
+          onSelect: () {
+            setState(() {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const WorkspaceScreen(),
+                ),
+              );
+              //se o menu do perfil aberto, fechar ele
+              if (_isMenuVisible) {
+                _isMenuVisible = !_isMenuVisible;
+              }
+            });
+          },
         ),
         SidebarButtons(
           icon: Icons.computer,
