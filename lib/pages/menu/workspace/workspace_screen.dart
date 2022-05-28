@@ -26,37 +26,49 @@ class _WorkspaceScreenState extends State<WorkspaceScreen> {
         child: SizedBox(
           height: MediaQuery.of(context).size.height,
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(
                 child: Container(
                     color: const Color(0xFFE4E4E4),
                     width: MediaQuery.of(context).size.width,
-                    child: DataTable(
-                      columns: const [
-                        DataColumn(label: Text('Transação')),
-                        DataColumn(label: Text('Nome do Cliente')),
-                        DataColumn(label: Text('Código de Barras')),
-                        DataColumn(label: Text('Número do Cartão')),
-                        DataColumn(label: Text('Valor da Operação')),
-                        DataColumn(label: Text('Status')),
-                      ],
-                      rows:
-                          listOfRows // Loops through dataColumnText, each iteration assigning the value to element
-                              .map(
-                                ((element) => DataRow(
-                                      cells: <DataCell>[
-                                        DataCell(Text(element[
-                                            "typeTransaction"])), //Extracting from Map element the value
-                                        DataCell(Text(element["clientName"])),
-                                        DataCell(Text(element["barCode"])),
-                                        DataCell(Text(element["cardNumber"])),
-                                        DataCell(
-                                            Text(element["valueTransaction"])),
-                                        DataCell(Text(element["status"])),
-                                      ],
-                                    )),
-                              )
-                              .toList(),
+                    child: Center(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: DataTable(
+                            columns: const [
+                              DataColumn(label: Text('Transação')),
+                              DataColumn(label: Text('Nome do Cliente')),
+                              DataColumn(label: Text('Código de Barras')),
+                              DataColumn(label: Text('Número do Cartão')),
+                              DataColumn(label: Text('Valor da Operação')),
+                              DataColumn(label: Text('Status')),
+                            ],
+                            rows:
+                                listOfRows // Loops through dataColumnText, each iteration assigning the value to element
+                                    .map(
+                                      ((element) => DataRow(
+                                            cells: <DataCell>[
+                                              DataCell(Text(element[
+                                                  "typeTransaction"])), //Extracting from Map element the value
+                                              DataCell(
+                                                  Text(element["clientName"])),
+                                              DataCell(Text(element["barCode"])),
+                                              DataCell(
+                                                  Text(element["cardNumber"])),
+                                              DataCell(Text(
+                                                  element["valueTransaction"])),
+                                              DataCell(Text(element["status"])),
+                                            ],
+                                          )),
+                                    )
+                                    .toList(),
+                          ),
+                        ),
+                      ),
                     )),
               ),
             ],
