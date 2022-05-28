@@ -1,6 +1,7 @@
 import 'package:fennec_desktop/models/squad_notifier.dart';
 import 'package:fennec_desktop/pages/login/login_page.dart';
 import 'package:fennec_desktop/pages/main_page.dart';
+import 'package:fennec_desktop/pages/menu/workspace/workspace_screen.dart';
 import 'package:fennec_desktop/utils/global_variables.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -47,8 +48,9 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         scaffoldBackgroundColor: const Color(0xFFFFFFFF),
       ),
-      initialRoute: tell == null ? '/loginPage' : '/mainPage',
+      initialRoute: tell == null ? '/workspace' : '/workspace',
       routes: {
+        '/workspace': (context) => const WorkspaceScreen(),
         '/loginPage': (context) => const LoginPage(),
         '/mainPage': (context) => const MainPage(),
       },
