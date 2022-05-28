@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         scaffoldBackgroundColor: const Color(0xFFFFFFFF),
       ),
-      initialRoute: tell == null ? '/workspace' : '/workspace',
+      initialRoute: tell == null ? '/loginPage' : '/mainPage',
       routes: {
         '/workspace': (context) => const WorkspaceScreen(),
         '/loginPage': (context) => const LoginPage(),
