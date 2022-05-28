@@ -38,7 +38,8 @@ class _WorkspaceScreenState extends State<WorkspaceScreen> {
                         scrollDirection: Axis.vertical,
                         child: SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
-                          child: DataTable(
+                          child: DataTable(    
+                            dividerThickness: 0.05,                        
                             columns: const [
                               DataColumn(label: Text('Transação')),
                               DataColumn(label: Text('Nome do Cliente')),
@@ -51,6 +52,7 @@ class _WorkspaceScreenState extends State<WorkspaceScreen> {
                                 listOfRows // Loops through dataColumnText, each iteration assigning the value to element
                                     .map(
                                       ((element) => DataRow(
+                                        
                                             cells: <DataCell>[
                                               DataCell(Text(element[
                                                   "typeTransaction"])), //Extracting from Map element the value
