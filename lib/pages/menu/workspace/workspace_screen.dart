@@ -1,5 +1,3 @@
-import 'package:fennec_desktop/components/appbar.dart';
-import 'package:fennec_desktop/components/bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 
 import 'data_mock.dart';

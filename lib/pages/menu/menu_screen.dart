@@ -1,7 +1,6 @@
 import 'package:fennec_desktop/main.dart';
 import 'package:fennec_desktop/pages/menu/profile/profile_screen.dart';
 import 'package:fennec_desktop/pages/menu/user_teams.dart/user_teams_screen.dart';
-import 'package:fennec_desktop/pages/menu/workspace/workspace_screen.dart';
 import 'package:flutter/material.dart';
 
 class MenuScreen extends StatefulWidget {
