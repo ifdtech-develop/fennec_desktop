@@ -25,6 +25,7 @@ class _MainPageState extends State<MainPage> {
   String backgroundcolorSquad = '0xFFFFFFFF';
   bool chatIsOpen = false;
   final List<bool> _selected = List.generate(4, (i) => false);
+  final List<bool> _workspaceButtonSelected = List.generate(3, (i) => false);
 
   @override
   Widget build(BuildContext context) {
@@ -180,25 +181,44 @@ class _MainPageState extends State<MainPage> {
             right: 20.0,
             bottom: 0.0,
             top: 0.0,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                mainButtons(Icons.groups, 0),
-                Padding(
-                  padding: const EdgeInsets.only(top: 30.0, bottom: 30.0),
-                  child: mainButtons(Icons.format_list_bulleted, 1),
-                ),
-                mainButtons(Icons.chat, 2),
-              ],
-            ),
+            child: !_isWorkspaceVisible ? feedButtons() : workspaceButtons(),
           ),
         ],
       ),
     );
   }
 
-  InkWell mainButtons(IconData icon, int id) {
+  Column feedButtons() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        mainFeedButtons(Icons.groups, 0),
+        Padding(
+          padding: const EdgeInsets.only(top: 30.0, bottom: 30.0),
+          child: mainFeedButtons(Icons.format_list_bulleted, 1),
+        ),
+        mainFeedButtons(Icons.chat, 2),
+      ],
+    );
+  }
+
+  Column workspaceButtons() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        mainWorkspaceButtons('assets/images/dashboard.png', 0),
+        Padding(
+          padding: const EdgeInsets.only(top: 30.0, bottom: 30.0),
+          child: mainWorkspaceButtons('assets/images/backoffice.png', 1),
+        ),
+        mainWorkspaceButtons('assets/images/email.png', 2),
+      ],
+    );
+  }
+
+  InkWell mainFeedButtons(IconData icon, int id) {
     return InkWell(
       onTap: () {
         setState(() {
@@ -271,47 +291,105 @@ class _MainPageState extends State<MainPage> {
           _isWorkspaceVisible = false;
         });
       },
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
-        ),
-        elevation: 5,
-        color: const Color(0xFFF5F5F5),
-        shadowColor: const Color(0xFFCCCCCC),
-        child: Padding(
-          // padding: const EdgeInsets.fromLTRB(15.0, 8.0, 15.0, 8.0),
-          padding: const EdgeInsets.all(10.0),
-          child: _selected[id]
-              ? ShaderMask(
-                  blendMode: BlendMode.srcIn,
-                  shaderCallback: (bounds) => const LinearGradient(
-                    begin: Alignment.bottomRight,
-                    end: Alignment.topLeft,
-                    colors: [
-                      Color(0xFFFB00B8),
-                      Color(0xFFFB2588),
-                      Color(0xFFFB3079),
-                      Color(0xFFFB4B56),
-                      Color(0xFFFB5945),
-                      Color(0xFFFB6831),
-                      Color(0xFFFB6E29),
-                      Color(0xFFFB8C03),
-                      Color(0xFFFB8D01),
-                      Color(0xFFFB8E00),
-                    ],
-                  ).createShader(
-                    Rect.fromLTWH(0, 0, bounds.width, bounds.height),
-                  ),
-                  child: Icon(
+      child: MainButtonCard(
+        selected: _selected,
+        id: id,
+        icon: icon,
+      ),
+    );
+  }
+
+  InkWell mainWorkspaceButtons(String icon, int id) {
+    return InkWell(
+      onTap: () {
+        setState(() {
+          if (id == 0) {
+            _workspaceButtonSelected[0] = !_workspaceButtonSelected[0];
+          } else if (id == 1) {
+            _workspaceButtonSelected[1] = !_workspaceButtonSelected[1];
+          } else {
+            _workspaceButtonSelected[2] = !_workspaceButtonSelected[2];
+          }
+        });
+      },
+      child: MainButtonCard(
+        selected: _workspaceButtonSelected,
+        id: id,
+        image: icon,
+      ),
+    );
+  }
+}
+
+class MainButtonCard extends StatelessWidget {
+  final List<bool> _selected;
+  final int id;
+  final IconData? icon;
+  final String? image;
+
+  const MainButtonCard({
+    Key? key,
+    required List<bool> selected,
+    required this.id,
+    this.icon,
+    this.image,
+  })  : _selected = selected,
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      elevation: 5,
+      color: const Color(0xFFF5F5F5),
+      shadowColor: const Color(0xFFCCCCCC),
+      child: Padding(
+        // padding: const EdgeInsets.fromLTRB(15.0, 8.0, 15.0, 8.0),
+        padding: const EdgeInsets.all(10.0),
+        child: _selected[id]
+            ? ShaderMask(
+                blendMode: BlendMode.srcIn,
+                shaderCallback: (bounds) => const LinearGradient(
+                  begin: Alignment.bottomRight,
+                  end: Alignment.topLeft,
+                  colors: [
+                    Color(0xFFFB00B8),
+                    Color(0xFFFB2588),
+                    Color(0xFFFB3079),
+                    Color(0xFFFB4B56),
+                    Color(0xFFFB5945),
+                    Color(0xFFFB6831),
+                    Color(0xFFFB6E29),
+                    Color(0xFFFB8C03),
+                    Color(0xFFFB8D01),
+                    Color(0xFFFB8E00),
+                  ],
+                ).createShader(
+                  Rect.fromLTWH(0, 0, bounds.width, bounds.height),
+                ),
+                child: image == null
+                    ? Icon(
+                        icon,
+                        size: 50.0,
+                      )
+                    : SizedBox(
+                        height: 50,
+                        width: 50,
+                        child: Image.asset(image!),
+                      ),
+              )
+            : image == null
+                ? Icon(
                     icon,
                     size: 50.0,
+                  )
+                : SizedBox(
+                    height: 50,
+                    width: 50,
+                    child: Image.asset(image!),
                   ),
-                )
-              : Icon(
-                  icon,
-                  size: 50.0,
-                ),
-        ),
       ),
     );
   }
