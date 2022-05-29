@@ -10,6 +10,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  late String userFirstLetter = '';
   late String userName = '';
   late String userPhone = '';
 
@@ -24,6 +25,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() {
       userName = prefs.getString('name')!;
       userPhone = prefs.getString('phone')!;
+      userFirstLetter = prefs.getString('name')!.substring(0, 1);
     });
   }
 
@@ -54,7 +56,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 height: 70.0,
                 child: Center(
                   child: Text(
-                    userName.substring(0, 1),
+                    userFirstLetter,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 40.0,
