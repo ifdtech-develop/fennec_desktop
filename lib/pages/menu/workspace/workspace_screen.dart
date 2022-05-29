@@ -58,85 +58,9 @@ class _WorkspaceScreenState extends State<WorkspaceScreen> {
                           scrollDirection: Axis.vertical,
                           child: Column(
                             children: [
-                              Row(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 25.0, top: 8.0),
-                                    child: SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.5,
-                                      child: Row(
-                                        children: [
-                                          SizedBox(
-                                            width: 55.0,
-                                            child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(50.0),
-                                              child: Container(
-                                                color: Color((math.Random()
-                                                                .nextDouble() *
-                                                            0xFFFFFF)
-                                                        .toInt())
-                                                    .withOpacity(1.0),
-                                                height: 55.0,
-                                                child: Center(
-                                                  child: Text(
-                                                    userFirstLetter,
-                                                    style: const TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 25.0,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 8.0),
-                                            child: Text(
-                                              userName,
-                                              style: const TextStyle(
-                                                color: ColorsProject.greyColor,
-                                                fontSize: 18.0,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.3,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: const [
-                                        Text(
-                                          'PG Cartão R\$9,90',
-                                          style: TextStyle(
-                                            color: ColorsProject.strongOrange,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 18.0,
-                                          ),
-                                        ),
-                                        Text(
-                                          'Saldo Boleto R\$9,90',
-                                          style: TextStyle(
-                                            color: ColorsProject.strongOrange,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 18.0,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
+                              UserInfoHeader(
+                                userFirstLetter: userFirstLetter,
+                                userName: userName,
                               ),
                               SingleChildScrollView(
                                 scrollDirection: Axis.horizontal,
@@ -236,6 +160,92 @@ class _WorkspaceScreenState extends State<WorkspaceScreen> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class UserInfoHeader extends StatelessWidget {
+  final String userFirstLetter;
+  final String userName;
+
+  const UserInfoHeader({
+    Key? key,
+    required this.userFirstLetter,
+    required this.userName,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 25.0, top: 8.0),
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.5,
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 55.0,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(50.0),
+                    child: Container(
+                      color:
+                          Color((math.Random().nextDouble() * 0xFFFFFF).toInt())
+                              .withOpacity(1.0),
+                      height: 55.0,
+                      child: Center(
+                        child: Text(
+                          userFirstLetter,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 25.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Text(
+                    userName,
+                    style: const TextStyle(
+                      color: ColorsProject.greyColor,
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        SizedBox(
+          width: MediaQuery.of(context).size.width * 0.3,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: const [
+              Text(
+                'PG Cartão R\$9,90',
+                style: TextStyle(
+                  color: ColorsProject.strongOrange,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18.0,
+                ),
+              ),
+              Text(
+                'Saldo Boleto R\$9,90',
+                style: TextStyle(
+                  color: ColorsProject.strongOrange,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18.0,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
