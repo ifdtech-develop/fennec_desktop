@@ -15,7 +15,7 @@ class _WorkspaceScreenState extends State<WorkspaceScreen> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Container(
+      child: SizedBox(
         height: MediaQuery.of(context).size.height,
         child: ClipRRect(
           //borda do container cortada e o texto some ao passar por ela
