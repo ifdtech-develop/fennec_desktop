@@ -47,6 +47,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         scaffoldBackgroundColor: const Color(0xFFFFFFFF),
+        fontFamily: 'ArialRoundedMT',
       ),
       initialRoute: tell == null ? '/loginPage' : '/mainPage',
       routes: {
