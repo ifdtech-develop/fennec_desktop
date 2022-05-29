@@ -3,6 +3,7 @@ import 'package:fennec_desktop/components/bottom_navigation_bar.dart';
 import 'package:fennec_desktop/pages/chat/chat_screen.dart';
 import 'package:fennec_desktop/pages/main_feed/main_feed_screen.dart';
 import 'package:fennec_desktop/pages/menu/menu_screen.dart';
+import 'package:fennec_desktop/pages/menu/workspace/workspace_screen.dart';
 import 'package:fennec_desktop/pages/squad/squad_screen.dart';
 import 'package:fennec_desktop/pages/team/team_screen.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,7 @@ class _MainPageState extends State<MainPage> {
   bool _isTeamVisible = false;
   bool _isSquadVisible = false;
   bool _isChatVisible = false;
+  bool _isWorkspaceVisible = false;
   String backgroundcolorMenu = '0xFFFDF5E6';
   String backgroundcolorTeams = '0xFFFFFFFF';
   String backgroundcolorSquad = '0xFFFFFFFF';
@@ -54,6 +56,10 @@ class _MainPageState extends State<MainPage> {
                 Visibility(
                   visible: _isChatVisible,
                   child: ChatScreen(isChatOpened: chatIsOpen),
+                ),
+                Visibility(
+                  visible: _isWorkspaceVisible,
+                  child: const WorkspaceScreen(),
                 ),
               ],
             ),
@@ -94,6 +100,7 @@ class _MainPageState extends State<MainPage> {
                         backgroundcolorMenu = '0xFFFDF5E6';
                       }
                     }
+                    _isWorkspaceVisible = false;
                   });
                 },
                 onGeralSelected: () {
@@ -125,6 +132,8 @@ class _MainPageState extends State<MainPage> {
                     } else {
                       chatIsOpen = false;
                     }
+
+                    _isWorkspaceVisible = false;
                   });
                 },
                 onFeedSelected: () {
@@ -140,6 +149,26 @@ class _MainPageState extends State<MainPage> {
                     _selected[2] = false;
                     // background do menu
                     backgroundcolorMenu = '0xFFFDF5E6';
+                    _isWorkspaceVisible = false;
+                  });
+                },
+                onWorkspaceSelected: () {
+                  setState(() {
+                    _isWorkspaceVisible = !_isWorkspaceVisible;
+                    _isTeamVisible = false;
+                    //estou alocando um valor booleano na posicao 0 do array
+                    _selected[0] = false;
+                    _isSquadVisible = false;
+                    //estou alocando um valor booleano na posicao 1 do array
+                    _selected[1] = false;
+                    _isChatVisible = false;
+                    //estou alocando um valor booleano na posicao 2 do array
+                    _selected[2] = false;
+                    if (_isWorkspaceVisible) {
+                      backgroundcolorMenu = '0xFFE4E4E4';
+                    } else {
+                      backgroundcolorMenu = '0xFFFDF5E6';
+                    }
                   });
                 },
               ),
@@ -238,6 +267,8 @@ class _MainPageState extends State<MainPage> {
           } else {
             backgroundcolorMenu = '0xFFFDF5E6';
           }
+
+          _isWorkspaceVisible = false;
         });
       },
       child: Card(

@@ -11,6 +11,7 @@ class MenuScreen extends StatefulWidget {
   final VoidCallback onProfileSelected;
   final VoidCallback onGeralSelected;
   final VoidCallback onFeedSelected;
+  final VoidCallback onWorkspaceSelected;
 
   const MenuScreen({
     Key? key,
@@ -18,6 +19,7 @@ class MenuScreen extends StatefulWidget {
     required this.onProfileSelected,
     required this.onGeralSelected,
     required this.onFeedSelected,
+    required this.onWorkspaceSelected,
   }) : super(key: key);
 
   @override
@@ -172,12 +174,7 @@ class _MenuScreenState extends State<MenuScreen> {
           title: 'Workspace',
           onSelect: () {
             setState(() {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const WorkspaceScreen(),
-                ),
-              );
+              widget.onWorkspaceSelected();
               //se o menu do perfil aberto, fechar ele
               if (_isMenuVisible) {
                 _isMenuVisible = !_isMenuVisible;
