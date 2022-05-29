@@ -1,3 +1,4 @@
+import 'package:fennec_desktop/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 import 'data_mock.dart';
@@ -39,30 +40,80 @@ class _WorkspaceScreenState extends State<WorkspaceScreen> {
                             child: DataTable(
                               dividerThickness: 0.05,
                               columns: const [
-                                DataColumn(label: Text('Transação')),
-                                DataColumn(label: Text('Nome do Cliente')),
-                                DataColumn(label: Text('Código de Barras')),
-                                DataColumn(label: Text('Número do Cartão')),
-                                DataColumn(label: Text('Valor da Operação')),
-                                DataColumn(label: Text('Status')),
+                                DataColumn(
+                                  label: TextWidget(
+                                    text: 'Transação',
+                                    size: 16.0,
+                                  ),
+                                ),
+                                DataColumn(
+                                  label: TextWidget(
+                                    text: 'Nome do Cliente',
+                                    size: 16.0,
+                                  ),
+                                ),
+                                DataColumn(
+                                  label: TextWidget(
+                                    text: 'Código de Barras',
+                                    size: 16.0,
+                                  ),
+                                ),
+                                DataColumn(
+                                  label: TextWidget(
+                                    text: 'Número do Cartão',
+                                    size: 16.0,
+                                  ),
+                                ),
+                                DataColumn(
+                                  label: TextWidget(
+                                    text: 'Valor da Operação',
+                                    size: 16.0,
+                                  ),
+                                ),
+                                DataColumn(
+                                  label: TextWidget(
+                                    text: 'Status',
+                                    size: 16.0,
+                                  ),
+                                ),
                               ],
                               rows:
                                   listOfRows // Loops through dataColumnText, each iteration assigning the value to element
                                       .map(
                                         ((element) => DataRow(
                                               cells: <DataCell>[
-                                                DataCell(Text(element[
-                                                    "typeTransaction"])), //Extracting from Map element the value
-                                                DataCell(Text(
-                                                    element["clientName"])),
                                                 DataCell(
-                                                    Text(element["barCode"])),
-                                                DataCell(Text(
-                                                    element["cardNumber"])),
-                                                DataCell(Text(element[
-                                                    "valueTransaction"])),
+                                                  TextWidget(
+                                                    text: element[
+                                                        "typeTransaction"],
+                                                  ),
+                                                ), //Extracting from Map element the value
                                                 DataCell(
-                                                    Text(element["status"])),
+                                                  TextWidget(
+                                                    text: element["clientName"],
+                                                  ),
+                                                ),
+                                                DataCell(
+                                                  TextWidget(
+                                                    text: element["barCode"],
+                                                  ),
+                                                ),
+                                                DataCell(
+                                                  TextWidget(
+                                                    text: element["cardNumber"],
+                                                  ),
+                                                ),
+                                                DataCell(
+                                                  TextWidget(
+                                                    text: element[
+                                                        "valueTransaction"],
+                                                  ),
+                                                ),
+                                                DataCell(
+                                                  TextWidget(
+                                                    text: element["status"],
+                                                  ),
+                                                ),
                                               ],
                                             )),
                                       )
@@ -76,6 +127,29 @@ class _WorkspaceScreenState extends State<WorkspaceScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class TextWidget extends StatelessWidget {
+  final String text;
+  final double? size;
+
+  const TextWidget({
+    Key? key,
+    required this.text,
+    this.size,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: TextStyle(
+        color: ColorsProject.greyColor,
+        fontWeight: FontWeight.bold,
+        fontSize: size,
       ),
     );
   }
