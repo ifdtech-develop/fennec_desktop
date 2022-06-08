@@ -449,7 +449,9 @@ class _MainFeedScreenState extends State<MainFeedScreen> {
   }
 
   Future<void> _onOpen(LinkableElement link) async {
+    // ignore: deprecated_member_use
     if (await canLaunch(link.url)) {
+      // ignore: deprecated_member_use
       await launch(link.url);
     } else {
       throw 'Could not launch $link';
