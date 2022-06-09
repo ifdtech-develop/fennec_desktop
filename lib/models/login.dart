@@ -3,12 +3,14 @@ class Login {
   final String tell;
   final String email;
   final String nome;
+  final String id;
 
   Login({
     required this.token,
     required this.tell,
     required this.email,
     required this.nome,
+    required this.id,
   });
 
   factory Login.fromJson(Map<String, dynamic> json) {
@@ -17,6 +19,7 @@ class Login {
       tell: json['tell'],
       email: json['email'],
       nome: json['nome'],
+      id: json['id'],
     );
   }
 }

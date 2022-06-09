@@ -78,7 +78,12 @@ class _LoginPageState extends State<LoginPage> {
                                 .login(_telefoneController.text,
                                     _senhaController.text)
                                 .then((value) {
-                              _setToken(value.token, value.nome, value.tell);
+                              _setToken(
+                                value.token,
+                                value.nome,
+                                value.tell,
+                                value.id,
+                              );
                             }).catchError((onError) {
                               getErrorFunction(onError);
                             });
@@ -131,8 +136,14 @@ class _LoginPageState extends State<LoginPage> {
                                         .login(_telefoneController.text,
                                             _senhaController.text)
                                         .then((value) {
+                                      print('value.id');
+                                      print(value.id);
                                       _setToken(
-                                          value.token, value.nome, value.tell);
+                                        value.token,
+                                        value.nome,
+                                        value.tell,
+                                        value.id,
+                                      );
                                     }).catchError((onError) {
                                       getErrorFunction(onError);
                                     });
@@ -211,10 +222,11 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  _setToken(token, name, phone) {
+  _setToken(token, name, phone, id) {
     prefs.setString('token', token);
     prefs.setString('name', name);
     prefs.setString('phone', phone);
+    prefs.setString('id', id);
     Navigator.of(context).pushNamed('/mainPage');
   }
 }
