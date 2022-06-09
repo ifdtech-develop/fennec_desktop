@@ -1,3 +1,4 @@
+import 'package:fennec_desktop/main.dart';
 import 'package:fennec_desktop/models/list_of_messages.dart';
 import 'package:fennec_desktop/models/list_of_users.dart';
 import 'package:fennec_desktop/services/get_users_dao.dart';
@@ -18,6 +19,7 @@ class _ChatScreenState extends State<ChatScreen> {
   final GetUsersDao _getUsersDao = GetUsersDao();
   late Future<List<ListOfUsers>> _getUsers;
   final ListOfMessagesDao _getListOfMessagesDao = ListOfMessagesDao();
+  late String idUser;
 
   int friendIndex = 0;
 
@@ -25,6 +27,9 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
     _getUsers = _getUsersDao.getUsers();
+    setState(() {
+      idUser = prefs.getString('id')!;
+    });
   }
 
   @override
@@ -186,7 +191,7 @@ class _ChatScreenState extends State<ChatScreen> {
             Expanded(
               child: FutureBuilder<List<ListOfMessages>>(
                 future: _getListOfMessagesDao.getListOfMessages(
-                  '2',
+                  idUser,
                   users[friendIndex].id.toString(),
                 ),
                 builder: (context, snapshot) {
@@ -209,7 +214,6 @@ class _ChatScreenState extends State<ChatScreen> {
                     case ConnectionState.done:
                       if (snapshot.hasData) {
                         final List<ListOfMessages>? messages = snapshot.data;
-                        print(snapshot.data);
                         return ListView.builder(
                           reverse: true,
                           itemCount: messages!.length,
