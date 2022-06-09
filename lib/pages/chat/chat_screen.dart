@@ -3,6 +3,7 @@ import 'package:fennec_desktop/models/list_of_messages.dart';
 import 'package:fennec_desktop/models/list_of_users.dart';
 import 'package:fennec_desktop/services/get_users_dao.dart';
 import 'package:fennec_desktop/services/list_of_messages_dao.dart';
+import 'package:fennec_desktop/services/send_chat_message_dao.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
@@ -20,6 +21,8 @@ class _ChatScreenState extends State<ChatScreen> {
   late Future<List<ListOfUsers>> _getUsers;
   final ListOfMessagesDao _getListOfMessagesDao = ListOfMessagesDao();
   late String idUser;
+  TextEditingController chatMessageController = TextEditingController();
+  final SendChatMessageDao _sendChatMessageDao = SendChatMessageDao();
 
   int friendIndex = 0;
 
@@ -289,9 +292,10 @@ class _ChatScreenState extends State<ChatScreen> {
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsets.only(
-                            right: 50.0,
+                            right: 10.0,
                           ),
-                          child: TextField(
+                          child: TextFormField(
+                            controller: chatMessageController,
                             decoration: InputDecoration(
                               contentPadding: const EdgeInsets.all(10.0),
                               // cor da borda
@@ -307,6 +311,41 @@ class _ChatScreenState extends State<ChatScreen> {
                               ),
                             ),
                             keyboardType: TextInputType.multiline,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Escreva uma mensagem.';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 50.0),
+                        child: SizedBox(
+                          height: 50,
+                          width: 50,
+                          child: FloatingActionButton(
+                            onPressed: () {
+                              _sendChatMessageDao
+                                  .sendChatMessage(
+                                      users[friendIndex].id.toString(),
+                                      chatMessageController.text)
+                                  .then((value) {
+                                print('sucesso');
+                                print(value.content);
+                              }).catchError((onError) {
+                                print('onError');
+                                print(onError);
+                              });
+                            },
+                            child: const Icon(
+                              Icons.send,
+                              color: Colors.white,
+                              size: 18,
+                            ),
+                            backgroundColor: Colors.blue,
+                            elevation: 0,
                           ),
                         ),
                       ),
