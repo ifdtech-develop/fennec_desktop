@@ -163,60 +163,63 @@ class _ChatScreenState extends State<ChatScreen> {
                               itemBuilder: (BuildContext context, int index) {
                                 final ListOfUsers user = users[index];
 
-                                return ListTile(
-                                  onTap: () {
-                                    setState(() {
-                                      friendIndex = index;
-                                      friendId = users[index].id.toString();
-                                      _messages.clear();
-                                      populateChatArray();
-                                      stomClientFunction();
-                                    });
-                                  },
-                                  leading: Stack(
-                                    children: [
-                                      SizedBox(
-                                        width: 50.0,
-                                        child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(50.0),
-                                          child: Container(
-                                            color: Color((math.Random()
-                                                            .nextDouble() *
-                                                        0xFFFFFF)
-                                                    .toInt())
-                                                .withOpacity(1.0),
-                                            height: 55.0,
-                                            child: Center(
-                                              child: Text(
-                                                user.name!.substring(0, 1),
-                                                style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 25.0,
-                                                  fontWeight: FontWeight.bold,
+                                return Visibility(
+                                  visible: user.id.toString() != userId,
+                                  child: ListTile(
+                                    onTap: () {
+                                      setState(() {
+                                        friendIndex = index;
+                                        friendId = users[index].id.toString();
+                                        _messages.clear();
+                                        populateChatArray();
+                                        stomClientFunction();
+                                      });
+                                    },
+                                    leading: Stack(
+                                      children: [
+                                        SizedBox(
+                                          width: 50.0,
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(50.0),
+                                            child: Container(
+                                              color: Color((math.Random()
+                                                              .nextDouble() *
+                                                          0xFFFFFF)
+                                                      .toInt())
+                                                  .withOpacity(1.0),
+                                              height: 55.0,
+                                              child: Center(
+                                                child: Text(
+                                                  user.name!.substring(0, 1),
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 25.0,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
                                                 ),
                                               ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      // Positioned(
-                                      //   right: 0.0,
-                                      //   top: 33.0,
-                                      //   child: Container(
-                                      //     width: 14.0,
-                                      //     height: 14.0,
-                                      //     decoration: BoxDecoration(
-                                      //       borderRadius:
-                                      //           BorderRadius.circular(10),
-                                      //       color: friends[index]
-                                      //           ['statusColor'],
-                                      //     ),
-                                      //   ),
-                                      // )
-                                    ],
+                                        // Positioned(
+                                        //   right: 0.0,
+                                        //   top: 33.0,
+                                        //   child: Container(
+                                        //     width: 14.0,
+                                        //     height: 14.0,
+                                        //     decoration: BoxDecoration(
+                                        //       borderRadius:
+                                        //           BorderRadius.circular(10),
+                                        //       color: friends[index]
+                                        //           ['statusColor'],
+                                        //     ),
+                                        //   ),
+                                        // )
+                                      ],
+                                    ),
+                                    title: Text(user.name!),
                                   ),
-                                  title: Text(user.name!),
                                 );
                               },
                               separatorBuilder:
