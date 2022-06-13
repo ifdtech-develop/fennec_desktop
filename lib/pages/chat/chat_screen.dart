@@ -1,11 +1,17 @@
+import 'dart:convert';
+import 'dart:math' as math;
+
 import 'package:fennec_desktop/main.dart';
 import 'package:fennec_desktop/models/list_of_messages.dart';
 import 'package:fennec_desktop/models/list_of_users.dart';
 import 'package:fennec_desktop/services/get_users_dao.dart';
 import 'package:fennec_desktop/services/list_of_messages_dao.dart';
 import 'package:fennec_desktop/services/send_chat_message_dao.dart';
+import 'package:fennec_desktop/utils/constants.dart';
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
+import 'package:stomp_dart_client/stomp.dart';
+import 'package:stomp_dart_client/stomp_config.dart';
+import 'package:stomp_dart_client/stomp_frame.dart';
 
 class ChatScreen extends StatefulWidget {
   final bool isChatOpened;
@@ -20,19 +26,80 @@ class _ChatScreenState extends State<ChatScreen> {
   final GetUsersDao _getUsersDao = GetUsersDao();
   late Future<List<ListOfUsers>> _getUsers;
   final ListOfMessagesDao _getListOfMessagesDao = ListOfMessagesDao();
-  late String idUser;
+  late String userId;
   TextEditingController chatMessageController = TextEditingController();
   final SendChatMessageDao _sendChatMessageDao = SendChatMessageDao();
 
   int friendIndex = 0;
+  String friendId = "2";
+
+  StompClient? stompClient;
+  final List _messages = [];
+
+  void onConnect(StompFrame frame) {
+    stompClient!.subscribe(
+      destination: '/topic/messages/$userId/$friendId',
+      callback: (StompFrame frame) {
+        print('frame.body');
+        print(frame.body);
+        if (frame.body != null) {
+          // adicionando a msg que o amigo com quem o usuario esta conversando a array _messages
+          var result = ListOfMessages.fromJson(jsonDecode(frame.body!));
+
+          if (mounted) {
+            setState(
+              () => {_messages.insert(0, result)},
+            );
+          }
+        }
+      },
+    );
+  }
+
+  void stomClientFunction() {
+    stompClient = StompClient(
+        config: StompConfig.SockJS(
+      url: socketUrl,
+      onConnect: onConnect,
+      onWebSocketError: (dynamic error) => print(error.toString()),
+    ));
+
+    stompClient!.activate();
+  }
+
+  void populateChatArray() async {
+    await _getListOfMessagesDao
+        .getListOfMessages(userId, friendId, 0)
+        .then((value) {
+      setState(() {
+        _messages.addAll(value);
+      });
+    });
+  }
 
   @override
   void initState() {
     super.initState();
+    _messages.clear();
+
     _getUsers = _getUsersDao.getUsers();
+    _getUsers.then(
+      (value) {
+        setState(() {
+          friendId = value[friendIndex].id.toString();
+        });
+
+        populateChatArray();
+      },
+    );
+
     setState(() {
-      idUser = prefs.getString('id')!;
+      userId = prefs.getString('id')!;
     });
+
+    if (stompClient == null) {
+      stomClientFunction();
+    }
   }
 
   @override
@@ -100,6 +167,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                   onTap: () {
                                     setState(() {
                                       friendIndex = index;
+                                      friendId = users[index].id.toString();
+                                      _messages.clear();
+                                      populateChatArray();
+                                      stomClientFunction();
                                     });
                                   },
                                   leading: Stack(
@@ -192,84 +263,46 @@ class _ChatScreenState extends State<ChatScreen> {
           children: [
             ChatHeader(friendIndex: friendIndex, users: users),
             Expanded(
-              child: FutureBuilder<List<ListOfMessages>>(
-                future: _getListOfMessagesDao.getListOfMessages(
-                  idUser,
-                  users[friendIndex].id.toString(),
+              child: ListView.builder(
+                reverse: true,
+                itemCount: _messages.length,
+                shrinkWrap: true,
+                padding: const EdgeInsets.only(
+                  top: 10,
+                  bottom: 10,
                 ),
-                builder: (context, snapshot) {
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.none:
-                      break;
-                    case ConnectionState.waiting:
-                      return Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: const [
-                            CircularProgressIndicator(),
-                            Text('Carregando'),
-                          ],
+                physics: const BouncingScrollPhysics(),
+                itemBuilder: (context, index) {
+                  final ListOfMessages message = _messages[index];
+
+                  return Container(
+                    padding: const EdgeInsets.only(
+                      left: 14,
+                      right: 50.0,
+                      top: 10,
+                      bottom: 10,
+                    ),
+                    child: Align(
+                      alignment: (message.senderId!.id == users[friendIndex].id
+                          ? Alignment.topLeft
+                          : Alignment.topRight),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: (message.senderId!.id == users[friendIndex].id
+                              ? Colors.grey.shade200
+                              : Colors.blue[200]),
                         ),
-                      );
-                    case ConnectionState.active:
-                      break;
-                    case ConnectionState.done:
-                      if (snapshot.hasData) {
-                        final List<ListOfMessages>? messages = snapshot.data;
-                        return ListView.builder(
-                          reverse: true,
-                          itemCount: messages!.length,
-                          shrinkWrap: true,
-                          padding: const EdgeInsets.only(
-                            top: 10,
-                            bottom: 10,
+                        padding: const EdgeInsets.all(16),
+                        child: Text(
+                          message.content!,
+                          style: const TextStyle(
+                            fontSize: 15,
                           ),
-                          physics: const BouncingScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            final ListOfMessages message = messages[index];
-
-                            return Container(
-                              padding: const EdgeInsets.only(
-                                left: 14,
-                                right: 50.0,
-                                top: 10,
-                                bottom: 10,
-                              ),
-                              child: Align(
-                                alignment: (message.senderId!.id ==
-                                        users[friendIndex].id
-                                    ? Alignment.topLeft
-                                    : Alignment.topRight),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    color: (message.senderId!.id ==
-                                            users[friendIndex].id
-                                        ? Colors.grey.shade200
-                                        : Colors.blue[200]),
-                                  ),
-                                  padding: const EdgeInsets.all(16),
-                                  child: Text(
-                                    message.content!,
-                                    style: const TextStyle(
-                                      fontSize: 15,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                      } else if (snapshot.hasError) {
-                        print(snapshot.error);
-                        return Text('${snapshot.error}');
-                      }
-                      break;
-                  }
-
-                  return const Text(
-                      'Unkown error when getting list of messages');
+                        ),
+                      ),
+                    ),
+                  );
                 },
               ),
             ),
@@ -329,11 +362,19 @@ class _ChatScreenState extends State<ChatScreen> {
                             onPressed: () {
                               _sendChatMessageDao
                                   .sendChatMessage(
-                                      users[friendIndex].id.toString(),
-                                      chatMessageController.text)
+                                users[friendIndex].id.toString(),
+                                chatMessageController.text,
+                              )
                                   .then((value) {
-                                print('sucesso');
-                                print(value.content);
+                                // adicionando a msg o que o usuario logado digitou na array de _messages
+                                var jsonString = jsonEncode(value);
+                                var result = ListOfMessages.fromJson(
+                                    jsonDecode(jsonString));
+
+                                setState(() {
+                                  _messages.insert(0, result);
+                                  chatMessageController.text = "";
+                                });
                               }).catchError((onError) {
                                 print('onError');
                                 print(onError);

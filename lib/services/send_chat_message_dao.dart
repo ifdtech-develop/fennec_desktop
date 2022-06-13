@@ -31,8 +31,8 @@ class SendChatMessageDao {
     );
 
     if (response.statusCode == 200) {
-      print('success');
-      print(response.body);
+      // print('success');
+      // print(response.body);
       return SendChatMessage.fromJson(
         jsonDecode(
           utf8.decode(response.bodyBytes),

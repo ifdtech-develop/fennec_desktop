@@ -1,7 +1,7 @@
 class ListOfMessages {
   int? id;
   String? chatId;
-  String? timestamp;
+  dynamic timestamp;
   SenderId? senderId;
   SenderId? recipientId;
   String? status;

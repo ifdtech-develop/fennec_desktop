@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ListOfMessagesDao {
   Future<List<ListOfMessages>> getListOfMessages(
-      String senderId, String receiverId) async {
+      String senderId, String receiverId, int page) async {
     final String token;
 
     try {
@@ -20,7 +20,8 @@ class ListOfMessagesDao {
     }
 
     final response = await http.get(
-      Uri.parse('$serverURL/messages/$senderId/$receiverId'),
+      Uri.parse(
+          '$serverURL/messages/$senderId/$receiverId?page=$page&size=$qtdMessages'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': token
