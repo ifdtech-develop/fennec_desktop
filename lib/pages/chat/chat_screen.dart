@@ -88,10 +88,6 @@ class _ChatScreenState extends State<ChatScreen> {
     _getUsers = _getUsersDao.getUsers();
     _getUsers.then(
       (value) {
-        // setState(() {
-        //   friendId = value[friendIndex].id.toString();
-        // });
-
         populateChatArray(0);
       },
     );
@@ -291,162 +287,170 @@ class _ChatScreenState extends State<ChatScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ChatHeader(friendIndex: friendIndex, users: users),
-                  Expanded(
-                    child: NotificationListener<ScrollNotification>(
-                      onNotification: (ScrollNotification notification) {
-                        if (notification.metrics.atEdge) {
-                          // * aqui fica invertido pq a lista esta no modo reverso
-                          if (notification.metrics.pixels == 0) {
-                            print('At bottom');
-                          } else {
-                            print('At top');
-                            setState(() {
-                              index++;
-                              print(index);
-                              populateChatArray(index);
-                            });
-                          }
-                        }
-                        return true;
-                      },
-                      child: ListView.builder(
-                        reverse: true,
-                        itemCount: _messages.length,
-                        shrinkWrap: true,
-                        padding: const EdgeInsets.only(
-                          top: 10,
-                          bottom: 10,
-                        ),
-                        physics: const BouncingScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          final ListOfMessages message = _messages[index];
-
-                          return Container(
-                            padding: const EdgeInsets.only(
-                              left: 14,
-                              right: 50.0,
-                              top: 10,
-                              bottom: 10,
-                            ),
-                            child: Align(
-                              alignment:
-                                  (message.senderId!.id == users[friendIndex].id
-                                      ? Alignment.topLeft
-                                      : Alignment.topRight),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: (message.senderId!.id ==
-                                          users[friendIndex].id
-                                      ? Colors.grey.shade200
-                                      : Colors.blue[200]),
-                                ),
-                                padding: const EdgeInsets.all(16),
-                                child: Text(
-                                  message.content!,
-                                  style: const TextStyle(
-                                    fontSize: 15,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 70.0,
-                    child: Card(
-                      margin: const EdgeInsets.all(0.0),
-                      color: const Color(0xFFE4E4E4),
-                      child: Center(
-                        child: Row(
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.only(left: 15.0),
-                              child: Icon(Icons.attach_file_outlined),
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.only(left: 10.0, right: 15.0),
-                              child: Icon(Icons.emoji_emotions_outlined),
-                            ),
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                  right: 10.0,
-                                ),
-                                child: TextFormField(
-                                  controller: chatMessageController,
-                                  decoration: InputDecoration(
-                                    contentPadding: const EdgeInsets.all(10.0),
-                                    // cor da borda
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: const BorderSide(
-                                        color: Color(0xFF707070),
-                                      ),
-                                      borderRadius: BorderRadius.circular(50.0),
-                                    ),
-                                    // Border quando usuario clica no input
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(50),
-                                    ),
-                                  ),
-                                  keyboardType: TextInputType.multiline,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Escreva uma mensagem.';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(right: 50.0),
-                              child: SizedBox(
-                                height: 50,
-                                width: 50,
-                                child: FloatingActionButton(
-                                  onPressed: () {
-                                    _sendChatMessageDao
-                                        .sendChatMessage(
-                                      users[friendIndex].id.toString(),
-                                      chatMessageController.text,
-                                    )
-                                        .then((value) {
-                                      // adicionando a msg o que o usuario logado digitou na array de _messages
-                                      var jsonString = jsonEncode(value);
-                                      var result = ListOfMessages.fromJson(
-                                          jsonDecode(jsonString));
-
-                                      setState(() {
-                                        // _messages.insert(0, result);
-                                        chatMessageController.text = "";
-                                      });
-                                    }).catchError((onError) {
-                                      print('onError');
-                                      print(onError);
-                                    });
-                                  },
-                                  child: const Icon(
-                                    Icons.send,
-                                    color: Colors.white,
-                                    size: 18,
-                                  ),
-                                  backgroundColor: Colors.blue,
-                                  elevation: 0,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
+                  chatMessagesContainer(users),
+                  chatBoxContainer(users),
                 ],
               )
             : Container(),
+      ),
+    );
+  }
+
+  // * container com as mensagens
+  Expanded chatMessagesContainer(List<ListOfUsers> users) {
+    return Expanded(
+      child: NotificationListener<ScrollNotification>(
+        onNotification: (ScrollNotification notification) {
+          if (notification.metrics.atEdge) {
+            // * aqui fica invertido pq a lista esta no modo reverso
+            if (notification.metrics.pixels == 0) {
+              print('At bottom');
+            } else {
+              print('At top');
+              setState(() {
+                index++;
+                print(index);
+                populateChatArray(index);
+              });
+            }
+          }
+          return true;
+        },
+        child: ListView.builder(
+          reverse: true,
+          itemCount: _messages.length,
+          shrinkWrap: true,
+          padding: const EdgeInsets.only(
+            top: 10,
+            bottom: 10,
+          ),
+          physics: const BouncingScrollPhysics(),
+          itemBuilder: (context, index) {
+            final ListOfMessages message = _messages[index];
+
+            return Container(
+              padding: const EdgeInsets.only(
+                left: 14,
+                right: 50.0,
+                top: 10,
+                bottom: 10,
+              ),
+              child: Align(
+                alignment: (message.senderId!.id == users[friendIndex].id
+                    ? Alignment.topLeft
+                    : Alignment.topRight),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: (message.senderId!.id == users[friendIndex].id
+                        ? Colors.grey.shade200
+                        : Colors.blue[200]),
+                  ),
+                  padding: const EdgeInsets.all(16),
+                  child: Text(
+                    message.content!,
+                    style: const TextStyle(
+                      fontSize: 15,
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  // * bottom, onde escreve e envio msg
+  SizedBox chatBoxContainer(List<ListOfUsers> users) {
+    return SizedBox(
+      height: 70.0,
+      child: Card(
+        margin: const EdgeInsets.all(0.0),
+        color: const Color(0xFFE4E4E4),
+        child: Center(
+          child: Row(
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(left: 15.0),
+                child: Icon(Icons.attach_file_outlined),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(left: 10.0, right: 15.0),
+                child: Icon(Icons.emoji_emotions_outlined),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    right: 10.0,
+                  ),
+                  child: TextFormField(
+                    controller: chatMessageController,
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.all(10.0),
+                      // cor da borda
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Color(0xFF707070),
+                        ),
+                        borderRadius: BorderRadius.circular(50.0),
+                      ),
+                      // Border quando usuario clica no input
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                    ),
+                    keyboardType: TextInputType.multiline,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Escreva uma mensagem.';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 50.0),
+                child: SizedBox(
+                  height: 50,
+                  width: 50,
+                  child: FloatingActionButton(
+                    onPressed: () {
+                      _sendChatMessageDao
+                          .sendChatMessage(
+                        users[friendIndex].id.toString(),
+                        chatMessageController.text,
+                      )
+                          .then((value) {
+                        // adicionando a msg o que o usuario logado digitou na array de _messages
+                        var jsonString = jsonEncode(value);
+                        var result =
+                            ListOfMessages.fromJson(jsonDecode(jsonString));
+
+                        setState(() {
+                          _messages.insert(0, result);
+                          chatMessageController.text = "";
+                        });
+                      }).catchError((onError) {
+                        print('onError');
+                        print(onError);
+                      });
+                    },
+                    child: const Icon(
+                      Icons.send,
+                      color: Colors.white,
+                      size: 18,
+                    ),
+                    backgroundColor: Colors.blue,
+                    elevation: 0,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
