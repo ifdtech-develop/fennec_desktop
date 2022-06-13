@@ -189,6 +189,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                                   users[index].id.toString();
                                               _messages.clear();
                                               populateChatArray(0);
+                                              // desconecto para que assim não aja varios websockets abertos
+                                              stompClient!.deactivate();
+                                              // chamo novamente pq o websocket nao enxerga que o friendId mudou
                                               stomClientFunction();
                                             });
                                           },
@@ -415,7 +418,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                     jsonDecode(jsonString));
 
                                 setState(() {
-                                  _messages.insert(0, result);
+                                  // _messages.insert(0, result);
                                   chatMessageController.text = "";
                                 });
                               }).catchError((onError) {
