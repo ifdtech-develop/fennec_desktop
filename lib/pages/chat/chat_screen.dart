@@ -158,7 +158,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           Container(
                             color: const Color(0xFF5CE1E6),
                             width: 300.0,
-                            child: ListView.separated(
+                            child: ListView.builder(
                               padding: const EdgeInsets.all(15.0),
                               itemCount: users!.length,
                               itemBuilder: (BuildContext context, int index) {
@@ -166,66 +166,85 @@ class _ChatScreenState extends State<ChatScreen> {
 
                                 return Visibility(
                                   visible: user.id.toString() != userId,
-                                  child: ListTile(
-                                    onTap: () {
-                                      setState(() {
-                                        friendIndex = index;
-                                        friendId = users[index].id.toString();
-                                        _messages.clear();
-                                        populateChatArray(0);
-                                        stomClientFunction();
-                                      });
-                                    },
-                                    leading: Stack(
-                                      children: [
-                                        SizedBox(
-                                          width: 50.0,
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(50.0),
-                                            child: Container(
-                                              color: Color((math.Random()
-                                                              .nextDouble() *
-                                                          0xFFFFFF)
-                                                      .toInt())
-                                                  .withOpacity(1.0),
-                                              height: 55.0,
-                                              child: Center(
-                                                child: Text(
-                                                  user.name!.substring(0, 1),
-                                                  style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 25.0,
-                                                    fontWeight: FontWeight.bold,
+                                  child: Padding(
+                                    padding:
+                                        const EdgeInsets.only(bottom: 15.0),
+                                    child: Container(
+                                      decoration: const BoxDecoration(
+                                        border: Border(
+                                          bottom: BorderSide(
+                                            width: 1.0,
+                                            color: Color(0xFFF5F5F5),
+                                          ),
+                                        ),
+                                      ),
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 10.0),
+                                        child: ListTile(
+                                          onTap: () {
+                                            setState(() {
+                                              friendIndex = index;
+                                              friendId =
+                                                  users[index].id.toString();
+                                              _messages.clear();
+                                              populateChatArray(0);
+                                              stomClientFunction();
+                                            });
+                                          },
+                                          leading: Stack(
+                                            children: [
+                                              SizedBox(
+                                                width: 50.0,
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          50.0),
+                                                  child: Container(
+                                                    color: Color((math.Random()
+                                                                    .nextDouble() *
+                                                                0xFFFFFF)
+                                                            .toInt())
+                                                        .withOpacity(1.0),
+                                                    height: 55.0,
+                                                    child: Center(
+                                                      child: Text(
+                                                        user.name!
+                                                            .substring(0, 1),
+                                                        style: const TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 25.0,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
+                                              // Positioned(
+                                              //   right: 0.0,
+                                              //   top: 33.0,
+                                              //   child: Container(
+                                              //     width: 14.0,
+                                              //     height: 14.0,
+                                              //     decoration: BoxDecoration(
+                                              //       borderRadius:
+                                              //           BorderRadius.circular(10),
+                                              //       color: friends[index]
+                                              //           ['statusColor'],
+                                              //     ),
+                                              //   ),
+                                              // )
+                                            ],
                                           ),
+                                          title: Text(user.name!),
                                         ),
-                                        // Positioned(
-                                        //   right: 0.0,
-                                        //   top: 33.0,
-                                        //   child: Container(
-                                        //     width: 14.0,
-                                        //     height: 14.0,
-                                        //     decoration: BoxDecoration(
-                                        //       borderRadius:
-                                        //           BorderRadius.circular(10),
-                                        //       color: friends[index]
-                                        //           ['statusColor'],
-                                        //     ),
-                                        //   ),
-                                        // )
-                                      ],
+                                      ),
                                     ),
-                                    title: Text(user.name!),
                                   ),
                                 );
                               },
-                              separatorBuilder:
-                                  (BuildContext context, int index) =>
-                                      const Divider(),
                             ),
                           ),
                           // container chat
