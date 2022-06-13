@@ -32,6 +32,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   int friendIndex = 0;
   String friendId = "2";
+  int index = 0;
 
   StompClient? stompClient;
   final List _messages = [];
@@ -67,9 +68,9 @@ class _ChatScreenState extends State<ChatScreen> {
     stompClient!.activate();
   }
 
-  void populateChatArray() async {
+  void populateChatArray(int index) async {
     await _getListOfMessagesDao
-        .getListOfMessages(userId, friendId, 0)
+        .getListOfMessages(userId, friendId, index)
         .then((value) {
       setState(() {
         _messages.addAll(value);
@@ -89,7 +90,7 @@ class _ChatScreenState extends State<ChatScreen> {
           friendId = value[friendIndex].id.toString();
         });
 
-        populateChatArray();
+        populateChatArray(0);
       },
     );
 
@@ -171,7 +172,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                         friendIndex = index;
                                         friendId = users[index].id.toString();
                                         _messages.clear();
-                                        populateChatArray();
+                                        populateChatArray(0);
                                         stomClientFunction();
                                       });
                                     },
@@ -266,47 +267,67 @@ class _ChatScreenState extends State<ChatScreen> {
           children: [
             ChatHeader(friendIndex: friendIndex, users: users),
             Expanded(
-              child: ListView.builder(
-                reverse: true,
-                itemCount: _messages.length,
-                shrinkWrap: true,
-                padding: const EdgeInsets.only(
-                  top: 10,
-                  bottom: 10,
-                ),
-                physics: const BouncingScrollPhysics(),
-                itemBuilder: (context, index) {
-                  final ListOfMessages message = _messages[index];
+              child: NotificationListener<ScrollNotification>(
+                onNotification: (ScrollNotification notification) {
+                  if (notification.metrics.atEdge) {
+                    // * aqui fica invertido pq a lista esta no modo reverso
+                    if (notification.metrics.pixels == 0) {
+                      print('At bottom');
+                    } else {
+                      print('At top');
+                      setState(() {
+                        index++;
+                        print(index);
+                        populateChatArray(index);
+                      });
+                    }
+                  }
+                  return true;
+                },
+                child: ListView.builder(
+                  reverse: true,
+                  itemCount: _messages.length,
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.only(
+                    top: 10,
+                    bottom: 10,
+                  ),
+                  physics: const BouncingScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    final ListOfMessages message = _messages[index];
 
-                  return Container(
-                    padding: const EdgeInsets.only(
-                      left: 14,
-                      right: 50.0,
-                      top: 10,
-                      bottom: 10,
-                    ),
-                    child: Align(
-                      alignment: (message.senderId!.id == users[friendIndex].id
-                          ? Alignment.topLeft
-                          : Alignment.topRight),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: (message.senderId!.id == users[friendIndex].id
-                              ? Colors.grey.shade200
-                              : Colors.blue[200]),
-                        ),
-                        padding: const EdgeInsets.all(16),
-                        child: Text(
-                          message.content!,
-                          style: const TextStyle(
-                            fontSize: 15,
+                    return Container(
+                      padding: const EdgeInsets.only(
+                        left: 14,
+                        right: 50.0,
+                        top: 10,
+                        bottom: 10,
+                      ),
+                      child: Align(
+                        alignment:
+                            (message.senderId!.id == users[friendIndex].id
+                                ? Alignment.topLeft
+                                : Alignment.topRight),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color:
+                                (message.senderId!.id == users[friendIndex].id
+                                    ? Colors.grey.shade200
+                                    : Colors.blue[200]),
+                          ),
+                          padding: const EdgeInsets.all(16),
+                          child: Text(
+                            message.content!,
+                            style: const TextStyle(
+                              fontSize: 15,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
             ),
             SizedBox(
