@@ -67,12 +67,7 @@ class _WorkspaceScreenState extends State<WorkspaceScreen> {
                                 child: DataTable(
                                   dividerThickness: 0.05,
                                   columns: const [
-                                    DataColumn(
-                                      label: TextWidget(
-                                        text: 'Transação',
-                                        size: 16.0,
-                                      ),
-                                    ),
+                                  
                                     DataColumn(
                                       label: TextWidget(
                                         text: 'Nome do Cliente',
@@ -85,19 +80,39 @@ class _WorkspaceScreenState extends State<WorkspaceScreen> {
                                         size: 16.0,
                                       ),
                                     ),
+                               
                                     DataColumn(
                                       label: TextWidget(
-                                        text: 'Número do Cartão',
+                                        text: 'Valor do Boleto',
                                         size: 16.0,
                                       ),
                                     ),
                                     DataColumn(
                                       label: TextWidget(
-                                        text: 'Valor da Operação',
+                                        text: 'Valor do Cartão',
                                         size: 16.0,
                                       ),
                                     ),
-                                    DataColumn(
+                                      DataColumn(
+                                      label: TextWidget(
+                                        text: 'Valor da Taxa',
+                                        size: 16.0,
+                                      ),
+                                    ),
+                
+                                      DataColumn(
+                                      label: TextWidget(
+                                        text: 'Tipo',
+                                        size: 16.0,
+                                      ),
+                                    ),
+                                      DataColumn(
+                                      label: TextWidget(
+                                        text: 'Autenticação',
+                                        size: 16.0,
+                                      ),
+                                    ),
+                                       DataColumn(
                                       label: TextWidget(
                                         text: 'Status',
                                         size: 16.0,
@@ -112,34 +127,44 @@ class _WorkspaceScreenState extends State<WorkspaceScreen> {
                                                     DataCell(
                                                       TextWidget(
                                                         text: element[
-                                                            "typeTransaction"],
+                                                            "nome"],
                                                       ),
                                                     ), //Extracting from Map element the value
                                                     DataCell(
                                                       TextWidget(
                                                         text: element[
-                                                            "clientName"],
+                                                            "barCode"],
                                                       ),
                                                     ),
                                                     DataCell(
                                                       TextWidget(
                                                         text:
-                                                            element["barCode"],
+                                                            element["valorBoleto"],
                                                       ),
                                                     ),
                                                     DataCell(
                                                       TextWidget(
                                                         text: element[
-                                                            "cardNumber"],
+                                                            "valorCartao"],
                                                       ),
                                                     ),
                                                     DataCell(
                                                       TextWidget(
                                                         text: element[
-                                                            "valueTransaction"],
+                                                            "valorTaxa"],
                                                       ),
                                                     ),
                                                     DataCell(
+                                                      TextWidget(
+                                                        text: element["tipo"],
+                                                      ),
+                                                    ),
+                                                       DataCell(
+                                                      TextWidget(
+                                                        text: element["autenticacao"],
+                                                      ),
+                                                    ),
+                                                       DataCell(
                                                       TextWidget(
                                                         text: element["status"],
                                                       ),
