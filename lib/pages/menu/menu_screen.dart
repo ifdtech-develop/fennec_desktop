@@ -174,6 +174,7 @@ class _MenuScreenState extends State<MenuScreen> {
           onSelect: () {
             setState(() {
               widget.onWorkspaceSelected();
+              
               //se o menu do perfil aberto, fechar ele
               if (_isMenuVisible) {
                 _isMenuVisible = !_isMenuVisible;

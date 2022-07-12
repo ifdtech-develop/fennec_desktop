@@ -1,6 +1,7 @@
 import 'package:fennec_desktop/models/squad_notifier.dart';
 import 'package:fennec_desktop/pages/login/login_page.dart';
 import 'package:fennec_desktop/pages/main_page.dart';
+import 'package:fennec_desktop/pages/menu/workspace/dashboard_google_screen.dart';
 import 'package:fennec_desktop/pages/menu/workspace/workspace_screen.dart';
 import 'package:fennec_desktop/utils/global_variables.dart';
 import 'package:flutter/gestures.dart';
@@ -51,7 +52,8 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: tell == null ? '/loginPage' : '/mainPage',
       routes: {
-        '/workspace': (context) => const WorkspaceScreen(),
+        '/workspace': (context) => const DashboardGoogle(),
+        // '/workspace': (context) => const WorkspaceScreen(),
         '/loginPage': (context) => const LoginPage(),
         '/mainPage': (context) => const MainPage(),
       },

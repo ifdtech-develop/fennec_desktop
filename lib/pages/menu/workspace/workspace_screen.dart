@@ -1,3 +1,5 @@
+import 'package:fennec_desktop/models/backoffice_transactions.dart';
+import 'package:fennec_desktop/services/workspace_dao.dart';
 import 'package:fennec_desktop/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -31,6 +33,18 @@ class _WorkspaceScreenState extends State<WorkspaceScreen> {
       userFirstLetter = prefs.getString('name')!.substring(0, 1);
     });
   }
+
+    // var transactions;
+
+// get a List from a Future<list>getAllTransactions()
+  Future<List<BackofficeTransactions>> getAllTransactions() async {
+    final dao = WorkspaceDAO();
+    var transactions = await dao.getAllTransactions();
+    return transactions;
+  }
+// late var listDash = WorkspaceDAO().getAllTransactions().then((value) => value.forEach((element) => print(element))) as List;
+                                     
+ late var transaction= getAllTransactions();
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +81,6 @@ class _WorkspaceScreenState extends State<WorkspaceScreen> {
                                 child: DataTable(
                                   dividerThickness: 0.05,
                                   columns: const [
-                                  
                                     DataColumn(
                                       label: TextWidget(
                                         text: 'Nome do Cliente',
@@ -80,7 +93,6 @@ class _WorkspaceScreenState extends State<WorkspaceScreen> {
                                         size: 16.0,
                                       ),
                                     ),
-                               
                                     DataColumn(
                                       label: TextWidget(
                                         text: 'Valor do Boleto',
@@ -93,26 +105,25 @@ class _WorkspaceScreenState extends State<WorkspaceScreen> {
                                         size: 16.0,
                                       ),
                                     ),
-                                      DataColumn(
+                                    DataColumn(
                                       label: TextWidget(
                                         text: 'Valor da Taxa',
                                         size: 16.0,
                                       ),
                                     ),
-                
-                                      DataColumn(
+                                    DataColumn(
                                       label: TextWidget(
                                         text: 'Tipo',
                                         size: 16.0,
                                       ),
                                     ),
-                                      DataColumn(
+                                    DataColumn(
                                       label: TextWidget(
                                         text: 'Autenticação',
                                         size: 16.0,
                                       ),
                                     ),
-                                       DataColumn(
+                                    DataColumn(
                                       label: TextWidget(
                                         text: 'Status',
                                         size: 16.0,
@@ -121,25 +132,31 @@ class _WorkspaceScreenState extends State<WorkspaceScreen> {
                                   ],
                                   rows:
                                       listOfRows // Loops through dataColumnText, each iteration assigning the value to element
+                                        //  make a map with getAllTransactions() 
+                                        // get a list from future list of workspaceDao
+
+                                      // getAllTransactions().then((value) => value.forEach((element) => print(element)));
+                                      // listOfRows.map((element) => DataRow(
+                                        // listDash
+                                        // transaction
                                           .map(
                                             ((element) => DataRow(
                                                   cells: <DataCell>[
                                                     DataCell(
                                                       TextWidget(
-                                                        text: element[
-                                                            "nome"],
+                                                        text: element["nome"],
                                                       ),
                                                     ), //Extracting from Map element the value
                                                     DataCell(
                                                       TextWidget(
-                                                        text: element[
-                                                            "barCode"],
+                                                        text:
+                                                            element["barCode"],
                                                       ),
                                                     ),
                                                     DataCell(
                                                       TextWidget(
-                                                        text:
-                                                            element["valorBoleto"],
+                                                        text: element[
+                                                            "valorBoleto"],
                                                       ),
                                                     ),
                                                     DataCell(
@@ -159,12 +176,13 @@ class _WorkspaceScreenState extends State<WorkspaceScreen> {
                                                         text: element["tipo"],
                                                       ),
                                                     ),
-                                                       DataCell(
+                                                    DataCell(
                                                       TextWidget(
-                                                        text: element["autenticacao"],
+                                                        text: element[
+                                                            "autenticacao"],
                                                       ),
                                                     ),
-                                                       DataCell(
+                                                    DataCell(
                                                       TextWidget(
                                                         text: element["status"],
                                                       ),

@@ -1,5 +1,5 @@
 class SendChatMessage {
-  String? id;
+  int? id;
   String? chatId;
   String? timestamp;
   SenderId? senderId;

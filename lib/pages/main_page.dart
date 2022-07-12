@@ -4,6 +4,7 @@ import 'package:fennec_desktop/pages/chat/chat_screen.dart';
 import 'package:fennec_desktop/pages/main_feed/main_feed_screen.dart';
 import 'package:fennec_desktop/pages/menu/menu_screen.dart';
 import 'package:fennec_desktop/pages/menu/workspace/workspace_screen.dart';
+import 'package:fennec_desktop/pages/menu/workspace/dashboard_google_screen.dart';
 import 'package:fennec_desktop/pages/squad/squad_screen.dart';
 import 'package:fennec_desktop/pages/team/team_screen.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ class _MainPageState extends State<MainPage> {
   bool _isSquadVisible = false;
   bool _isChatVisible = false;
   bool _isWorkspaceVisible = false;
+  bool _isDashboardGoogleVisible = false;
   String backgroundcolorMenu = '0xFFFDF5E6';
   String backgroundcolorTeams = '0xFFFFFFFF';
   String backgroundcolorSquad = '0xFFFFFFFF';
@@ -61,6 +63,10 @@ class _MainPageState extends State<MainPage> {
                 Visibility(
                   visible: _isWorkspaceVisible,
                   child: const WorkspaceScreen(),
+                ),
+                Visibility(
+                  visible: _isDashboardGoogleVisible,
+                  child: const DashboardGoogle(),
                 ),
               ],
             ),
@@ -181,7 +187,7 @@ class _MainPageState extends State<MainPage> {
             right: 20.0,
             bottom: 0.0,
             top: 0.0,
-            child: !_isWorkspaceVisible ? feedButtons() : workspaceButtons(),
+            child: !_isWorkspaceVisible &&!_isDashboardGoogleVisible ? feedButtons() : workspaceButtons(),
           ),
         ],
       ),
@@ -305,6 +311,8 @@ class _MainPageState extends State<MainPage> {
         setState(() {
           if (id == 0) {
             _workspaceButtonSelected[0] = !_workspaceButtonSelected[0];
+            _isDashboardGoogleVisible = !_isDashboardGoogleVisible;
+            _isWorkspaceVisible = !_isWorkspaceVisible;
           } else if (id == 1) {
             _workspaceButtonSelected[1] = !_workspaceButtonSelected[1];
           } else {
