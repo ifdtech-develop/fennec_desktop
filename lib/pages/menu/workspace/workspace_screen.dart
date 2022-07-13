@@ -1,9 +1,23 @@
 import 'package:fennec_desktop/utils/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math' as math;
 
-import 'data_mock.dart';
+Future<List> getAllTransactions() async {
+  final dao = WorkspaceDAO();
+  var transactions = await dao.getAllTransactions();
+  return transactions;
+}
+
+Future<Map<String, dynamic>> getTotal() async {
+  final dao = WorkspaceTotalDAO();
+  var transactions = await dao.TotalTransactions();
+  return transactions;
+}
+
+late String value1 = 'RS 90,00';
+late String value2 = 'RS 90,00';
 
 class WorkspaceScreen extends StatefulWidget {
   const WorkspaceScreen({Key? key}) : super(key: key);
@@ -32,6 +46,17 @@ class _WorkspaceScreenState extends State<WorkspaceScreen> {
     });
   }
 
+<<<<<<< HEAD
+=======
+  // var transactions;
+
+// get a List from a Future<list>getAllTransactions()
+
+// late var listDash = WorkspaceDAO().getAllTransactions().then((value) => value.forEach((element) => print(element))) as List;
+
+  late var transaction = getAllTransactions();
+
+>>>>>>> 7c78a0c (Backoffice getting data from backend)
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -64,6 +89,7 @@ class _WorkspaceScreenState extends State<WorkspaceScreen> {
                               ),
                               SingleChildScrollView(
                                 scrollDirection: Axis.horizontal,
+<<<<<<< HEAD
                                 child: DataTable(
                                   dividerThickness: 0.05,
                                   columns: const [
@@ -173,8 +199,182 @@ class _WorkspaceScreenState extends State<WorkspaceScreen> {
                                                 )),
                                           )
                                           .toList(),
+=======
+                                child: FutureBuilder(
+                                  future: getAllTransactions(),
+                                  builder:
+                                      (context, AsyncSnapshot<List> snapshot) {
+                                    if (snapshot.hasData) {
+                                      List listDash = snapshot.data as List;
+                                      return DataTable(
+                                        dividerThickness: 0.05,
+                                        columns: const [
+                                          DataColumn(
+                                            label: TextWidget(
+                                              text: 'Nome do Cliente',
+                                              size: 16.0,
+                                            ),
+                                          ),
+                                          DataColumn(
+                                            label: TextWidget(
+                                              text: 'Data do Pagamento',
+                                              size: 16.0,
+                                            ),
+                                          ),
+                                          DataColumn(
+                                            label: TextWidget(
+                                              text: 'Valor do Cartão',
+                                              size: 16.0,
+                                            ),
+                                          ),
+                                          DataColumn(
+                                            label: TextWidget(
+                                              text: 'Valor do Boleto',
+                                              size: 16.0,
+                                            ),
+                                          ),
+                                          DataColumn(
+                                            label: TextWidget(
+                                              text: 'Valor da Taxa',
+                                              size: 16.0,
+                                            ),
+                                          ),
+                                          DataColumn(
+                                            label: TextWidget(
+                                              text: 'Parcelas',
+                                              size: 16.0,
+                                            ),
+                                          ),
+                                          DataColumn(
+                                            label: TextWidget(
+                                              text: 'Tipo',
+                                              size: 16.0,
+                                            ),
+                                          ),
+                                          DataColumn(
+                                            label: TextWidget(
+                                              text: 'Autenticação',
+                                              size: 16.0,
+                                            ),
+                                          ),
+                                          DataColumn(
+                                            label: TextWidget(
+                                              text: 'Status',
+                                              size: 16.0,
+                                            ),
+                                          ),
+                                        ],
+                                        rows:
+                                            // put data from future
+                                            // transaction
+
+                                            listDash
+                                                .map(
+                                                  ((element) => DataRow(
+                                                        cells: <DataCell>[
+                                                          DataCell(
+                                                            TextWidget(
+                                                              text: element[
+                                                                          "nome"]
+                                                                      .split(
+                                                                          " ")
+                                                                      .first +
+                                                                  " " +
+                                                                  (element["nome"]
+                                                                              .split(
+                                                                                  " ")
+                                                                              .length >=
+                                                                          2
+                                                                      ? element[
+                                                                              "nome"]
+                                                                          .split(
+                                                                              " ")
+                                                                          .elementAt(
+                                                                              1)
+                                                                      : ""),
+                                                            ),
+                                                          ), //Extracting from Map element the value
+                                                          DataCell(
+                                                            TextWidget(
+                                                              text: DateFormat(
+                                                                      'dd/MM/yyyy HH:mm')
+                                                                  .format(DateFormat(
+                                                                          "yyyy-MM-dd'T'hh:mm:ss'Z'")
+                                                                      .parse(element[
+                                                                          "create_date"])),
+                                                            ),
+                                                          ),
+                                                          DataCell(
+                                                            TextWidget(
+                                                              text: element[
+                                                                  "valorCartao"],
+                                                            ),
+                                                          ),
+                                                          DataCell(
+                                                            TextWidget(
+                                                              text: element[
+                                                                  "valorBoleto"],
+                                                            ),
+                                                          ),
+                                                          DataCell(
+                                                            TextWidget(
+                                                              text: element[
+                                                                  "valorTaxa"],
+                                                            ),
+                                                          ),
+                                                          DataCell(
+                                                            TextWidget(
+                                                              text: element[
+                                                                  "installments"],
+                                                            ),
+                                                          ),
+                                                          DataCell(
+                                                            TextWidget(
+                                                              text: element[
+                                                                  "tipo"],
+                                                            ),
+                                                          ),
+                                                          DataCell(
+                                                            TextWidget(
+                                                              text: element[
+                                                                      "paynetauthorizationCode"]
+                                                                  .toString(),
+                                                            ),
+                                                          ),
+                                                          DataCell(
+                                                            TextWidget(
+                                                              text: element[
+                                                                  "status"],
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      )),
+                                                )
+                                                .toList(),
+                                      );
+                                    } else {
+                                      // make a loading screen with a full height container
+                                      return Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.values[2],
+                                        children: const <Widget>[
+                                          SizedBox(
+                                            width: 50.0,
+                                            height: 50.0,
+                                            child: CircularProgressIndicator(
+                                              valueColor:
+                                                  AlwaysStoppedAnimation<Color>(
+                                                      Colors.blue),
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    }
+                                  },
+>>>>>>> 7c78a0c (Backoffice getting data from backend)
                                 ),
-                              ),
+                              )
                             ],
                           ),
                         ),
@@ -206,7 +406,7 @@ class UserInfoHeader extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(left: 25.0, top: 8.0),
           child: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.5,
+            width: MediaQuery.of(context).size.width * 0.450,
             child: Row(
               children: [
                 SizedBox(
@@ -247,26 +447,72 @@ class UserInfoHeader extends StatelessWidget {
           ),
         ),
         SizedBox(
-          width: MediaQuery.of(context).size.width * 0.3,
+          width: MediaQuery.of(context).size.width * 0.4,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
-              Text(
-                'PG Cartão R\$9,90',
-                style: TextStyle(
-                  color: ColorsProject.strongOrange,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18.0,
-                ),
-              ),
-              Text(
-                'Saldo Boleto R\$9,90',
-                style: TextStyle(
-                  color: ColorsProject.strongOrange,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18.0,
-                ),
-              ),
+            children: [
+              FutureBuilder(
+                  future: getTotal(),
+                  builder:
+                      (context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
+                    if (snapshot.hasData) {
+                      Map<String, dynamic>? data = snapshot.data;
+                      // get totalBoleto from data
+                      String totalBoleto = data!["totalBoleto"];
+                      String totalCartao = data["totalCartao"];
+                      value1 = totalCartao;
+                      value2 = totalBoleto;
+                      return SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.38,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'PG Cartão $value1',
+                              style: const TextStyle(
+                                color: ColorsProject.strongOrange,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18.0,
+                              ),
+                            ),
+                            Text(
+                              'PG Boleto $value2',
+                              style: const TextStyle(
+                                color: ColorsProject.strongOrange,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    } else {
+                      return SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.5,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: const [
+                            Text(
+                              'PG Cartão R\$ 0',
+                              style: TextStyle(
+                                color: ColorsProject.strongOrange,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18.0,
+                              ),
+                            ),
+                            Text(
+                              'Saldo Boleto R\$ 0',
+                              style: TextStyle(
+                                color: ColorsProject.strongOrange,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                  }),
             ],
           ),
         ),
