@@ -33,8 +33,11 @@
 //   }
 // }
 
-class BackofficeTransactions {
+import 'dart:ffi';
 
+import 'package:intl/intl.dart';
+
+class BackofficeTransactions {
   final int? id;
   final String? digitable;
   final String? backofficeTransactionsBarCode;
@@ -47,7 +50,7 @@ class BackofficeTransactions {
   final int? authentication;
   final String? convenant;
   final String? paynetId;
-  final String? createDate;
+  final DateFormat? createDate;
   final bool? isExpired;
   final int? transactionid;
   final String? nome;
@@ -101,7 +104,6 @@ class BackofficeTransactions {
     this.status,
   });
 
-
 // make a factory from the JSON map
   factory BackofficeTransactions.fromJson(Map<String, dynamic> json) {
     return BackofficeTransactions(
@@ -110,25 +112,28 @@ class BackofficeTransactions {
       backofficeTransactionsBarCode: json["backofficeTransactionsBarCode"],
       type: json["type"],
       originalValue: json["originalValue"],
-      value: json["value"],
+      value: json["value"].toDouble(),
       valueWithAdditional: json["valueWithAdditional"],
       valueWithDiscount: json["valueWithDiscount"],
       transactionidauthorize: json["transactionidauthorize"],
       authentication: json["authentication"],
       convenant: json["convenant"],
       paynetId: json["paynetId"],
-      createDate: json["createDate"],
+      createDate: json["createDate"]
+          .DateFormat('dd/MM/yyyy')
+          .format(DateFormat('yyyy-MM-dd'))
+          .parse(json["createDate"]),
       isExpired: json["isExpired"],
       transactionid: json["transactionid"],
       nome: json["nome"],
       email: json["email"],
       cpf: json["cpf"],
-      paynetauthorizationCode: json["paynetauthorizationCode"],
+      paynetauthorizationCode: json["paynetauthorizationCode"].toString(),
       valorBoleto: json["valorBoleto"],
       valorCartao: json["valorCartao"],
       valorTaxa: json["valorTaxa"],
-      unformatedCard: json["unformatedCard"],
-      unformatedTaxa: json["unformatedTaxa"],
+      unformatedCard: json["unformatedCard"].toDouble(),
+      unformatedTaxa: json["unformatedTaxa"].toDouble(),
       barCode: json["barCode"],
       cardFlag: json["cardFlag"],
       lastDigits: json["lastDigits"],
@@ -138,4 +143,67 @@ class BackofficeTransactions {
       status: json["status"],
     );
   }
+
+  // make a JSON map from the object
+  Map<String, dynamic> toJson() {
+    return {
+      "id": id,
+      "digitable": digitable,
+      "backofficeTransactionsBarCode": backofficeTransactionsBarCode,
+      "type": type,
+      "originalValue": originalValue,
+      "value": value,
+      "valueWithAdditional": valueWithAdditional,
+      "valueWithDiscount": valueWithDiscount,
+      "transactionidauthorize": transactionidauthorize,
+      "authentication": authentication,
+      "convenant": convenant,
+      "paynetId": paynetId,
+      "createDate": createDate,
+      "isExpired": isExpired,
+      "transactionid": transactionid,
+      "nome": nome,
+      "email": email,
+      "cpf": cpf,
+      "paynetauthorizationCode": paynetauthorizationCode,
+      "valorBoleto": valorBoleto,
+      "valorCartao": valorCartao,
+      "valorTaxa": valorTaxa,
+      "unformatedCard": unformatedCard,
+      "unformatedTaxa": unformatedTaxa,
+      "barCode": barCode,
+      "cardFlag": cardFlag,
+      "lastDigits": lastDigits,
+      "installments": installments,
+      "tipo": tipo,
+      "autenticacao": autenticacao,
+      "status": status,
+    };
+  }
+
+  // make a factory from the JSON map
+}
+class TotalTransactions {
+    TotalTransactions({
+        required this.totalBoleto,
+        required this.totalCartao,
+    });
+
+    final String? totalBoleto;
+    final String? totalCartao;
+
+      // make a JSON map from the object
+      Map<String, dynamic> toJson() {
+        return {
+            "totalBoleto": totalBoleto,
+            "totalCartao": totalCartao,
+        };
+      }
+      // make a factory from the JSON map
+      factory TotalTransactions.fromJson(Map<String, dynamic> json) {
+        return TotalTransactions(
+            totalBoleto: json["totalBoleto"],
+            totalCartao: json["totalCartao"],
+        );
+      }
 }
