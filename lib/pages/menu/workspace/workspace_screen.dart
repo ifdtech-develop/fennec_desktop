@@ -1,3 +1,4 @@
+import 'package:fennec_desktop/services/workspace_dao.dart';
 import 'package:fennec_desktop/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -46,8 +47,6 @@ class _WorkspaceScreenState extends State<WorkspaceScreen> {
     });
   }
 
-<<<<<<< HEAD
-=======
   // var transactions;
 
 // get a List from a Future<list>getAllTransactions()
@@ -56,7 +55,6 @@ class _WorkspaceScreenState extends State<WorkspaceScreen> {
 
   late var transaction = getAllTransactions();
 
->>>>>>> 7c78a0c (Backoffice getting data from backend)
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -89,117 +87,6 @@ class _WorkspaceScreenState extends State<WorkspaceScreen> {
                               ),
                               SingleChildScrollView(
                                 scrollDirection: Axis.horizontal,
-<<<<<<< HEAD
-                                child: DataTable(
-                                  dividerThickness: 0.05,
-                                  columns: const [
-                                  
-                                    DataColumn(
-                                      label: TextWidget(
-                                        text: 'Nome do Cliente',
-                                        size: 16.0,
-                                      ),
-                                    ),
-                                    DataColumn(
-                                      label: TextWidget(
-                                        text: 'Código de Barras',
-                                        size: 16.0,
-                                      ),
-                                    ),
-                               
-                                    DataColumn(
-                                      label: TextWidget(
-                                        text: 'Valor do Boleto',
-                                        size: 16.0,
-                                      ),
-                                    ),
-                                    DataColumn(
-                                      label: TextWidget(
-                                        text: 'Valor do Cartão',
-                                        size: 16.0,
-                                      ),
-                                    ),
-                                      DataColumn(
-                                      label: TextWidget(
-                                        text: 'Valor da Taxa',
-                                        size: 16.0,
-                                      ),
-                                    ),
-                
-                                      DataColumn(
-                                      label: TextWidget(
-                                        text: 'Tipo',
-                                        size: 16.0,
-                                      ),
-                                    ),
-                                      DataColumn(
-                                      label: TextWidget(
-                                        text: 'Autenticação',
-                                        size: 16.0,
-                                      ),
-                                    ),
-                                       DataColumn(
-                                      label: TextWidget(
-                                        text: 'Status',
-                                        size: 16.0,
-                                      ),
-                                    ),
-                                  ],
-                                  rows:
-                                      listOfRows // Loops through dataColumnText, each iteration assigning the value to element
-                                          .map(
-                                            ((element) => DataRow(
-                                                  cells: <DataCell>[
-                                                    DataCell(
-                                                      TextWidget(
-                                                        text: element[
-                                                            "nome"],
-                                                      ),
-                                                    ), //Extracting from Map element the value
-                                                    DataCell(
-                                                      TextWidget(
-                                                        text: element[
-                                                            "barCode"],
-                                                      ),
-                                                    ),
-                                                    DataCell(
-                                                      TextWidget(
-                                                        text:
-                                                            element["valorBoleto"],
-                                                      ),
-                                                    ),
-                                                    DataCell(
-                                                      TextWidget(
-                                                        text: element[
-                                                            "valorCartao"],
-                                                      ),
-                                                    ),
-                                                    DataCell(
-                                                      TextWidget(
-                                                        text: element[
-                                                            "valorTaxa"],
-                                                      ),
-                                                    ),
-                                                    DataCell(
-                                                      TextWidget(
-                                                        text: element["tipo"],
-                                                      ),
-                                                    ),
-                                                       DataCell(
-                                                      TextWidget(
-                                                        text: element["autenticacao"],
-                                                      ),
-                                                    ),
-                                                       DataCell(
-                                                      TextWidget(
-                                                        text: element["status"],
-                                                      ),
-                                                    ),
-                                                  ],
-                                                )),
-                                          )
-                                          .toList(),
-=======
                                 child: FutureBuilder(
                                   future: getAllTransactions(),
                                   builder:
@@ -372,7 +259,6 @@ class _WorkspaceScreenState extends State<WorkspaceScreen> {
                                       );
                                     }
                                   },
->>>>>>> 7c78a0c (Backoffice getting data from backend)
                                 ),
                               )
                             ],

@@ -1,50 +1,3 @@
-<<<<<<< HEAD
-class BackofficeTransactions {
-  final String nome;
-  final String barCode;
-  final String valorBoleto;
-  final String valorCartao;
-  final String valorTaxa;
-  final String tipo;
-  final String autenticacao;
-  final String status;
-  
-=======
-// class BackofficeTransactions {
-//   final String nome;
-//   final String barCode;
-//   final String valorBoleto;
-//   final String valorCartao;
-//   final String valorTaxa;
-//   final String tipo;
-//   final String autenticacao;
-//   final String status;
-
-//   BackofficeTransactions({
-//     required this.nome,
-//     required this.barCode,
-//     required this.valorBoleto,
-//     required this.valorCartao,
-//     required this.valorTaxa,
-//     required this.tipo,
-//     required this.autenticacao,
-//     required this.status,
-//   });
-
-//   factory BackofficeTransactions.fromJson(Map<String, dynamic> json) {
-//     return BackofficeTransactions(
-//       nome: json["nome"],
-//       barCode: json["barCode"],
-//       valorBoleto: json["valorBoleto"],
-//       valorCartao: json["valorCartao"],
-//       valorTaxa: json["valorTaxa"],
-//       tipo: json["tipo"],
-//       autenticacao: json["autenticacao"],
-//       status: json["status"],
-//     );
-//   }
-// }
-
 import 'dart:ffi';
 
 import 'package:intl/intl.dart';
@@ -82,27 +35,40 @@ class BackofficeTransactions {
   final String? autenticacao;
   final String? status;
 
->>>>>>> 7c78a0c (Backoffice getting data from backend)
   BackofficeTransactions({
-    required this.nome,
-    required this.barCode,
-    required this.valorBoleto,
-    required this.valorCartao,
-    required this.valorTaxa,
-    required this.tipo,
-    required this.autenticacao,
-    required this.status,
+    this.id,
+    this.digitable,
+    this.backofficeTransactionsBarCode,
+    this.type,
+    this.originalValue,
+    this.value,
+    this.valueWithAdditional,
+    this.valueWithDiscount,
+    this.transactionidauthorize,
+    this.authentication,
+    this.convenant,
+    this.paynetId,
+    this.createDate,
+    this.isExpired,
+    this.transactionid,
+    this.nome,
+    this.email,
+    this.cpf,
+    this.paynetauthorizationCode,
+    this.valorBoleto,
+    this.valorCartao,
+    this.valorTaxa,
+    this.unformatedCard,
+    this.unformatedTaxa,
+    this.barCode,
+    this.cardFlag,
+    this.lastDigits,
+    this.installments,
+    this.tipo,
+    this.autenticacao,
+    this.status,
   });
 
-<<<<<<< HEAD
-  factory BackofficeTransactions.fromJson(Map<String, dynamic> json) {
-    return BackofficeTransactions(
-      nome: json["nome"],
-      barCode: json["barCode"],
-      valorBoleto: json["valorBoleto"],
-      valorCartao: json["valorCartao"],
-      valorTaxa: json["valorTaxa"],
-=======
 // make a factory from the JSON map
   factory BackofficeTransactions.fromJson(Map<String, dynamic> json) {
     return BackofficeTransactions(
@@ -137,7 +103,6 @@ class BackofficeTransactions {
       cardFlag: json["cardFlag"],
       lastDigits: json["lastDigits"],
       installments: json["installments"],
->>>>>>> 7c78a0c (Backoffice getting data from backend)
       tipo: json["tipo"],
       autenticacao: json["autenticacao"],
       status: json["status"],
